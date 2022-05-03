@@ -22,8 +22,7 @@
             <ColumnDefinition Width="0*"/>
             <ColumnDefinition Width="603*"/>
         </Grid.ColumnDefinitions>
-        <Button x:Name="Start" Grid.Column="2" Content="Start" HorizontalAlignment="Left" Margin="154,0,0,0" Width="168" FontSize="36" FontFamily="Segoe UI Variable Small Semibold" Height="49" VerticalAlignment="Center" Grid.Row="1"/>
-        <Button Name="btnOpenFile" Grid.Column="2" Click="btnOpenFile_Click" HorizontalAlignment="Left" Margin="154,219,0,0" Width="168" FontSize="36" FontFamily="Segoe UI Variable Small Semibold" Height="49" VerticalAlignment="Top" Grid.Row="1">Open file</Button>
+        <Button Name="btnOpenFile" Grid.Column="2" Click="btnOpenFile_Click" HorizontalAlignment="Left" Margin="145,326,0,0" Width="168" FontSize="36" FontFamily="Segoe UI Variable Small Semibold" Height="49" VerticalAlignment="Top" Grid.Row="1">Open file</Button>
         <ScrollViewer Grid.Column="4" Grid.ColumnSpan="3" Grid.RowSpan="2">
             <TextBlock  Name="DisassemblerBox" Grid.Column="2" TextWrapping="Wrap" TextAlignment="Left" Text="Entropia" Width="553" Margin="0,10,0,10" FontFamily="Cambria" FontSize="20"/>
         </ScrollViewer>
