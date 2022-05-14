@@ -20,14 +20,13 @@ namespace DisEn
         #region Variables
 
         // Total instruction counter
-        private int _totalInstructionCounter;
+        private UInt32 _totalInstructionCounter;
         // List of instructions
-        private List<String> _instructionFilter;
+        private HashSet<String> _instructionFilterHashSet;
         // Dictionary of instructions
         private Dictionary<String, UInt32> _instructionsDict;
         // Path to the instruction file
         private const string INSTRUCTION_FILTER_FILE_PATH = "instructions.txt";
-
 
         #endregion
 
@@ -37,7 +36,7 @@ namespace DisEn
         public Disassembler()
         {
             // Initialize containers
-            _instructionFilter = new List<string>();
+            _instructionFilterHashSet = new HashSet<string>();
             _instructionsDict = new Dictionary<string, UInt32>();
             // Reset number to zero
             _totalInstructionCounter = 0;
@@ -45,7 +44,12 @@ namespace DisEn
             string[] instructionReadArray = File.ReadAllLines(INSTRUCTION_FILTER_FILE_PATH);
             for (int i = 0; i < instructionReadArray.Length; ++i)
             {
-                _instructionFilter.AddRange(instructionReadArray[i].Split(' '));
+                // Split string
+                string[] splitString = instructionReadArray[i].Split(' ');
+                for (int j = 0; j < splitString.Length; ++j)
+                {
+                    _instructionFilterHashSet.Add(splitString[j]);
+                }
             }
         }
 
@@ -56,15 +60,16 @@ namespace DisEn
         // Returns file entropy value
         public double GetFileEntropyValue()
         {
+            List<string> instructionFilter = new List<string>(_instructionFilterHashSet);
             // Calculate entropy
             double entropySum = 0;
-            for (int i = 0; i < _instructionFilter.Count; ++i)
+            for (int i = 0; i < instructionFilter.Count; ++i)
             {
                 // Check, if this element exist in map
-                if (_instructionsDict.ContainsKey(_instructionFilter[i]))
+                if (_instructionsDict.ContainsKey(instructionFilter[i]))
                 {
                     // Count entropy of this element
-                    entropySum += EntropyCalculation(_instructionsDict[_instructionFilter[i]], _totalInstructionCounter);
+                    entropySum += EntropyCalculation(_instructionsDict[instructionFilter[i]], _totalInstructionCounter);
                 }
             }
             return entropySum;
@@ -75,14 +80,15 @@ namespace DisEn
         {
             // Initialize list with command and entropy value pair
             List<DissamblerCommandInfo> commandsEntropy = new List<DissamblerCommandInfo>();
-            for (int i = 0; i < _instructionFilter.Count; ++i)
+            List<string> instructionFilter = new List<string>(_instructionFilterHashSet);
+            for (int i = 0; i < instructionFilter.Count; ++i)
             {
                 // Check, if this element exist in map
-                if (_instructionsDict.ContainsKey(_instructionFilter[i]))
+                if (_instructionsDict.ContainsKey(instructionFilter[i]))
                 {
                     DissamblerCommandInfo dissamblerCommandInfo;
-                    dissamblerCommandInfo.Name = _instructionFilter[i];
-                    dissamblerCommandInfo.Count = _instructionsDict[_instructionFilter[i]];
+                    dissamblerCommandInfo.Name = instructionFilter[i];
+                    dissamblerCommandInfo.Count = _instructionsDict[instructionFilter[i]];
                     dissamblerCommandInfo.Entropy = EntropyCalculation(dissamblerCommandInfo.Count, _totalInstructionCounter);
                     // Count entropy of this element
                     commandsEntropy.Add(dissamblerCommandInfo);
@@ -122,20 +128,20 @@ namespace DisEn
                 // Go through all instructions
                 foreach (X86Instruction instruction in instructions)
                 {
-                    for (int i = 0; i < _instructionFilter.Count; ++i)
+                    if (_instructionFilterHashSet.Contains(instruction.Mnemonic))
                     {
-                        if (_instructionFilter[i].CompareTo(instruction.Mnemonic) == 0)
+                        // Add new instruction
+                        if (!_instructionsDict.ContainsKey(instruction.Mnemonic))
                         {
-                            // Add new instruction
-                            if (!_instructionsDict.ContainsKey(_instructionFilter[i]))
-                            {
-                                _instructionsDict.Add(_instructionFilter[i], 1);
-                            }
-                            // Increment instruction count
-                            _instructionsDict[_instructionFilter[i]]++;
-                            // Increment total instruction counter
-                            _totalInstructionCounter++;
+                            _instructionsDict.Add(instruction.Mnemonic, 1);
                         }
+                        else
+                        {
+                            // Increment instruction count
+                            _instructionsDict[instruction.Mnemonic]++;
+                        }
+                        // Increment total instruction counter
+                        _totalInstructionCounter++;
                     }
                 }
             }
