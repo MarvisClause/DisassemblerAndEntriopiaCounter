@@ -7,24 +7,25 @@
         mc:Ignorable="d"
         Title="DisEn" Height="800" Width="1226" FontFamily="Times New Roman" WindowStyle="ThreeDBorderWindow">
     <Grid Margin="10,0,10,0">
+        <!--Rows-->
         <Grid.RowDefinitions>
-            <RowDefinition Height="26*"/>
-            <RowDefinition Height="733*"/>
-            <RowDefinition Height="25*"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-
+        <!--Columns-->
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="0*"/>
-            <ColumnDefinition Width="35*"/>
-            <ColumnDefinition Width="568*"/>
-            <ColumnDefinition Width="0*"/>
-            <ColumnDefinition Width="0*"/>
-            <ColumnDefinition Width="0*"/>
-            <ColumnDefinition Width="603*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <Button Name="btnOpenFile" Grid.Column="2" Click="btnOpenFile_Click" HorizontalAlignment="Left" Margin="145,326,0,0" Width="168" FontSize="36" FontFamily="Segoe UI Variable Small Semibold" Height="49" VerticalAlignment="Top" Grid.Row="1">Open file</Button>
-        <ScrollViewer Grid.Column="4" Grid.ColumnSpan="3" Grid.RowSpan="2">
-            <TextBlock  Name="DisassemblerBox" Grid.Column="2" TextWrapping="Wrap" TextAlignment="Left" Text="Entropia" Width="553" Margin="0,10,0,10" FontFamily="Cambria" FontSize="20"/>
+        <!--Button for file opening-->
+        <Button Name="btnOpenFile" Grid.Column="0" Click="btnOpenFile_Click" 
+                HorizontalAlignment="Center" VerticalAlignment="Center"
+                FontSize="36"  FontFamily="Segoe UI Variable Small Semibold">Open file</Button>
+        <!--Scroll view-->
+        <ScrollViewer Grid.Column="1">
+            <!--Disassemble info-->
+            <TextBlock  Name="DisassemblerBox" Grid.Column="2" TextWrapping="Wrap"
+                        TextAlignment="Left" Text="Entropy" Margin="0,10,0,10"
+                        FontFamily="Cambria" FontSize="20"/>
         </ScrollViewer>
     </Grid>
 </Window>

@@ -16,9 +16,7 @@ using System.Windows.Shapes;
 
 namespace DisEn
 {
-    /// <summary>
-    /// Логика взаимодействия для MainWindow.xaml
-    /// </summary>
+
     public partial class MainWindow : Window
     {
         private Disassembler _disassembler;
@@ -41,19 +39,18 @@ namespace DisEn
                 StringBuilder stringBuilder = new StringBuilder();
                 // Show file path
                 stringBuilder.Append("File path: " + openFileDialog.FileName + "\n");
-                // Get total entropy
-                stringBuilder.Append("Total Entropy: " + _disassembler.GetFileEntropyValue() + "\n");
+                // Get total value of entropy
+                stringBuilder.Append("Total entropy: " + _disassembler.GetFileEntropyValue() + "\n");
                 // Get list of commands
-                List < Tuple<String, double> > commandsEntropyList = _disassembler.GetCommandsEntropy();
+                List<DissamblerCommandInfo> commandsCommandInfoList = _disassembler.GetCommandsInfo();
                 // Add them to the text
-                for (int i = 0; i < commandsEntropyList.Count; i++)
+                for (int i = 0; i < commandsCommandInfoList.Count; i++)
                 {
-                    stringBuilder.Append(commandsEntropyList[i].Item1 + " " + commandsEntropyList[i].Item2 + "\n");
+                    stringBuilder.Append(commandsCommandInfoList[i].Name + "\t" + commandsCommandInfoList[i].Count
+                        + "\t" + commandsCommandInfoList[i].Entropy + "\n");
                 }
                 DisassemblerBox.Text = stringBuilder.ToString();
             }
-               
-                
         }
     }
 }

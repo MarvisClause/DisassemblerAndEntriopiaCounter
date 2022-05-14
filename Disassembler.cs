@@ -3,13 +3,18 @@ using Gee.External.Capstone.X86;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DisEn
 {
-    // Class for dissasembling
+    // Command info struct
+    public struct DissamblerCommandInfo
+    {
+        public string Name;
+        public UInt32 Count;
+        public double Entropy;
+    }
+
+    // Class for disassembling
     public class Disassembler
     {
         #region Variables
@@ -17,13 +22,13 @@ namespace DisEn
         // Total instruction counter
         private int _totalInstructionCounter;
         // List of instructions
-        private List<String> _insturctionFilter;
+        private List<String> _instructionFilter;
         // Dictionary of instructions
-        Dictionary<String, int> _instructionsDict;
+        private Dictionary<String, UInt32> _instructionsDict;
         // Path to the instruction file
-        const string INSTRUCTION_FILTER_FILE_PATH = "instructions.txt";
+        private const string INSTRUCTION_FILTER_FILE_PATH = "instructions.txt";
 
-      
+
         #endregion
 
         #region Constructor
@@ -32,15 +37,15 @@ namespace DisEn
         public Disassembler()
         {
             // Initialize containers
-            _insturctionFilter = new List<string>();
-            _instructionsDict = new Dictionary<string, int>();
+            _instructionFilter = new List<string>();
+            _instructionsDict = new Dictionary<string, UInt32>();
             // Reset number to zero
             _totalInstructionCounter = 0;
             // Get instruction filter list
             string[] instructionReadArray = File.ReadAllLines(INSTRUCTION_FILTER_FILE_PATH);
             for (int i = 0; i < instructionReadArray.Length; ++i)
             {
-                _insturctionFilter.AddRange(instructionReadArray[i].Split(' '));
+                _instructionFilter.AddRange(instructionReadArray[i].Split(' '));
             }
         }
 
@@ -53,31 +58,34 @@ namespace DisEn
         {
             // Calculate entropy
             double entropySum = 0;
-            for (int i = 0; i < _insturctionFilter.Count; ++i)
+            for (int i = 0; i < _instructionFilter.Count; ++i)
             {
                 // Check, if this element exist in map
-                if (_instructionsDict.ContainsKey(_insturctionFilter[i]))
+                if (_instructionsDict.ContainsKey(_instructionFilter[i]))
                 {
                     // Count entropy of this element
-                    entropySum += EntropyCalculation(_instructionsDict[_insturctionFilter[i]], _totalInstructionCounter);
+                    entropySum += EntropyCalculation(_instructionsDict[_instructionFilter[i]], _totalInstructionCounter);
                 }
             }
             return entropySum;
         }
 
-        // Returns list with command name and it's entropy value
-        public List<Tuple<String, double>> GetCommandsEntropy()
+        // Returns list with command name and it's count
+        public List<DissamblerCommandInfo> GetCommandsInfo()
         {
             // Initialize list with command and entropy value pair
-            List<Tuple<String, double>> commandsEntropy = new List<Tuple<String, double>>();
-            for (int i = 0; i < _insturctionFilter.Count; ++i)
+            List<DissamblerCommandInfo> commandsEntropy = new List<DissamblerCommandInfo>();
+            for (int i = 0; i < _instructionFilter.Count; ++i)
             {
                 // Check, if this element exist in map
-                if (_instructionsDict.ContainsKey(_insturctionFilter[i]))
+                if (_instructionsDict.ContainsKey(_instructionFilter[i]))
                 {
+                    DissamblerCommandInfo dissamblerCommandInfo;
+                    dissamblerCommandInfo.Name = _instructionFilter[i];
+                    dissamblerCommandInfo.Count = _instructionsDict[_instructionFilter[i]];
+                    dissamblerCommandInfo.Entropy = EntropyCalculation(dissamblerCommandInfo.Count, _totalInstructionCounter);
                     // Count entropy of this element
-                    commandsEntropy.Add(new Tuple<String, double>(_insturctionFilter[i],
-                        EntropyCalculation(_instructionsDict[_insturctionFilter[i]], _totalInstructionCounter)));
+                    commandsEntropy.Add(dissamblerCommandInfo);
                 }
             }
             return commandsEntropy;
@@ -90,43 +98,49 @@ namespace DisEn
             return -elementsCount / allElementsCount * Math.Log(elementsCount / allElementsCount, 2);
         }
 
-        // Disassembles file to get map of instructions (insturction, number of encounters)
+        // Disassembles file to get map of instructions (instruction, number of encounters)
         public void Disassemble(String filePath)
         {
             // Create dictionary of instructions
-            _instructionsDict = new Dictionary<string, int>();
-            // Define type of dissasemble
+            _instructionsDict = new Dictionary<string, UInt32>();
+            _totalInstructionCounter = 0;
+            // Define type of disassemble
+            if (!CapstoneDisassembler.IsX86Supported) { return; }
             const X86DisassembleMode disassembleMode = X86DisassembleMode.Bit64;
             using (CapstoneX86Disassembler disassembler = CapstoneDisassembler.CreateX86Disassembler(disassembleMode))
             {
                 // Enables disassemble details, which are disabled by default, to provide more detailed information on
-                // disassembled binary code.
-                disassembler.EnableInstructionDetails = true;
                 disassembler.DisassembleSyntax = DisassembleSyntax.Intel;
+                // Enable skip data mode to get all instructions
+                disassembler.EnableSkipDataMode = true;
+                // Enable instruction details
+                disassembler.EnableInstructionDetails = true;
                 // Read all bytes from file
                 byte[] binaryCode = File.ReadAllBytes(filePath);
                 // Read through all instructions
                 X86Instruction[] instructions = disassembler.Disassemble(binaryCode);
+                // Go through all instructions
                 foreach (X86Instruction instruction in instructions)
                 {
-                    for (int i = 0; i < _insturctionFilter.Count; ++i)
+                    for (int i = 0; i < _instructionFilter.Count; ++i)
                     {
-                        if (_insturctionFilter[i].CompareTo(instruction.Mnemonic) == 0)
+                        if (_instructionFilter[i].CompareTo(instruction.Mnemonic) == 0)
                         {
                             // Add new instruction
-                            if (!_instructionsDict.ContainsKey(_insturctionFilter[i]))
+                            if (!_instructionsDict.ContainsKey(_instructionFilter[i]))
                             {
-                                _instructionsDict.Add(_insturctionFilter[i], 1);
+                                _instructionsDict.Add(_instructionFilter[i], 1);
                             }
                             // Increment instruction count
-                            _instructionsDict[_insturctionFilter[i]]++;
+                            _instructionsDict[_instructionFilter[i]]++;
                             // Increment total instruction counter
                             _totalInstructionCounter++;
                         }
                     }
                 }
-                #endregion
             }
         }
+
+        #endregion
     }
 }
