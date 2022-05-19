@@ -7,11 +7,11 @@ using System.IO;
 namespace DisEn
 {
     // Command info struct
-    public struct DissamblerCommandInfo
+    public class DissamblerCommandInfo
     {
-        public string Name;
-        public UInt32 Count;
-        public double Entropy;
+        public string Name { get; set; }
+        public UInt32 Count { get; set; }
+        public double Entropy { get; set; }
     }
 
     // Class for disassembling
@@ -22,9 +22,9 @@ namespace DisEn
         // Total instruction counter
         private UInt32 _totalInstructionCounter;
         // List of instructions
-        private HashSet<String> _instructionFilterHashSet;
+        private HashSet<string> _instructionFilterHashSet;
         // Dictionary of instructions
-        private Dictionary<String, UInt32> _instructionsDict;
+        private Dictionary<string, UInt32> _instructionsDict;
         // Path to the instruction file
         private const string INSTRUCTION_FILTER_FILE_PATH = "instructions.txt";
 
@@ -57,6 +57,12 @@ namespace DisEn
 
         #region Methods
 
+        // Total quantity of instructions
+        public UInt32 GetTotalInstructionCounter()
+        {
+            return _totalInstructionCounter;
+        }
+
         // Returns file entropy value
         public double GetFileEntropyValue()
         {
@@ -86,7 +92,7 @@ namespace DisEn
                 // Check, if this element exist in map
                 if (_instructionsDict.ContainsKey(instructionFilter[i]))
                 {
-                    DissamblerCommandInfo dissamblerCommandInfo;
+                    DissamblerCommandInfo dissamblerCommandInfo = new DissamblerCommandInfo();
                     dissamblerCommandInfo.Name = instructionFilter[i];
                     dissamblerCommandInfo.Count = _instructionsDict[instructionFilter[i]];
                     dissamblerCommandInfo.Entropy = EntropyCalculation(dissamblerCommandInfo.Count, _totalInstructionCounter);
@@ -117,9 +123,9 @@ namespace DisEn
             {
                 // Enables disassemble details, which are disabled by default, to provide more detailed information on
                 disassembler.DisassembleSyntax = DisassembleSyntax.Intel;
-                // Enable skip data mode to get all instructions
+                // Data mode to get all instructions
                 disassembler.EnableSkipDataMode = true;
-                // Enable instruction details
+                // Instruction details
                 disassembler.EnableInstructionDetails = true;
                 // Read all bytes from file
                 byte[] binaryCode = File.ReadAllBytes(filePath);
@@ -128,21 +134,34 @@ namespace DisEn
                 // Go through all instructions
                 foreach (X86Instruction instruction in instructions)
                 {
-                    if (_instructionFilterHashSet.Contains(instruction.Mnemonic))
+                    // Add new instruction
+                    if (!_instructionsDict.ContainsKey(instruction.Mnemonic))
                     {
-                        // Add new instruction
-                        if (!_instructionsDict.ContainsKey(instruction.Mnemonic))
-                        {
-                            _instructionsDict.Add(instruction.Mnemonic, 1);
-                        }
-                        else
-                        {
-                            // Increment instruction count
-                            _instructionsDict[instruction.Mnemonic]++;
-                        }
-                        // Increment total instruction counter
-                        _totalInstructionCounter++;
+                        _instructionsDict.Add(instruction.Mnemonic, 1);
                     }
+                    else
+                    {
+                        // Increment instruction count
+                        _instructionsDict[instruction.Mnemonic]++;
+                    }
+                    // Increment total instruction counter
+                    _totalInstructionCounter++;
+
+                    //if (_instructionFilterHashSet.Contains(instruction.Mnemonic))
+                    //{
+                    //    // Add new instruction
+                    //    if (!_instructionsDict.ContainsKey(instruction.Mnemonic))
+                    //    {
+                    //        _instructionsDict.Add(instruction.Mnemonic, 1);
+                    //    }
+                    //    else
+                    //    {
+                    //        // Increment instruction count
+                    //        _instructionsDict[instruction.Mnemonic]++;
+                    //    }
+                    //    // Increment total instruction counter
+                    //    _totalInstructionCounter++;
+                    //}
                 }
             }
         }

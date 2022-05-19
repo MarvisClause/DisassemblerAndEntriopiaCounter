@@ -3,9 +3,10 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:col="clr-namespace:System.Collections;assembly=mscorlib"
         xmlns:local="clr-namespace:DisEn"
         mc:Ignorable="d"
-        Title="DisEn" Height="800" Width="1226" FontFamily="Times New Roman" WindowStyle="ThreeDBorderWindow">
+        Title="DisEn" Height="800" Width="1200" FontFamily="Times New Roman" WindowStyle="ThreeDBorderWindow">
     <Grid Margin="10,0,10,0">
         <!--Rows-->
         <Grid.RowDefinitions>
@@ -21,11 +22,28 @@
                 HorizontalAlignment="Center" VerticalAlignment="Center"
                 FontSize="36"  FontFamily="Segoe UI Variable Small Semibold">Open file</Button>
         <!--Scroll view-->
-        <ScrollViewer Grid.Column="1">
-            <!--Disassemble info-->
-            <TextBlock  Name="DisassemblerBox" Grid.Column="2" TextWrapping="Wrap"
-                        TextAlignment="Left" Text="Entropy" Margin="0,10,0,10"
-                        FontFamily="Cambria" FontSize="20"/>
-        </ScrollViewer>
+        <DockPanel Grid.Column="1">
+            <!--Path to file-->
+            <DockPanel DockPanel.Dock="Top">
+                <TextBlock FontSize="20">Path to file: </TextBlock>
+                <TextBlock x:Name="PathToFileTextBlock" FontSize="20"></TextBlock>
+            </DockPanel>
+            <!--Total amount of instructions-->
+            <DockPanel DockPanel.Dock="Top">
+                <TextBlock FontSize="20">Total amount of commands:</TextBlock>
+                <TextBlock x:Name="TotalNumOfCommandsTextBlock" FontSize="20"></TextBlock>
+            </DockPanel>
+            <!--Disassemble data grid info-->
+            <DataGrid DockPanel.Dock="Top" x:Name="DisassemblerDataGrid" Grid.Column="1" FontSize="20"
+                      AutoGenerateColumns="False" HorizontalGridLinesBrush="DarkGray"
+                      RowBackground="LightGray" AlternatingRowBackground="White"
+                      IsReadOnly="True" VerticalScrollBarVisibility="Auto">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Binding="{Binding Path=Name}" Header="Command" Width="*"></DataGridTextColumn>
+                    <DataGridTextColumn Binding="{Binding Path=Count}" Header="Quantity" Width="*"></DataGridTextColumn>
+                    <DataGridTextColumn Binding="{Binding Path=Entropy}" Header="Entropy" Width="1.5*"></DataGridTextColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+        </DockPanel>
     </Grid>
 </Window>

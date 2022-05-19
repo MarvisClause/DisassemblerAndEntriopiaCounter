@@ -1,22 +1,9 @@
-﻿using System;
-using System.IO;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace DisEn
 {
-
     public partial class MainWindow : Window
     {
         private Disassembler _disassembler;
@@ -27,6 +14,7 @@ namespace DisEn
 
             _disassembler = new Disassembler();
         }
+
         private void btnOpenFile_Click(object sender, RoutedEventArgs e)
         {
             Microsoft.Win32.OpenFileDialog openFileDialog = new Microsoft.Win32.OpenFileDialog();
@@ -35,21 +23,13 @@ namespace DisEn
             {
                 // Disassemble given file
                 _disassembler.Disassemble(openFileDialog.FileName);
-                // Show information on screen
-                StringBuilder stringBuilder = new StringBuilder();
-                // Show file path
-                stringBuilder.Append("File path: " + openFileDialog.FileName + "\n");
-                // Get total value of entropy
-                stringBuilder.Append("Total entropy: " + _disassembler.GetFileEntropyValue() + "\n");
-                // Get list of commands
-                List<DissamblerCommandInfo> commandsCommandInfoList = _disassembler.GetCommandsInfo();
-                // Add them to the text
-                for (int i = 0; i < commandsCommandInfoList.Count; i++)
-                {
-                    stringBuilder.Append(commandsCommandInfoList[i].Name + "\t" + commandsCommandInfoList[i].Count
-                        + "\t" + commandsCommandInfoList[i].Entropy + "\n");
-                }
-                DisassemblerBox.Text = stringBuilder.ToString();
+                // Show path to file
+                PathToFileTextBlock.Text = openFileDialog.FileName;
+                // Show total amount of instructions
+                TotalNumOfCommandsTextBlock.Text = _disassembler.GetTotalInstructionCounter().ToString();
+                // Get commands info
+                List<DissamblerCommandInfo> commandInfos = _disassembler.GetCommandsInfo();
+                DisassemblerDataGrid.ItemsSource = commandInfos;
             }
         }
     }
