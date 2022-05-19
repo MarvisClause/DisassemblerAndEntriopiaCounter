@@ -18,14 +18,19 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <!--Button for file opening-->
-        <Button Name="btnOpenFile" Grid.Column="0" Click="btnOpenFile_Click" 
+        <Button Name="btnOpenFile" Grid.Column="0" Click="BtnOpenFile_Click" 
                 HorizontalAlignment="Center" VerticalAlignment="Center"
                 FontSize="36"  FontFamily="Segoe UI Variable Small Semibold">Open file</Button>
+        <!--Button for save file-->
+        <Button x:Name="btnSaveFile" Click="BtnSaveFile_Click" 
+                HorizontalAlignment="Center"
+                FontSize="36"  FontFamily="Segoe UI Variable Small Semibold"
+                Margin="0,0,0,276" Content="Save file" Width="158" Height="52" VerticalAlignment="Bottom"/>
         <!--Scroll view-->
         <DockPanel Grid.Column="1">
             <!--Path to file-->
             <DockPanel DockPanel.Dock="Top">
-                <TextBlock FontSize="20">Path to file: </TextBlock>
+                <TextBlock FontSize="20">Path to file:</TextBlock>
                 <TextBlock x:Name="PathToFileTextBlock" FontSize="20"></TextBlock>
             </DockPanel>
             <!--Total amount of instructions-->
