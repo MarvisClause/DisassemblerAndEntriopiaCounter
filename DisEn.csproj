@@ -101,6 +101,12 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="NIK%284%29.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="изображение-removebg-preview%287%29.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="packages\Gee.External.Capstone.2.0.2\build\Gee.External.Capstone.targets" Condition="Exists('packages\Gee.External.Capstone.2.0.2\build\Gee.External.Capstone.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

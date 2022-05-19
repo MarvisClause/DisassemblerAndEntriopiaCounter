@@ -6,7 +6,7 @@
         xmlns:col="clr-namespace:System.Collections;assembly=mscorlib"
         xmlns:local="clr-namespace:DisEn"
         mc:Ignorable="d"
-        Title="DisEn" Height="800" Width="1200" FontFamily="Times New Roman" WindowStyle="ThreeDBorderWindow">
+        Title="DisEn" Height="800" Width="1200" FontFamily="Times New Roman" WindowStyle="ThreeDBorderWindow" Icon="/изображение-removebg-preview(7).png">
     <Grid Margin="10,0,10,0">
         <!--Rows-->
         <Grid.RowDefinitions>
