@@ -6,7 +6,8 @@
         xmlns:col="clr-namespace:System.Collections;assembly=mscorlib"
         xmlns:local="clr-namespace:DisEn"
         mc:Ignorable="d"
-        Title="DisEn" Height="800" Width="1200" FontFamily="Times New Roman" WindowStyle="ThreeDBorderWindow" Icon="/изображение-removebg-preview(7).png">
+        Title="DisEn" MinHeight="800" MinWidth="1200" 
+        FontFamily="Times New Roman" WindowStyle="ThreeDBorderWindow" ResizeMode="NoResize" Icon="/appLogoJ.png" Width="856">
     <Grid Margin="10,0,10,0">
         <!--Rows-->
         <Grid.RowDefinitions>
@@ -37,6 +38,10 @@
             <DockPanel DockPanel.Dock="Top">
                 <TextBlock FontSize="20">Total amount of commands:</TextBlock>
                 <TextBlock x:Name="TotalNumOfCommandsTextBlock" FontSize="20"></TextBlock>
+            </DockPanel>
+            <DockPanel DockPanel.Dock="Top">
+                <TextBlock FontSize="20">Size of file:</TextBlock>
+                <TextBlock x:Name="SizeFile" FontSize="20"></TextBlock>
             </DockPanel>
             <!--Disassemble data grid info-->
             <DataGrid DockPanel.Dock="Top" x:Name="DisassemblerDataGrid" Grid.Column="1" FontSize="20"

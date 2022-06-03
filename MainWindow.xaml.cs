@@ -22,7 +22,7 @@ namespace DisEn
         private void BtnOpenFile_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "All files (*.*)|*.*";
+            openFileDialog.Filter = "All files (*.*)|*.exe";
             if (openFileDialog.ShowDialog() == true)
             {
                 // Disassemble given file
@@ -31,8 +31,13 @@ namespace DisEn
                 PathToFileTextBlock.Text = openFileDialog.FileName;
                 // Show total amount of instructions
                 TotalNumOfCommandsTextBlock.Text = _disassembler.GetTotalInstructionCounter().ToString();
+                // Show size of file
+                FileInfo fileSize = new FileInfo(openFileDialog.FileName);
+                double MB = fileSize.Length / 1048576.0;
+                /*double MB = (fileSize.Length / 1024) / 1024;*/
+                SizeFile.Text = MB.ToString("0.###") + " MB";
                 // Get commands info
-                List<DissamblerCommandInfo> commandInfos = _disassembler.GetCommandsInfo();
+                List<DisassemblerCommandInfo> commandInfos = _disassembler.GetCommandsInfo();
                 DisassemblerDataGrid.ItemsSource = commandInfos;
             }
         }
@@ -44,16 +49,17 @@ namespace DisEn
             {
                 using (StreamWriter sw = new StreamWriter(saveData.OpenFile(), Encoding.UTF8))
                 {
-                    sw.Write("Path to file: " +PathToFileTextBlock.Text); 
+                    sw.Write("Path to file: " + PathToFileTextBlock.Text);
                     sw.Write("\nTotal amout of commands: " + TotalNumOfCommandsTextBlock.Text);
+                    sw.Write("\nSize of file: " + SizeFile.Text);
 
                     DisassemblerDataGrid.SelectAllCells();
                     DisassemblerDataGrid.ClipboardCopyMode = DataGridClipboardCopyMode.ExcludeHeader;
                     ApplicationCommands.Copy.Execute(null, DisassemblerDataGrid);
                     DisassemblerDataGrid.UnselectAllCells();
-                    string result = (string)Clipboard.GetText(TextDataFormat.Text);
+                    string result = Clipboard.GetText(TextDataFormat.Text);
                     Clipboard.Clear();
-                    sw.WriteLine("\n"+result);
+                    sw.WriteLine("\n" + result);
 
                     sw.Close();
                 }
