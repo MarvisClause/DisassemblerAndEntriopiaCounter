@@ -4,56 +4,85 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:col="clr-namespace:System.Collections;assembly=mscorlib"
-        xmlns:local="clr-namespace:DisEn"
+        xmlns:local="clr-namespace:DisEn" 
+        xmlns:chart="clr-namespace:Syncfusion.UI.Xaml.Charts;assembly=Syncfusion.SfChart.WPF" 
+        
         mc:Ignorable="d"
         Title="DisEn" MinHeight="800" MinWidth="1200" 
-        FontFamily="Times New Roman" WindowStyle="ThreeDBorderWindow" ResizeMode="NoResize" Icon="/appLogoJ.png" Width="856">
-    <Grid Margin="10,0,10,0">
+        FontFamily="Times New Roman" WindowStyle="ThreeDBorderWindow" ResizeMode="CanResizeWithGrip" Icon="/appLogoJ.png" Width="1391" WindowState="Maximized">
+    
+    <Grid Margin="5,0,5,0">
         <!--Rows-->
-        <Grid.RowDefinitions>
+        <Grid.RowDefinitions> 
             <RowDefinition Height="*"/>
+            <RowDefinition Height="3*"/>
+            <RowDefinition Height="35*"/>
         </Grid.RowDefinitions>
         <!--Columns-->
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
-        <!--Button for file opening-->
-        <Button Name="btnOpenFile" Grid.Column="0" Click="BtnOpenFile_Click" 
-                HorizontalAlignment="Center" VerticalAlignment="Center"
-                FontSize="36"  FontFamily="Segoe UI Variable Small Semibold">Open file</Button>
-        <!--Button for save file-->
-        <Button x:Name="btnSaveFile" Click="BtnSaveFile_Click" 
-                HorizontalAlignment="Center"
-                FontSize="36"  FontFamily="Segoe UI Variable Small Semibold"
-                Margin="0,0,0,276" Content="Save file" Width="158" Height="52" VerticalAlignment="Bottom"/>
-        <!--Scroll view-->
-        <DockPanel Grid.Column="1">
+            <ColumnDefinition Width="2*"/>
+        </Grid.ColumnDefinitions> 
+
+        <!--Menu-->
+        <Menu Grid.Row="0" Grid.ColumnSpan="2" FontSize="16">
+            <MenuItem Header="File"> 
+                <!--Open file-->
+                <MenuItem Header="Open file" Click="BtnOpenFile_Click"/> 
+                <!--Save file-->
+                <MenuItem Header="Save file" Click="BtnSaveFile_Click"/>  
+                <!--Save screenshot-->
+                <MenuItem Header="Screenshot" Click="BtnSaveHistogramImage"/>
+            </MenuItem>
+            <MenuItem Header="Cleaner" >
+                <!--Histogram data cleaner-->
+                <MenuItem Header="Histogram data" Click="BtnClearHistogram"/>
+                <!--Temp data cleaner-->
+                <MenuItem Header="Temp data (IN PROCESS)"/>
+                <MenuItem Header="Data in progress (IN PROCESS)"/>
+            </MenuItem>
+        </Menu>
+        <UniformGrid Grid.Row="1" Rows="3" Grid.ColumnSpan="2">
             <!--Path to file-->
             <DockPanel DockPanel.Dock="Top">
                 <TextBlock FontSize="20">Path to file:</TextBlock>
-                <TextBlock x:Name="PathToFileTextBlock" FontSize="20"></TextBlock>
+                <TextBlock x:Name="PathToFileTextBlock" FontSize="20"/>
             </DockPanel>
             <!--Total amount of instructions-->
             <DockPanel DockPanel.Dock="Top">
                 <TextBlock FontSize="20">Total amount of commands:</TextBlock>
-                <TextBlock x:Name="TotalNumOfCommandsTextBlock" FontSize="20"></TextBlock>
-            </DockPanel>
+                <TextBlock x:Name="TotalNumOfCommandsTextBlock" FontSize="20"/>
+            </DockPanel> 
+            <!--Size of file-->
             <DockPanel DockPanel.Dock="Top">
                 <TextBlock FontSize="20">Size of file:</TextBlock>
-                <TextBlock x:Name="SizeFile" FontSize="20"></TextBlock>
+                <TextBlock x:Name="SizeFile" FontSize="20"/>
             </DockPanel>
+        </UniformGrid>
+        <DockPanel Grid.Row="2" Grid.Column="0">
             <!--Disassemble data grid info-->
             <DataGrid DockPanel.Dock="Top" x:Name="DisassemblerDataGrid" Grid.Column="1" FontSize="20"
                       AutoGenerateColumns="False" HorizontalGridLinesBrush="DarkGray"
                       RowBackground="LightGray" AlternatingRowBackground="White"
                       IsReadOnly="True" VerticalScrollBarVisibility="Auto">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Binding="{Binding Path=Name}" Header="Command" Width="*"></DataGridTextColumn>
-                    <DataGridTextColumn Binding="{Binding Path=Count}" Header="Quantity" Width="*"></DataGridTextColumn>
-                    <DataGridTextColumn Binding="{Binding Path=Entropy}" Header="Entropy" Width="1.5*"></DataGridTextColumn>
+                    <DataGridTextColumn Binding="{Binding Path=Name}" Header="Command" Width="*"/>
+                    <DataGridTextColumn Binding="{Binding Path=Count}" Header="Quantity" Width="*"/>
+                    <DataGridTextColumn Binding="{Binding Path=Entropy}" Header="Entropy" Width="1.5*"/>
                 </DataGrid.Columns>
             </DataGrid>
         </DockPanel>
+        <!--Histogram-->
+        <chart:SfChart x:Name="Histogram" Grid.Row="2" Grid.Column="1">
+            <chart:SfChart.PrimaryAxis>
+                <!--X Axis-->
+                <chart:CategoryAxis Header="Commands" FontSize="14 px"/>
+            </chart:SfChart.PrimaryAxis>
+            <chart:SfChart.SecondaryAxis>
+                <!--Y Axis-->
+                <chart:NumericalAxis Header="Entropy" FontSize="14 px"/>
+            </chart:SfChart.SecondaryAxis>
+            <chart:ColumnSeries/>
+        </chart:SfChart>
     </Grid>
 </Window>

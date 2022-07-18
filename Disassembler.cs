@@ -1,6 +1,4 @@
-﻿using Gee.External.Capstone;
-using Gee.External.Capstone.X86;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -178,8 +176,7 @@ namespace DisEn
                 ParseDisassemble(File.ReadAllLines(tempDirectoryPath), ref _instructionFilterHashSet,
                 ref _instructionsDict, ref _totalInstructionCounter);
             }
-        }
-
+        } 
         #endregion
     }
 }
