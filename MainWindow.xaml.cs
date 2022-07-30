@@ -3,28 +3,27 @@ using Syncfusion.UI.Xaml.Charts;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
 
 namespace DisEn
 {
     public partial class MainWindow : Window
     {
-        private Disassembler _disassembler;
+        private DisassemblerManager _disassemblerManager;
 
         public MainWindow()
         {
             InitializeComponent();
 
-            _disassembler = new Disassembler();
+            _disassemblerManager = new DisassemblerManager();
         }
+        
         #region File
+
         private void BtnOpenFile_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
@@ -32,20 +31,22 @@ namespace DisEn
             if (openFileDialog.ShowDialog() == true)
             {
                 // Disassemble given file
-                _disassembler.Disassemble(openFileDialog.FileName);
+                _disassemblerManager.Disassemble(openFileDialog.FileName);
                 // Show path to file
                 PathToFileTextBlock.Text = openFileDialog.FileName;
                 // Show total amount of instructions
-                TotalNumOfCommandsTextBlock.Text = _disassembler.GetTotalInstructionCounter().ToString();
+                TotalNumOfCommandsTextBlock.Text = _disassemblerManager.GetDisassembler().GetTotalInstructionCounter().ToString();
                 // Show size of file
                 FileInfo fileSize = new FileInfo(openFileDialog.FileName);
                 double MB = fileSize.Length / 1048576.0;
                 /*double MB = (fileSize.Length / 1024) / 1024;*/
                 SizeFile.Text = MB.ToString("0.###") + " MB";
                 // Get commands info
-                List<DisassemblerCommandInfo> commandInfos = _disassembler.GetCommandsInfo();
+                List<DisassemblerCommandInfo> commandInfos = _disassemblerManager.GetDisassembler().GetCommandsInfo();
                 DisassemblerDataGrid.ItemsSource = commandInfos;
 
+                // Histogram.Series.Clear();
+                Histogram.Series.Clear();
                 ColumnSeries series = new ColumnSeries();
                 series.ItemsSource = commandInfos;
                 series.XBindingPath = "Name";
@@ -53,6 +54,7 @@ namespace DisEn
                 Histogram.Series.Add(series);
             }
         }
+
         private void BtnSaveFile_Click(object sender, RoutedEventArgs e)
         {
             SaveFileDialog saveData = new SaveFileDialog();
@@ -77,21 +79,12 @@ namespace DisEn
                 }
             }
         }
-        #endregion
-
-        #region Cleaner
-        private void BtnClearHistogram(object sender, RoutedEventArgs e)
-        {   // Clean histogram data
-            Histogram.Series.Clear();
-        }
-        // IN PROCESS
         private void BtnSaveHistogramImage(object sender, RoutedEventArgs e)
         {
             // Make screenshot of program   
 
-            //Desktop (-_-) screenshot
+            //Desktop screenshot
             string filename = "ScreenCapture-" + DateTime.Now.ToString("dd.MM.yyyy-hh.mm.ss") + ".png";
-            //string filename = "ScreenCapture-" + DateTime.Now.ToString("U",CultureInfo.CreateSpecificCulture("eu-US")) + ".png";
             // Size
             int screenLeft = (int)SystemParameters.VirtualScreenLeft;
             int screenTop = (int)SystemParameters.VirtualScreenTop;
@@ -117,8 +110,21 @@ namespace DisEn
             {
                 Histogram.Save(saveFileDialog.FileName);
             }
-
         }
+        #endregion
+
+        #region Cleaner
+
+        //Clear temp data
+        private void BtnClearTempData(object sender, RoutedEventArgs e)
+        {
+            DirectoryInfo di = new DirectoryInfo("Temp\\");
+            foreach (FileInfo file in di.GetFiles())
+            {
+                file.Delete();
+            }
+        }
+
         #endregion
     }
 }

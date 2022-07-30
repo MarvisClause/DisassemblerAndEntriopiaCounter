@@ -6,83 +6,110 @@
         xmlns:col="clr-namespace:System.Collections;assembly=mscorlib"
         xmlns:local="clr-namespace:DisEn" 
         xmlns:chart="clr-namespace:Syncfusion.UI.Xaml.Charts;assembly=Syncfusion.SfChart.WPF" 
-        
+       
         mc:Ignorable="d"
         Title="DisEn" MinHeight="800" MinWidth="1200" 
-        FontFamily="Times New Roman" WindowStyle="ThreeDBorderWindow" ResizeMode="CanResizeWithGrip" Icon="/appLogoJ.png" Width="1391" WindowState="Maximized">
-    
-    <Grid Margin="5,0,5,0">
-        <!--Rows-->
-        <Grid.RowDefinitions> 
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="3*"/>
-            <RowDefinition Height="35*"/>
-        </Grid.RowDefinitions>
-        <!--Columns-->
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="2*"/>
-        </Grid.ColumnDefinitions> 
+        FontFamily="Times New Roman" WindowStyle="ThreeDBorderWindow" ResizeMode="CanResize" Icon="/img/appLogoJ.png" Width="1400" WindowState="Normal"  Background="#FF1F1D2B">
 
-        <!--Menu-->
-        <Menu Grid.Row="0" Grid.ColumnSpan="2" FontSize="16">
-            <MenuItem Header="File"> 
-                <!--Open file-->
-                <MenuItem Header="Open file" Click="BtnOpenFile_Click"/> 
-                <!--Save file-->
-                <MenuItem Header="Save file" Click="BtnSaveFile_Click"/>  
-                <!--Save screenshot-->
-                <MenuItem Header="Screenshot" Click="BtnSaveHistogramImage"/>
-            </MenuItem>
-            <MenuItem Header="Cleaner" >
-                <!--Histogram data cleaner-->
-                <MenuItem Header="Histogram data" Click="BtnClearHistogram"/>
-                <!--Temp data cleaner-->
-                <MenuItem Header="Temp data (IN PROCESS)"/>
-                <MenuItem Header="Data in progress (IN PROCESS)"/>
-            </MenuItem>
-        </Menu>
-        <UniformGrid Grid.Row="1" Rows="3" Grid.ColumnSpan="2">
-            <!--Path to file-->
-            <DockPanel DockPanel.Dock="Top">
-                <TextBlock FontSize="20">Path to file:</TextBlock>
-                <TextBlock x:Name="PathToFileTextBlock" FontSize="20"/>
-            </DockPanel>
-            <!--Total amount of instructions-->
-            <DockPanel DockPanel.Dock="Top">
-                <TextBlock FontSize="20">Total amount of commands:</TextBlock>
-                <TextBlock x:Name="TotalNumOfCommandsTextBlock" FontSize="20"/>
-            </DockPanel> 
-            <!--Size of file-->
-            <DockPanel DockPanel.Dock="Top">
-                <TextBlock FontSize="20">Size of file:</TextBlock>
-                <TextBlock x:Name="SizeFile" FontSize="20"/>
-            </DockPanel>
-        </UniformGrid>
-        <DockPanel Grid.Row="2" Grid.Column="0">
-            <!--Disassemble data grid info-->
-            <DataGrid DockPanel.Dock="Top" x:Name="DisassemblerDataGrid" Grid.Column="1" FontSize="20"
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="69*"/>
+            <ColumnDefinition Width="131*"/>
+        </Grid.ColumnDefinitions>
+        <!--Rows-->
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="15*"/>
+        </Grid.RowDefinitions>
+        <DockPanel Grid.Row="0" MaxHeight="50" Grid.ColumnSpan="2">
+            <!--Menu-->
+            <Menu FontSize="16" Background="{x:Null}" Foreground="Black"  DockPanel.Dock="Left">
+                <MenuItem>
+                    <MenuItem.Header >
+                        <!--Icon-->
+                        <Image Source="/img/menu.png" Margin="10"/>
+                    </MenuItem.Header>
+                    <MenuItem Header="File">
+                        <!--Open file-->
+                        <MenuItem Header="Open file" Click="BtnOpenFile_Click"/>
+                        <!--Save file-->
+                        <MenuItem Header="Save file" Click="BtnSaveFile_Click"/>
+                        <!--Save screenshot-->
+                        <MenuItem Header="Histogram snapshot" Click="BtnSaveHistogramImage"/>
+                    </MenuItem>
+                    <MenuItem Header="Cleaner" >
+                        <!--Temp data cleaner-->
+                        <MenuItem Header="Temp data" Click="BtnClearTempData"/>
+                    </MenuItem>
+                </MenuItem>
+            </Menu>
+            <!--Logo-->
+            <Image Source="/img/logo.png"  DockPanel.Dock="Right"/>
+        </DockPanel>
+        <!--Entropy data-->
+        <Grid Grid.Row="1" Grid.ColumnSpan="2">
+            <!--Columns-->
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="2*"/>
+            </Grid.ColumnDefinitions>
+            <!--File info-->
+            <Grid>
+                <!--Rows-->
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="5*"/>
+                </Grid.RowDefinitions>
+                <Border Background="#2C2A37" CornerRadius="10" Grid.Row="0" Grid.Column="0" Margin="5">
+                    <UniformGrid Rows="4" Margin="5">
+                        <DockPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <TextBlock FontSize="20" FontFamily="Montserrat Black" Foreground="#FF3993FB">FILE INFO</TextBlock>
+                        </DockPanel>
+                        <!--Path to file-->
+                        <DockPanel>
+                            <TextBlock Margin="5" FontSize="20" FontFamily="Montserrat Medium" Foreground="White">Path to file:</TextBlock>
+                            <TextBlock x:Name="PathToFileTextBlock" Margin="5" FontFamily="Montserrat" FontSize="20" Foreground="White"/>
+                        </DockPanel>
+                        <!--Size of file-->
+                        <DockPanel >
+                            <TextBlock FontSize="20" Margin="5" FontFamily="Montserrat Medium" Foreground="White">Size of file:</TextBlock>
+                            <TextBlock x:Name="SizeFile" Margin="5" FontFamily="Montserrat" FontSize="20" Foreground="White"/>
+                        </DockPanel>
+                        <!--Total amount of instructions-->
+                        <DockPanel >
+                            <TextBlock FontSize="20" Margin="5" FontFamily="Montserrat Medium" Foreground="White">Total amount of commands:</TextBlock>
+                            <TextBlock x:Name="TotalNumOfCommandsTextBlock" Margin="5" FontFamily="Montserrat" FontSize="20" Foreground="White"/>
+                        </DockPanel>
+                    </UniformGrid>
+                </Border>
+                <!--Disassemble data grid info-->
+                <DataGrid x:Name="DisassemblerDataGrid" Grid.Row="1" Grid.Column="0" FontSize="15" Margin="5"
                       AutoGenerateColumns="False" HorizontalGridLinesBrush="DarkGray"
                       RowBackground="LightGray" AlternatingRowBackground="White"
-                      IsReadOnly="True" VerticalScrollBarVisibility="Auto">
-                <DataGrid.Columns>
-                    <DataGridTextColumn Binding="{Binding Path=Name}" Header="Command" Width="*"/>
-                    <DataGridTextColumn Binding="{Binding Path=Count}" Header="Quantity" Width="*"/>
-                    <DataGridTextColumn Binding="{Binding Path=Entropy}" Header="Entropy" Width="1.5*"/>
-                </DataGrid.Columns>
-            </DataGrid>
-        </DockPanel>
-        <!--Histogram-->
-        <chart:SfChart x:Name="Histogram" Grid.Row="2" Grid.Column="1">
-            <chart:SfChart.PrimaryAxis>
-                <!--X Axis-->
-                <chart:CategoryAxis Header="Commands" FontSize="14 px"/>
-            </chart:SfChart.PrimaryAxis>
-            <chart:SfChart.SecondaryAxis>
-                <!--Y Axis-->
-                <chart:NumericalAxis Header="Entropy" FontSize="14 px"/>
-            </chart:SfChart.SecondaryAxis>
-            <chart:ColumnSeries/>
-        </chart:SfChart>
+                      IsReadOnly="True" VerticalScrollBarVisibility="Auto" FontFamily="Montserrat SemiBold"
+                      Background="#FFF6F7F9" BorderBrush="#FFF6F7F9" Foreground="Black">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Binding="{Binding Path=Name}" Header="Command" Width="*" FontFamily="Montserrat"/>
+                        <DataGridTextColumn Binding="{Binding Path=Count}" Header="Quantity" Width="*" FontFamily="Montserrat"/>
+                        <DataGridTextColumn Binding="{Binding Path=Entropy}" Header="Entropy" Width="1.5*" FontFamily="Montserrat"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
+            <!--Histogram-->
+            <Border Grid.Column="1" Margin="5" CornerRadius="10" Background="#FF2C2A37">
+                <chart:SfChart x:Name="Histogram" Header="HISTOGRAM" FontSize="20" FontFamily="Montserrat Black"
+                       Foreground="#FF3993FB" Margin="5">
+                    <chart:SfChart.PrimaryAxis>
+                        <!--X Axis-->
+                        <chart:CategoryAxis Header="Commands" FontSize="14" FontFamily="Montserrat" Foreground="White"/>
+                    </chart:SfChart.PrimaryAxis>
+                    <chart:SfChart.SecondaryAxis>
+                        <!--Y Axis-->
+                        <chart:NumericalAxis Header="Entropy" FontSize="14" FontFamily="Montserrat" LabelBorderBrush="#FF3993FB" Foreground="White"/>
+                    </chart:SfChart.SecondaryAxis>
+                    <chart:ColumnSeries/>
+                </chart:SfChart>
+            </Border>
+        </Grid>
     </Grid>
 </Window>

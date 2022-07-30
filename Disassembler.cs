@@ -25,8 +25,6 @@ namespace DisEn
         private HashSet<string> _instructionFilterHashSet;
         // Dictionary of instructions
         private Dictionary<string, UInt32> _instructionsDict;
-        // Path to the instruction file
-        private const string INSTRUCTION_FILTER_FILE_PATH = "instructions.txt";
 
         #endregion
 
@@ -40,22 +38,23 @@ namespace DisEn
             _instructionsDict = new Dictionary<string, UInt32>();
             // Reset number to zero
             _totalInstructionCounter = 0;
-            // Get instruction filter list
-            string[] instructionReadArray = File.ReadAllLines(INSTRUCTION_FILTER_FILE_PATH);
-            for (int i = 0; i < instructionReadArray.Length; ++i)
-            {
-                // Split string
-                string[] splitString = instructionReadArray[i].Split(' ');
-                for (int j = 0; j < splitString.Length; ++j)
-                {
-                    _instructionFilterHashSet.Add(splitString[j]);
-                }
-            }
         }
 
         #endregion
 
         #region Methods
+
+        // Set instruction hash set
+        public void SetInstructionFilterHashSet(HashSet<string> InstructionFilterHashSet)
+        {
+            _instructionFilterHashSet = InstructionFilterHashSet;
+        }
+
+        // Get instruction hash set
+        public HashSet<string> GetInstructionFilterHashSet()
+        {
+            return _instructionFilterHashSet;
+        }
 
         // Total quantity of instructions
         public UInt32 GetTotalInstructionCounter()
@@ -104,16 +103,44 @@ namespace DisEn
             return commandsEntropy;
         }
 
-        // Counts entropy
-        private double EntropyCalculation(double elementsCount, double allElementsCount)
+        // Disassembles file to get map of instructions (instruction, number of encounters)
+        public void DisassembleToTxtFile(String filePath, String fileSavePath)
         {
-            if (allElementsCount == 0) { return 0; }
-            return -elementsCount / allElementsCount * Math.Log(elementsCount / allElementsCount, 2);
+            // Create dictionary of instructions
+            _instructionsDict = new Dictionary<string, UInt32>();
+            _totalInstructionCounter = 0;
+            // Open dumpbin
+            ProcessStartInfo dumpInfo = new ProcessStartInfo();
+            dumpInfo.FileName = @"Dumpbin\dumpbin.exe";
+            dumpInfo.Arguments = String.Format(@"/disasm /out:{0} {1}", fileSavePath, filePath);
+            Process dumpBinProcess = Process.Start(dumpInfo);
+            // Check, if process still running
+            try
+            {
+                while (Process.GetProcessById(dumpBinProcess.Id) != null) { }
+            }
+            catch (Exception ex) { }
+            if (File.Exists(fileSavePath))
+            {
+                // Open file 
+                ProcessStartInfo txtInfo = new ProcessStartInfo();
+                txtInfo.FileName = fileSavePath;
+                Process txtProcess = Process.Start(txtInfo);
+            }
+        }
+
+        // Parses 
+        public void ParseDisassembledTxtFile(String filePath)
+        {
+            if (File.Exists(filePath))
+            {
+                // Read all strings from file
+                ParseDisassemble(File.ReadAllLines(filePath));
+            }
         }
 
         // Parse disassemble
-        private void ParseDisassemble(string[] dissFileLines, ref HashSet<string> instructionFilterHashSet,
-            ref Dictionary<string, UInt32> instructionsDict, ref UInt32 totalInstructionCounter)
+        private void ParseDisassemble(string[] dissFileLines)
         {
             // Go through all instructions
             foreach (string line in dissFileLines)
@@ -139,44 +166,13 @@ namespace DisEn
             }
         }
 
-        // Disassembles file to get map of instructions (instruction, number of encounters)
-        public void Disassemble(String filePath)
+        // Counts entropy
+        private double EntropyCalculation(double elementsCount, double allElementsCount)
         {
-            // Create dictionary of instructions
-            _instructionsDict = new Dictionary<string, UInt32>();
-            _totalInstructionCounter = 0;
-            // Disassemble file
-            FileInfo fileInfo = new FileInfo(filePath);
-            // Check, if directory exists
-            if (!Directory.Exists("Temp"))
-            {
-                Directory.CreateDirectory("Temp");
-            }
-            // Temp directory path
-            string tempDirectoryPath = String.Format("Temp\\{0}.txt", fileInfo.Name.Split('.')[0]);
-            // Open dumpbin
-            ProcessStartInfo dumpInfo = new ProcessStartInfo();
-            dumpInfo.FileName = @"Dumpbin\dumpbin.exe";
-            dumpInfo.Arguments = String.Format(@"/disasm /out:{0} {1}", tempDirectoryPath, filePath);
-            Process dumpBinProcess = Process.Start(dumpInfo);
-            // Check, if process still running
-            try
-            {
-                while (Process.GetProcessById(dumpBinProcess.Id) != null) { }
-            }
-            catch (Exception ex) { }
-            // Check, if file exists
-            if (File.Exists(tempDirectoryPath))
-            {
-                // Open file 
-                ProcessStartInfo txtInfo = new ProcessStartInfo();
-                txtInfo.FileName = tempDirectoryPath;
-                Process txtProcess = Process.Start(txtInfo);
-                // Read all strings from file
-                ParseDisassemble(File.ReadAllLines(tempDirectoryPath), ref _instructionFilterHashSet,
-                ref _instructionsDict, ref _totalInstructionCounter);
-            }
-        } 
+            if (allElementsCount == 0) { return 0; }
+            return -elementsCount / allElementsCount * Math.Log(elementsCount / allElementsCount, 2);
+        }
+
         #endregion
     }
 }

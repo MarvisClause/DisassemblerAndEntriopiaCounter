@@ -73,6 +73,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Disassembler.cs" />
+    <Compile Include="DisassemblerManager.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -96,6 +97,26 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <Resource Include="Fonts\Montserrat\Montserrat-Italic-VariableFont_wght.ttf" />
+    <Resource Include="Fonts\Montserrat\Montserrat-VariableFont_wght.ttf" />
+    <Resource Include="Fonts\Montserrat\static\Montserrat-Black.ttf" />
+    <Resource Include="Fonts\Montserrat\static\Montserrat-BlackItalic.ttf" />
+    <Resource Include="Fonts\Montserrat\static\Montserrat-Bold.ttf" />
+    <Resource Include="Fonts\Montserrat\static\Montserrat-BoldItalic.ttf" />
+    <Resource Include="Fonts\Montserrat\static\Montserrat-ExtraBold.ttf" />
+    <Resource Include="Fonts\Montserrat\static\Montserrat-ExtraBoldItalic.ttf" />
+    <Resource Include="Fonts\Montserrat\static\Montserrat-ExtraLight.ttf" />
+    <Resource Include="Fonts\Montserrat\static\Montserrat-ExtraLightItalic.ttf" />
+    <Resource Include="Fonts\Montserrat\static\Montserrat-Italic.ttf" />
+    <Resource Include="Fonts\Montserrat\static\Montserrat-Light.ttf" />
+    <Resource Include="Fonts\Montserrat\static\Montserrat-LightItalic.ttf" />
+    <Resource Include="Fonts\Montserrat\static\Montserrat-Medium.ttf" />
+    <Resource Include="Fonts\Montserrat\static\Montserrat-MediumItalic.ttf" />
+    <Resource Include="Fonts\Montserrat\static\Montserrat-Regular.ttf" />
+    <Resource Include="Fonts\Montserrat\static\Montserrat-SemiBold.ttf" />
+    <Resource Include="Fonts\Montserrat\static\Montserrat-SemiBoldItalic.ttf" />
+    <Resource Include="Fonts\Montserrat\static\Montserrat-Thin.ttf" />
+    <Resource Include="Fonts\Montserrat\static\Montserrat-ThinItalic.ttf" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -106,10 +127,20 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="joker.png" />
+    <Resource Include="img\joker.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="appLogoJ.png" />
+    <Resource Include="img\appLogoJ.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="img\logo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="img\menu.png" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Fonts\Montserrat\OFL.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
