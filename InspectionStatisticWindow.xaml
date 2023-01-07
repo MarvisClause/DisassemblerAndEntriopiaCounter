@@ -1,0 +1,129 @@
+﻿<Window x:Class="DisEn.InspectionStatisticWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DisEn"
+        xmlns:chart="clr-namespace:Syncfusion.UI.Xaml.Charts;assembly=Syncfusion.SfChart.WPF" 
+       
+        mc:Ignorable="d"
+        Title="Statistics" MinHeight="800" MinWidth="1200" 
+        FontFamily="Times New Roman" WindowStyle="ThreeDBorderWindow" ResizeMode="CanResize" Icon="/img/appLogoJ.png" Width="1400" WindowState="Normal"  Background="#FF1F1D2B">
+
+    <Grid>
+        <!--Rows-->
+        <Grid.RowDefinitions>
+            <RowDefinition Height="0.5*"/>
+            <RowDefinition Height="10*"/>
+            <RowDefinition Height="0.5*"/>
+        </Grid.RowDefinitions>
+        <!--Columns-->
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0.1*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="0.1*"/>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="0.1*"/>
+        </Grid.ColumnDefinitions>
+        <!--Details Box-->
+        <Grid Grid.Row="1" Grid.Column="1">
+            <!--Rows-->
+            <Grid.RowDefinitions>
+                <RowDefinition Height="0.2*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <!--Delta-->
+            <Viewbox Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" StretchDirection="Both" Margin="5" >
+                <TextBlock  FontFamily="Montserrat" Foreground="White" FontWeight="Bold">DELTA</TextBlock>
+            </Viewbox>
+            <!--Difference in Quantity and entropy-->
+            <Border Grid.Row="1" Background="#2C2A37" CornerRadius="10" Margin="5">
+                <DataGrid x:Name="DeltaDataGrid" Grid.Row="1" Grid.Column="0" FontSize="15" Margin="5"
+                      AutoGenerateColumns="False" HorizontalGridLinesBrush="DarkGray"
+                      RowBackground="LightGray" AlternatingRowBackground="White"
+                      IsReadOnly="True" VerticalScrollBarVisibility="Auto" FontFamily="Montserrat SemiBold"
+                      Background="#FFF6F7F9" BorderBrush="#FFF6F7F9" Foreground="Black">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Binding="{Binding Path=Name}" Header="Command" Width="*" FontFamily="Montserrat"/>
+                        <DataGridTextColumn Binding="{Binding Path=Count}" Header="Quantity" Width="*" FontFamily="Montserrat"/>
+                        <DataGridTextColumn Binding="{Binding Path=Entropy}" Header="Entropy" Width="1.5*" FontFamily="Montserrat"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Border>
+
+            <!--Difference size of file-->
+            <Border Grid.Row="3" Background="#2C2A37" CornerRadius="10" Margin="5">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="3*"/>
+                    </Grid.RowDefinitions>
+                    <!--Header-->
+                    <Viewbox Margin="10">
+                        <TextBlock Foreground="White" FontFamily="Montserrat Black" FontWeight="Bold">Size of file</TextBlock>
+                    </Viewbox>
+                    <!--Content-->
+                    <Grid Grid.Row="1">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <!--Name of first file-->
+                        <TextBlock Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Left"
+                                   FontSize="24px" Foreground="White" FontFamily="Montserrat" Margin="5">Current file :</TextBlock>
+                        <!--Size of first file-->
+                        <TextBlock x:Name="SizeOfCurrentFileTextBlock" Grid.Row="0" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Left"
+                                   FontSize="24px" Foreground="White" FontFamily="Montserrat" Margin="5"/>
+                        <!--Name of second file-->
+                        <TextBlock Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Left"
+                                   FontSize="24px" Foreground="White" FontFamily="Montserrat" Margin="5">Cast file :</TextBlock>
+                        <!--Size of second file-->
+                        <TextBlock x:Name="SizeOfCastFileTextBlock" Grid.Row="1" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Left"
+                                   FontSize="24px" Foreground="White" FontFamily="Montserrat" Margin="5"/>
+                        <!--Diference-->
+                        <TextBlock Grid.Row="2" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Left"
+                                   FontSize="24px" Foreground="White" FontFamily="Montserrat" Margin="5">Delta :</TextBlock>
+                        <!--Size-->
+                        <TextBlock x:Name="DeltaSizeTextBlock" Grid.Row="2" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Left"
+                                   FontSize="24px" Foreground="White" FontFamily="Montserrat"/>
+                    </Grid>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <!--Histograms-->
+        <Border Grid.Row="1" Grid.Column="3" Background="#2C2A37" CornerRadius="10">
+
+            <Grid>
+                <!--Rows-->
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="9*"/>
+                </Grid.RowDefinitions>
+                <!--Header-->
+                <Viewbox Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center" StretchDirection="Both" Margin="0 20" >
+                    <TextBlock  FontFamily="Montserrat" Foreground="White" FontWeight="Bold">Histogram</TextBlock>
+                </Viewbox>
+                <!--First Histogram-->
+                <chart:SfChart x:Name="DeltaDisassemblerHistogram" Grid.Row="1" Header="DELTA" FontSize="20" FontFamily="Montserrat Black"
+                       Foreground="#FF3993FB" Margin="5">
+                    <chart:SfChart.PrimaryAxis>
+                        <!--X Axis-->
+                        <chart:CategoryAxis Header="Commands" FontSize="14" FontFamily="Montserrat" Foreground="White"/>
+                    </chart:SfChart.PrimaryAxis>
+                    <chart:SfChart.SecondaryAxis>
+                        <!--Y Axis-->
+                        <chart:NumericalAxis Header="Entropy" FontSize="14" FontFamily="Montserrat" LabelBorderBrush="#FF3993FB" Foreground="White"/>
+                    </chart:SfChart.SecondaryAxis>
+                    <chart:ColumnSeries/>
+                </chart:SfChart>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

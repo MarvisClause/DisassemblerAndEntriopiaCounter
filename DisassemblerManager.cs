@@ -1,22 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DisEn
 {
     // Disassembler manager
     // Controls file saves and their management
-    internal class DisassemblerManager
+    public class DisassemblerManager
     {
         #region Variables
 
-        // Disassembler 
-        private Disassembler _disassembler;
+        // Current disassembler
+        private Disassembler _currentDisassembler = new Disassembler();
+
+        // Saved disassembler
+        private Disassembler _savedDisassembler = new Disassembler();
+
         // Path to the instruction file
         private const string INSTRUCTION_FILTER_FILE_PATH = "instructions.txt";
+
+        // Instruction filter
+        HashSet<string> instructionFilter;
 
         #endregion
 
@@ -24,10 +29,8 @@ namespace DisEn
 
         public DisassemblerManager()
         {
-            // Initialize
-            _disassembler = new Disassembler();
             // Prepare hash set
-            HashSet<string> instructionFilter = new HashSet<string>();
+            instructionFilter = new HashSet<string>();
             // Get instruction filter list
             string[] instructionReadArray = File.ReadAllLines(INSTRUCTION_FILTER_FILE_PATH);
             for (int i = 0; i < instructionReadArray.Length; ++i)
@@ -40,29 +43,85 @@ namespace DisEn
                     instructionFilter.Add(splitString[j]);
                 }
             }
-            // Set instruction filter hash set
-            _disassembler.SetInstructionFilterHashSet(instructionFilter);
         }
 
         #endregion
 
         #region Methods
 
-        public Disassembler GetDisassembler()
+        public Disassembler GetCurrentDisassembler()
         {
-            return _disassembler;
+            return _currentDisassembler;
+        }
+
+        public Disassembler GetSavedDisassembler()
+        {
+            return _savedDisassembler;
+        }
+
+        public bool IsSavedDisassemblerExistInData()
+        {
+            return File.Exists(GetSavedDisassemblerPath());
+        }
+
+        public string GetSavedDisassemblerPath()
+        {
+            return String.Format("Data\\{0}\\{0}.asdat", _savedDisassembler.GetFileName());
+        }
+
+        public void SaveCurrentDisassemblerFile()
+        {
+            String directoryPath = String.Format("Data\\{0}", _savedDisassembler.GetFileName());
+            if (!Directory.Exists(directoryPath))
+            {
+                Directory.CreateDirectory(directoryPath);
+            }
+            string dataDirectoryPath = String.Format("{0}\\{1}.asdat", directoryPath, _savedDisassembler.GetFileName());
+            if (File.Exists(dataDirectoryPath))
+            {
+                File.Delete(dataDirectoryPath);
+            }
+            Disassembler.Serialize(dataDirectoryPath, _currentDisassembler);
+        }
+
+        public void LoadSavedDisassemblerFile()
+        {
+            _savedDisassembler = Disassembler.Deserialize(GetSavedDisassemblerPath());
         }
 
         public void Disassemble(string filePath)
         {
-            // Disassemble file
-            FileInfo fileInfo = new FileInfo(filePath);
+            // Set instruction filter hash set
+            _currentDisassembler.SetInstructionFilterHashSet(instructionFilter);
+            _savedDisassembler.SetInstructionFilterHashSet(instructionFilter);
+            // Disassemble files
+            _currentDisassembler.DisassembleFile(filePath);
+            _savedDisassembler.DisassembleFile(filePath);
             // Temp directory path
-            string tempDirectoryPath = String.Format("Temp\\{0}.txt", fileInfo.Name.Split('.')[0]);
-            // Disassemble 
-            _disassembler.DisassembleToTxtFile(filePath, tempDirectoryPath);
-            // Parse disassemble
-            _disassembler.ParseDisassembledTxtFile(tempDirectoryPath);
+            if (!Directory.Exists("Temp"))
+            {
+                Directory.CreateDirectory("Temp");
+            }
+            string tempDirectoryPath = String.Format("Temp\\{0}.txt", _currentDisassembler.GetFileName());
+            // Export current file to temp
+            _currentDisassembler.ExportDisassembledCodeToTxtFile(tempDirectoryPath);
+            // Check, if file exist in the data directory
+            if (IsSavedDisassemblerExistInData())
+            {
+                LoadSavedDisassemblerFile();
+            }
+            else
+            {
+                SaveCurrentDisassemblerFile();
+            }
+            // Open txt file
+            if (File.Exists(tempDirectoryPath))
+            {
+                // Open file 
+                ProcessStartInfo txtInfo = new ProcessStartInfo();
+                txtInfo.FileName = tempDirectoryPath;
+                Process txtProcess = Process.Start(txtInfo);
+            }
         }
 
         #endregion

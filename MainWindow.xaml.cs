@@ -15,16 +15,21 @@ namespace DisEn
     {
         private DisassemblerManager _disassemblerManager;
 
+        private DisassemblerComparator _disassemblerComparator;
+
         public MainWindow()
         {
             InitializeComponent();
-
+            // Initialize disassembler
             _disassemblerManager = new DisassemblerManager();
+            _disassemblerComparator = new DisassemblerComparator();
+            // Hide additional interface
+            SetCastDataVisibility(false);
         }
-        
+
         #region File
 
-        private void BtnOpenFile_Click(object sender, RoutedEventArgs e)
+        private void OpenFileAction(object sender, RoutedEventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = "All files (*.*)|*.exe";
@@ -35,27 +40,43 @@ namespace DisEn
                 // Show path to file
                 PathToFileTextBlock.Text = openFileDialog.FileName;
                 // Show total amount of instructions
-                TotalNumOfCommandsTextBlock.Text = _disassemblerManager.GetDisassembler().GetTotalInstructionCounter().ToString();
+                TotalNumOfCommandsTextBlock.Text = _disassemblerManager.GetCurrentDisassembler().GetTotalInstructionCounter().ToString();
                 // Show size of file
-                FileInfo fileSize = new FileInfo(openFileDialog.FileName);
-                double MB = fileSize.Length / 1048576.0;
-                /*double MB = (fileSize.Length / 1024) / 1024;*/
-                SizeFile.Text = MB.ToString("0.###") + " MB";
-                // Get commands info
-                List<DisassemblerCommandInfo> commandInfos = _disassemblerManager.GetDisassembler().GetCommandsInfo();
-                DisassemblerDataGrid.ItemsSource = commandInfos;
+                SizeFile.Text = ByteConverter.ConvertByToMegaByteToString(_disassemblerManager.GetCurrentDisassembler().GetFileSize());
 
-                // Histogram.Series.Clear();
-                Histogram.Series.Clear();
-                ColumnSeries series = new ColumnSeries();
-                series.ItemsSource = commandInfos;
-                series.XBindingPath = "Name";
-                series.YBindingPath = "Entropy";
-                Histogram.Series.Add(series);
+                // Add info to the interface
+                CurrentDisassemblerHistogram.Series.Clear();
+                AddDataToTable(CurrentDisassemblerDataGrid, _disassemblerManager.GetCurrentDisassembler().GetDisassemblerCommandsInfo());
+                AddDataToHistogram(CurrentDisassemblerHistogram, _disassemblerManager.GetCurrentDisassembler().GetDisassemblerCommandsInfo());
+
+                if (!_disassemblerManager.GetCurrentDisassembler().Equals(_disassemblerManager.GetSavedDisassembler()))
+                {
+                    SetCastDataVisibility(true);
+
+                    // Show total amount of instructions
+                    TotalNumOfCommandsCastTextBlock.Text = _disassemblerManager.GetSavedDisassembler().GetTotalInstructionCounter().ToString();
+                    // Show size of file
+                    SizeCastFile.Text = ByteConverter.ConvertByToMegaByteToString(_disassemblerManager.GetSavedDisassembler().GetFileSize());
+
+                    CastDisassemblerHistogram.Series.Clear();
+                    AddDataToTable(SavedDisassemblerDataGrid, _disassemblerManager.GetSavedDisassembler().GetDisassemblerCommandsInfo());
+                    AddDataToHistogram(CastDisassemblerHistogram, _disassemblerManager.GetSavedDisassembler().GetDisassemblerCommandsInfo());
+
+                    // If data is not equal, inform user about this
+                    if (!_disassemblerComparator.CompareData(_disassemblerManager.GetCurrentDisassembler(), _disassemblerManager.GetSavedDisassembler()))
+                    {
+                        OpenStatisticWindowAction(sender, e);
+                    }
+                }
+                else
+                {
+                    SetCastDataVisibility(false);
+                }
             }
         }
 
-        private void BtnSaveFile_Click(object sender, RoutedEventArgs e)
+
+        private void SaveFileAction(object sender, RoutedEventArgs e)
         {
             SaveFileDialog saveData = new SaveFileDialog();
             saveData.Filter = "Текст (*.txt)|*.txt";
@@ -64,22 +85,40 @@ namespace DisEn
                 using (StreamWriter sw = new StreamWriter(saveData.OpenFile(), Encoding.UTF8))
                 {
                     sw.Write("Path to file: " + PathToFileTextBlock.Text);
-                    sw.Write("\nTotal amout of commands: " + TotalNumOfCommandsTextBlock.Text);
+                    sw.Write("\nTotal amount of commands: " + TotalNumOfCommandsTextBlock.Text);
                     sw.Write("\nSize of file: " + SizeFile.Text);
 
-                    DisassemblerDataGrid.SelectAllCells();
-                    DisassemblerDataGrid.ClipboardCopyMode = DataGridClipboardCopyMode.ExcludeHeader;
-                    ApplicationCommands.Copy.Execute(null, DisassemblerDataGrid);
-                    DisassemblerDataGrid.UnselectAllCells();
-                    string result = Clipboard.GetText(TextDataFormat.Text);
+                    CurrentDisassemblerDataGrid.SelectAllCells();
+                    CurrentDisassemblerDataGrid.ClipboardCopyMode = DataGridClipboardCopyMode.ExcludeHeader;
+                    ApplicationCommands.Copy.Execute(null, CurrentDisassemblerDataGrid);
+                    CurrentDisassemblerDataGrid.UnselectAllCells();
+                    string resultCurrent = Clipboard.GetText(TextDataFormat.Text);
                     Clipboard.Clear();
-                    sw.WriteLine("\n" + result);
+
+                    sw.WriteLine("\n" + resultCurrent);
+
+                    if (CastDisassemblerHistogram.IsVisible)
+                    {
+                        sw.Write("Cast file: " + _disassemblerManager.GetSavedDisassembler().GetFileName());
+                        sw.Write("\nTotal amount of commands: " + TotalNumOfCommandsCastTextBlock.Text);
+                        sw.Write("\nSize of file: " + SizeCastFile.Text);
+
+                        CurrentDisassemblerDataGrid.SelectAllCells();
+                        CurrentDisassemblerDataGrid.ClipboardCopyMode = DataGridClipboardCopyMode.ExcludeHeader;
+                        ApplicationCommands.Copy.Execute(null, CurrentDisassemblerDataGrid);
+                        CurrentDisassemblerDataGrid.UnselectAllCells();
+                        string result = Clipboard.GetText(TextDataFormat.Text);
+                        Clipboard.Clear();
+
+                        sw.WriteLine("\n" + result);
+                    }
 
                     sw.Close();
                 }
             }
         }
-        private void BtnSaveHistogramImage(object sender, RoutedEventArgs e)
+
+        private void SaveHistogramAction(object sender, RoutedEventArgs e)
         {
             // Make screenshot of program   
 
@@ -108,21 +147,96 @@ namespace DisEn
 
             if (saveFileDialog.ShowDialog() == true)
             {
-                Histogram.Save(saveFileDialog.FileName);
+                CurrentDisassemblerHistogram.Save(saveFileDialog.FileName);
+                if (CastDisassemblerHistogram.IsVisible)
+                {
+                    saveFileDialog.FileName = "ScreenCapture-" + name + " " + DateTime.Now.ToString("dd.MM.yyyy-hh.mm.ss") + "_CAST";
+                    if (saveFileDialog.ShowDialog() == true)
+                    {
+                        CastDisassemblerHistogram.Save(saveFileDialog.FileName);
+                    }
+                }
             }
         }
+
+        private void UpdateCastAction(object sender, RoutedEventArgs e)
+        {
+            // Save current disassembler
+            _disassemblerManager.SaveCurrentDisassemblerFile();
+            // Show information about result
+            string messageBoxText = "Cast was updated";
+            string caption = "Disassembler information";
+            MessageBoxButton button = MessageBoxButton.OK;
+            MessageBoxImage icon = MessageBoxImage.Information;
+            MessageBox.Show(messageBoxText, caption, button, icon, MessageBoxResult.OK);
+            // Hide update button
+            UpdateCastBorder.Visibility = Visibility.Collapsed;
+        }
+
+        private void AddDataToTable(DataGrid dataGrid, List<DisassemblerCommandInfo> commandsInfo)
+        {
+            dataGrid.ItemsSource = commandsInfo;
+        }
+
+        private void AddDataToHistogram(SfChart histogram, List<DisassemblerCommandInfo> commandInfos)
+        {
+            ColumnSeries currentSeries = new ColumnSeries();
+
+            currentSeries.ItemsSource = commandInfos;
+            currentSeries.XBindingPath = "Name";
+            currentSeries.YBindingPath = "Entropy";
+
+            ChartSeriesBase.SetSpacing(currentSeries, 0.0f);
+
+            histogram.Series.Add(currentSeries);
+        }
+
+        private void SetCastDataVisibility(bool IsVisibile)
+        {
+            if (IsVisibile)
+            {
+                SavedDisassemblerDataGrid.Visibility =
+                    UpdateCastBorder.Visibility =
+                    CastDisassemblerHistogram.Visibility =
+                    CastFileInfoGrid.Visibility = Visibility.Visible;
+                FileInfoUniformGrid.Rows = HistogramUniformGrid.Rows = 2;
+                StatisticMenuItem.IsEnabled = true;
+            }
+            else
+            {
+                SavedDisassemblerDataGrid.Visibility =
+                    UpdateCastBorder.Visibility =
+                CastDisassemblerHistogram.Visibility =
+                CastFileInfoGrid.Visibility = Visibility.Collapsed;
+                FileInfoUniformGrid.Rows = HistogramUniformGrid.Rows = 1;
+                StatisticMenuItem.IsEnabled = false;
+            }
+        }
+
         #endregion
 
         #region Cleaner
 
-        //Clear temp data
-        private void BtnClearTempData(object sender, RoutedEventArgs e)
+        // Clear temp
+        private void ClearTempDirectoryAction(object sender, RoutedEventArgs e)
         {
-            DirectoryInfo di = new DirectoryInfo("Temp\\");
-            foreach (FileInfo file in di.GetFiles())
+            DirectoryInfo folder = new DirectoryInfo("Temp\\");
+
+            foreach (FileInfo file in folder.GetFiles())
             {
                 file.Delete();
             }
+        }
+
+        #endregion
+
+        #region Open Window  
+
+        // Manual opening 
+        private void OpenStatisticWindowAction(object sender, RoutedEventArgs e)
+        {
+            InspectionStatisticWindow inspectionStatisticWindow = new InspectionStatisticWindow(_disassemblerComparator);
+            inspectionStatisticWindow.Show();
         }
 
         #endregion
