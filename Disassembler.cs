@@ -218,7 +218,7 @@ namespace DisEn
             {
                 while (Process.GetProcessById(dumpBinProcess.Id) != null) { }
             }
-            catch (Exception ex) { }
+            catch (Exception) { }
         }
 
         // Forms commands info
