@@ -1,0 +1,117 @@
+﻿<Window x:Class="DisEn.CommansBar"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DisEn"
+        mc:Ignorable="d"
+        Title="CommansBar" Height="450" Width="450
+        ">
+    <Grid>
+        <!--Tools-->
+            <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="2*"/>
+            </Grid.ColumnDefinitions>
+            <!--General tool column-->
+            <Grid Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="7*"/>
+                </Grid.RowDefinitions> 
+                <!--Title of General tool column-->
+                <DockPanel Grid.Row="0">
+                    <TextBlock FontSize="20" FontFamily="Montserrat Black" Foreground="Black"
+                               HorizontalAlignment="Center">General tool</TextBlock>
+                </DockPanel> 
+                <!--General tools buttons-->
+                <StackPanel x:Name="stackPanel" Grid.Row="1">
+                    <!--Choose all comands button-->
+                    <Button  x:Name="ChooseAllComandsBtn">
+                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="Black">
+                            Choose all comands
+                        </TextBlock>
+                    </Button>
+                    <!--Remove selected button-->
+                    <Button  x:Name="RemoveSelectedBtn">
+                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="Black">
+                            Remove selected
+                        </TextBlock>
+                    </Button>
+                    <!--Select common commands button-->
+                    <Button  x:Name="SelectCommonCommandsBtn">
+                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="Black">
+                            Select common commands
+                        </TextBlock>
+                    </Button>
+                </StackPanel>
+                <!--Accept choosed commands button-->
+                <Button  x:Name="AcceptChoosedCommands" VerticalAlignment="Bottom" Grid.Row="1">
+                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="Black">
+                            Accept
+                    </TextBlock>
+                </Button>
+            </Grid>
+            <!--Commands column-->
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="7*"/>
+                </Grid.RowDefinitions>
+                <!--Commands column-->
+                <DockPanel Grid.Row="0">
+                    <TextBlock FontSize="20" FontFamily="Montserrat Black" Foreground="Black"
+                               HorizontalAlignment="Center">Commands</TextBlock>
+                </DockPanel> 
+                <!--Commands list-->
+                <Grid Grid.Row="1" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <!--Commands list #1-->
+                    <StackPanel Grid.Column="0">
+                        <CheckBox x:Name="incCheckBox" IsThreeState="True" IsChecked="False" Height="20" Content="inc" />
+                        <CheckBox x:Name="decCheckBox" IsThreeState="True" IsChecked="False" Height="20" Content="dec" />
+                        <CheckBox x:Name="negCheckBox" IsThreeState="True" IsChecked="False" Height="20" Content="neg"/>
+                        <CheckBox x:Name="jmpCheckBox" IsThreeState="True" IsChecked="False" Height="20" Content="jmp" />
+                        <CheckBox x:Name="callCheckBox" IsThreeState="True" IsChecked="False" Height="20" Content="call" />
+                        <CheckBox x:Name="retCheckBox" IsThreeState="True" IsChecked="False" Height="20" Content="ret"/>
+                        <CheckBox x:Name="subCheckBox" IsThreeState="True" IsChecked="False" Height="20" Content="sub" />
+                        <CheckBox x:Name="sbbCheckBox" IsThreeState="True" IsChecked="False" Height="20" Content="sbb" />
+                        <CheckBox x:Name="cmpCheckBox" IsThreeState="True" IsChecked="False" Height="20" Content="cmp"/>
+                        <CheckBox x:Name="addCheckBox" IsThreeState="True" IsChecked="False" Height="20" Content="add" />
+                        <CheckBox x:Name="andCheckBox" IsThreeState="True" IsChecked="False" Height="20" Content="and" />
+                        <CheckBox x:Name="orCheckBox" IsThreeState="True" IsChecked="False" Height="20" Content="or"/>
+                        <CheckBox x:Name="xorCheckBox" IsThreeState="True" IsChecked="False" Height="20" Content="xor" />
+                        <CheckBox x:Name="notCheckBox" IsThreeState="True" IsChecked="False" Height="20" Content="not" />
+                        <CheckBox x:Name="testCheckBox" IsThreeState="True" IsChecked="False" Height="20" Content="test"/>
+                        <CheckBox x:Name="pushCheckBox" IsThreeState="True" IsChecked="False" Height="20" Content="push" />
+                        <CheckBox x:Name="popCheckBox" IsThreeState="True" IsChecked="False" Height="20" Content="pop" />
+                        <CheckBox x:Name="nopCheckBox" IsThreeState="True" IsChecked="False" Height="20" Content="nop"/>
+                    </StackPanel>
+                    <!--Commands list #2-->
+                    <StackPanel Grid.Column="1">
+                        <CheckBox x:Name="jlCheckBox" IsThreeState="True" IsChecked="False" Height="20" Content="jl" />
+                        <CheckBox x:Name="jleCheckBox" IsThreeState="True" IsChecked="False" Height="20" Content="jle" />
+                        <CheckBox x:Name="jgeCheckBox" IsThreeState="True" IsChecked="False" Height="20" Content="jge"/>
+                        <CheckBox x:Name="jgCheckBox" IsThreeState="True" IsChecked="False" Height="20" Content="jg" />
+                        <CheckBox x:Name="jbCheckBox" IsThreeState="True" IsChecked="False" Height="20" Content="jb"/>
+                        <CheckBox x:Name="jbeCheckBox" IsThreeState="True" IsChecked="False" Height="20" Content="jbe" />
+                        <CheckBox x:Name="jaeCheckBox" IsThreeState="True" IsChecked="False" Height="20" Content="jae" />
+                        <CheckBox x:Name="jaCheckBox" IsThreeState="True" IsChecked="False" Height="20" Content="ja"/>
+                        <CheckBox x:Name="jeCheckBox" IsThreeState="True" IsChecked="False" Height="20" Content="je" />
+                        <CheckBox x:Name="jneCheckBox" IsThreeState="True" IsChecked="False" Height="20" Content="jne" />
+                        <CheckBox x:Name="jsCheckBox" IsThreeState="True" IsChecked="False" Height="20" Content="js"/>
+                        <CheckBox x:Name="jnsCheckBox" IsThreeState="True" IsChecked="False" Height="20" Content="jns" />
+                        <CheckBox x:Name="intCheckBox" IsThreeState="True" IsChecked="False" Height="20" Content="int" />
+                        <CheckBox x:Name="movCheckBox" IsThreeState="True" IsChecked="False" Height="20" Content="mov"/>
+                        <CheckBox x:Name="xchgCheckBox" IsThreeState="True" IsChecked="False" Height="20" Content="xchg" />
+                        <CheckBox x:Name="leaCheckBox" IsThreeState="True" IsChecked="False" Height="20" Content="lea" />
+                    </StackPanel>
+                </Grid>
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>
