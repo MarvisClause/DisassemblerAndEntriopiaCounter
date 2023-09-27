@@ -24,11 +24,12 @@ namespace DisEn
 
         // File name
         private String _fileName;
-        // Parsed file code
-        private String _parsedFileCode;
-        // File path to disassembled file
+        // Path to the executable file
         [NonSerialized]
-        private String _filePath;
+        private String _executableFilePath;
+        // Path to the text file with disassembled code for the file
+        [NonSerialized]
+        private String _disassembledFilePath;
         // Total instruction counter
         private Int32 _totalInstructionCounter;
         // Total entropy value
@@ -48,7 +49,7 @@ namespace DisEn
 
         #endregion
 
-        #region Constructor
+        #region Constructor/Finalize
 
         // Constructor
         public Disassembler()
@@ -61,6 +62,13 @@ namespace DisEn
             _totalInstructionCounter = 0;
         }
 
+        // Finalizer
+        ~Disassembler()
+        {
+            // Remove temp disassembled folder
+            DeleteDisassembledTempFolder();
+        }
+
         #endregion
 
         #region Methods
@@ -70,7 +78,6 @@ namespace DisEn
             if (obj is Disassembler objectType)
             {
                 return this._fileName.CompareTo(objectType._fileName) == 0
-                    && this._parsedFileCode.CompareTo(objectType._parsedFileCode) == 0
                     && this._fileSize == objectType._fileSize
                     && this._totalInstructionCounter == objectType._totalInstructionCounter
                     && this._totalEntropyValue == objectType._totalEntropyValue
@@ -96,10 +103,16 @@ namespace DisEn
             return _fileName;
         }
 
-        // Get file path
-        public String GetFilePath()
+        // Get path to the executable
+        public String GetExecutableFilePath()
         {
-            return _filePath;
+            return _executableFilePath;
+        }
+
+        // Path to the text file with disassembled code for the file
+        public String GetDisassembledFilePath()
+        {
+            return _disassembledFilePath;
         }
 
         // Get instruction hash set
@@ -148,30 +161,52 @@ namespace DisEn
             }
         }
 
+        private void DeleteDisassembledTempFolder()
+        {
+            if (_disassembledFilePath != null)
+            {
+                if (File.Exists(_disassembledFilePath) && Directory.Exists(Path.GetDirectoryName(_disassembledFilePath)))
+                {
+                    // Remove folder
+                    Directory.Delete(Path.GetDirectoryName(_disassembledFilePath), true);
+                    // Clear disassembled file path
+                    _disassembledFilePath = null;
+                }
+            }
+        }
 
         // Disassembles file
         public void DisassembleFile(String filePath)
         {
+            // Remove disassembled temp folder
+            DeleteDisassembledTempFolder();
             // Save file path and its name
             FileInfo fileInfo = new FileInfo(filePath);
             _fileName = fileInfo.Name.Split('.')[0];
-            _filePath = filePath;
+            _executableFilePath = filePath;
             _fileSize = fileInfo.Length;
             // Disassemble and parse txt file
             if (fileInfo.Extension.CompareTo(".exe") == 0)
             {
-                // Temp disassembler directory
-                String _tempDisassembledFileFolder = TEMP_DISASSEMBLER_FOLDER;
+                // Create folder for temporary files
+                if (!Directory.Exists(TEMP_DISASSEMBLER_FOLDER))
+                {
+                    Directory.CreateDirectory(TEMP_DISASSEMBLER_FOLDER);
+                }
+                // Create folder for current temporary file
+                int _tempDisassembledFolderCounter = 0;
+                String _tempDisassembledFileFolder = TEMP_DISASSEMBLER_FOLDER + "\\" + _tempDisassembledFolderCounter;
+                while(Directory.Exists(_tempDisassembledFileFolder))
+                {
+                    _tempDisassembledFileFolder = TEMP_DISASSEMBLER_FOLDER + "\\" + (++_tempDisassembledFolderCounter);
+                }
                 Directory.CreateDirectory(_tempDisassembledFileFolder);
                 String _tempDisassembledFilePath = _tempDisassembledFileFolder + "\\" + _fileName + ".txt";
                 // Disassemble file and parse it
                 DisassembleExeToTxtFile(filePath, _tempDisassembledFilePath);
                 ParseDisassembledTxtFile(_tempDisassembledFilePath);
-                // Remove disassembled file and folder
-                if (Directory.Exists(_tempDisassembledFileFolder))
-                {
-                    Directory.Delete(_tempDisassembledFileFolder, true);
-                }
+                // Save path to the create file
+                _disassembledFilePath = _tempDisassembledFilePath;
             }
             // Parse .txt file
             else if (fileInfo.Extension.CompareTo(".txt") == 0)
@@ -190,7 +225,10 @@ namespace DisEn
         // Exports disassembled file to .txt file
         public void ExportDisassembledCodeToTxtFile(String fileExportPath)
         {
-            File.WriteAllText(fileExportPath, _parsedFileCode);
+            if (File.Exists(_disassembledFilePath))
+            {
+                File.Copy(_disassembledFilePath, fileExportPath);                   
+            }
         }
 
         // Parses disassembled txt file
@@ -199,7 +237,7 @@ namespace DisEn
             if (File.Exists(filePath))
             {
                 // Read all strings from file
-                ParseDisassemble(File.ReadAllLines(filePath));
+                ParseDisassemble(filePath);
             }
         }
 
@@ -211,14 +249,14 @@ namespace DisEn
             // Open dumpbin
             ProcessStartInfo dumpInfo = new ProcessStartInfo();
             dumpInfo.FileName = @"Dumpbin\dumpbin.exe";
-            dumpInfo.Arguments = String.Format(@"/disasm /out:{0} {1}", fileSavePath, filePath);
+            dumpInfo.Arguments = string.Format("/disasm /out:\"{0}\" \"{1}\"", fileSavePath, filePath);
             Process dumpBinProcess = Process.Start(dumpInfo);
             // Check, if process still running
             try
             {
                 while (Process.GetProcessById(dumpBinProcess.Id) != null) { }
             }
-            catch (Exception ex) { }
+            catch (Exception) { }
         }
 
         // Forms commands info
@@ -260,37 +298,44 @@ namespace DisEn
         }
 
         // Parse disassemble
-        private void ParseDisassemble(string[] dissFileLines)
+        private void ParseDisassemble(string filePath)
         {
-            StringBuilder codeStringBuilder = new StringBuilder();
             _totalInstructionCounter = 0;
             _instructionsDict.Clear();
-            // Go through all instructions
-            foreach (string line in dissFileLines)
+
+            try
             {
-                // Add line to command string builder
-                codeStringBuilder.AppendLine(line);
-                foreach (string word in line.Split(' '))
+                using (StreamReader reader = new StreamReader(filePath))
                 {
-                    if (_instructionFilterHashSet.Contains(word))
+                    string line;
+                    while ((line = reader.ReadLine()) != null)
                     {
-                        // Add new instruction
-                        if (!_instructionsDict.ContainsKey(word))
+                        foreach (string word in line.Split(' '))
                         {
-                            _instructionsDict.Add(word, 1);
+                            if (_instructionFilterHashSet.Contains(word))
+                            {
+                                // Add new instruction
+                                if (!_instructionsDict.ContainsKey(word))
+                                {
+                                    _instructionsDict.Add(word, 1);
+                                }
+                                else
+                                {
+                                    // Increment instruction count
+                                    _instructionsDict[word]++;
+                                }
+                                // Increment total instruction counter
+                                _totalInstructionCounter++;
+                            }
                         }
-                        else
-                        {
-                            // Increment instruction count
-                            _instructionsDict[word]++;
-                        }
-                        // Increment total instruction counter
-                        _totalInstructionCounter++;
                     }
                 }
             }
-            // Copy string builder to string variable
-            _parsedFileCode = codeStringBuilder.ToString();
+            catch (IOException e)
+            {
+                // Handle the exception appropriately (e.g., log or display an error message)
+                Console.WriteLine("An error occurred while reading the file: " + e.Message);
+            }
         }
 
         // Counts entropy

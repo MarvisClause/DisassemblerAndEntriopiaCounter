@@ -1,9 +1,0 @@
-inc dec neg
-jmp call ret
-sub sbb cmp add
-and or xor not test
-push pop
-jl jle jge jg jb jbe jae ja je jne js jns
-int
-mov xchg lea
-nop

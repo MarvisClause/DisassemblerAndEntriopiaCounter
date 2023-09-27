@@ -96,15 +96,7 @@ namespace DisEn
             _savedDisassembler.SetInstructionFilterHashSet(instructionFilter);
             // Disassemble files
             _currentDisassembler.DisassembleFile(filePath);
-            _savedDisassembler.DisassembleFile(filePath);
-            // Temp directory path
-            if (!Directory.Exists("Temp"))
-            {
-                Directory.CreateDirectory("Temp");
-            }
-            string tempDirectoryPath = String.Format("Temp\\{0}.txt", _currentDisassembler.GetFileName());
-            // Export current file to temp
-            _currentDisassembler.ExportDisassembledCodeToTxtFile(tempDirectoryPath);
+            _savedDisassembler = _currentDisassembler;
             // Check, if file exist in the data directory
             if (IsSavedDisassemblerExistInData())
             {
@@ -113,14 +105,6 @@ namespace DisEn
             else
             {
                 SaveCurrentDisassemblerFile();
-            }
-            // Open txt file
-            if (File.Exists(tempDirectoryPath))
-            {
-                // Open file 
-                ProcessStartInfo txtInfo = new ProcessStartInfo();
-                txtInfo.FileName = tempDirectoryPath;
-                Process txtProcess = Process.Start(txtInfo);
             }
         }
 

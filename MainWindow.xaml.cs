@@ -65,6 +65,71 @@ namespace DisEn
                     // If data is not equal, inform user about this
                     if (!_disassemblerComparator.CompareData(_disassemblerManager.GetCurrentDisassembler(), _disassemblerManager.GetSavedDisassembler()))
                     {
+                        // Check data through analyzer for the authorship
+
+                        // #################################################### TEST VALUES ####################################################
+
+                        DisassemblerAnalyzer disassemblerAnalyzer = new DisassemblerAnalyzer();
+
+                        Dictionary<string, double> commandThresholdFilter = new Dictionary<string, double>();
+                        commandThresholdFilter.Add("inc", 0.0060935);
+                        commandThresholdFilter.Add("dec", 0.003465);
+                        commandThresholdFilter.Add("neg", 0.0012695);
+                        commandThresholdFilter.Add("jmp", 0.0085135);
+                        commandThresholdFilter.Add("call", 0.0151115);
+                        commandThresholdFilter.Add("ret", 0.005825);
+                        commandThresholdFilter.Add("sub", 0.007995);
+                        commandThresholdFilter.Add("sbb", 0.0040975);
+                        commandThresholdFilter.Add("cmp", 0.01059);
+                        commandThresholdFilter.Add("add", 0.021305);
+                        commandThresholdFilter.Add("and", 0.010315);
+                        commandThresholdFilter.Add("or", 0.0058755);
+                        commandThresholdFilter.Add("xor", 0.0055585);
+                        commandThresholdFilter.Add("not", 0.0011655);
+                        commandThresholdFilter.Add("test", 0.0049205);
+                        commandThresholdFilter.Add("push", 0.0064165);
+                        commandThresholdFilter.Add("pop", 0.005588);
+                        commandThresholdFilter.Add("nop", 0.0087785);
+                        commandThresholdFilter.Add("jl", 0.003693);
+                        commandThresholdFilter.Add("jle", 0.0015375);
+                        commandThresholdFilter.Add("jge", 0.001325);
+                        commandThresholdFilter.Add("jg", 0.0012025);
+                        commandThresholdFilter.Add("jb", 0.0083675);
+                        commandThresholdFilter.Add("jbe", 0.0027105);
+                        commandThresholdFilter.Add("jae", 0.0090315);
+                        commandThresholdFilter.Add("ja", 0.0010915);
+                        commandThresholdFilter.Add("je", 0.0044205);
+                        commandThresholdFilter.Add("jne", 0.0045995);
+                        commandThresholdFilter.Add("js", 0.0024585);
+                        commandThresholdFilter.Add("jns", 0.003481);
+                        commandThresholdFilter.Add("int", 0.013317);
+                        commandThresholdFilter.Add("mov", 0.0128165);
+                        commandThresholdFilter.Add("xchg", 0.0023355);
+                        commandThresholdFilter.Add("lea", 0.0132795);
+
+                        int discrepancyCriterion = disassemblerAnalyzer.CalculateDiscrepancyCriterion(commandThresholdFilter, _disassemblerComparator);
+
+                        // Show information about result
+                        string messageBoxText;
+                        string caption;
+                        MessageBoxImage icon;
+                        if (discrepancyCriterion > commandThresholdFilter.Count / 2)
+                        {
+                            messageBoxText = "There is a possibility of virus code injection";
+                            caption = "Discrepancy value is high";
+                            icon = MessageBoxImage.Warning;
+                        }
+                        else
+                        {
+                            messageBoxText = "Discrepancy value is in normal range";
+                            caption = "Code was changed by user";
+                            icon = MessageBoxImage.Information;
+                        }
+                        MessageBoxButton button = MessageBoxButton.OK;
+                        MessageBox.Show(messageBoxText, caption, button, icon, MessageBoxResult.OK);
+
+                        // #####################################################################################################################
+
                         OpenStatisticWindowAction(sender, e);
                     }
                 }
