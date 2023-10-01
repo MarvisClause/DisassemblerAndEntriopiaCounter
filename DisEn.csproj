@@ -37,15 +37,19 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Syncfusion.Licensing, Version=20.2460.0.40, Culture=neutral, PublicKeyToken=632609b4d040f6b4, processorArchitecture=MSIL">
-      <HintPath>packages\Syncfusion.Licensing.20.2.0.40\lib\net46\Syncfusion.Licensing.dll</HintPath>
+    <Reference Include="FontAwesome.Sharp, Version=6.3.0.0, Culture=neutral, PublicKeyToken=d16d1e4e568ec10f, processorArchitecture=MSIL">
+      <HintPath>packages\FontAwesome.Sharp.6.3.0\lib\net472\FontAwesome.Sharp.dll</HintPath>
     </Reference>
-    <Reference Include="Syncfusion.SfChart.WPF, Version=20.2460.0.40, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89, processorArchitecture=MSIL">
-      <HintPath>packages\Syncfusion.SfChart.WPF.20.2.0.40\lib\net46\Syncfusion.SfChart.WPF.dll</HintPath>
+    <Reference Include="Syncfusion.Licensing, Version=23.1460.38.0, Culture=neutral, PublicKeyToken=632609b4d040f6b4, processorArchitecture=MSIL">
+      <HintPath>packages\Syncfusion.Licensing.23.1.38\lib\net46\Syncfusion.Licensing.dll</HintPath>
+    </Reference>
+    <Reference Include="Syncfusion.SfChart.WPF, Version=23.1460.38.0, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89, processorArchitecture=MSIL">
+      <HintPath>packages\Syncfusion.SfChart.WPF.23.1.38\lib\net46\Syncfusion.SfChart.WPF.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -68,6 +72,7 @@
     <Compile Include="CommansBar.xaml.cs">
       <DependentUpon>CommansBar.xaml</DependentUpon>
     </Compile>
+    <Compile Include="DisassemblerAnalyzer.cs" />
     <Compile Include="DisassemblerComparator.cs" />
     <Compile Include="InspectionStatisticWindow.xaml.cs">
       <DependentUpon>InspectionStatisticWindow.xaml</DependentUpon>
@@ -91,6 +96,14 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="InspectionStatisticWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Styles\ButtonStyles.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Styles\UIColor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -157,5 +170,6 @@
   <ItemGroup>
     <Resource Include="Fonts\Montserrat\OFL.txt" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

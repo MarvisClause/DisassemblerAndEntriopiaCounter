@@ -5,186 +5,168 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:col="clr-namespace:System.Collections;assembly=mscorlib"
         xmlns:local="clr-namespace:DisEn" 
-        xmlns:chart="clr-namespace:Syncfusion.UI.Xaml.Charts;assembly=Syncfusion.SfChart.WPF" 
+        xmlns:chart="clr-namespace:Syncfusion.UI.Xaml.Charts;assembly=Syncfusion.SfChart.WPF"
+        xmlns:fa="http://schemas.awesome.incremented/wpf/xaml/fontawesome.sharp"
        
-        mc:Ignorable="d"
-        Title="DisEn" MinHeight="800" MinWidth="1200" 
-        FontFamily="Times New Roman" WindowStyle="ThreeDBorderWindow" ResizeMode="CanResize" Icon="/img/appLogoJ.png" Width="1400" WindowState="Normal"  Background="#FF1F1D2B">
+        mc:Ignorable="d" 
+        MinHeight="700" 
+        MinWidth="1300" 
+        FontFamily="Montserrat" 
+        WindowStyle="None"  
+        Background="Transparent"
+        AllowsTransparency="True">
 
-    <Grid>
-        <!--Rows-->
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="15*"/>
-        </Grid.RowDefinitions>
-        <DockPanel Grid.Row="0" MaxHeight="50">
-            <!--Menu-->
-            <Menu FontSize="16" Background="{x:Null}" Foreground="Black"  DockPanel.Dock="Left">
-                <MenuItem>
-                    <MenuItem.Header >
-                        <!--Icon-->
-                        <Image Source="/img/menu.png" Margin="10"/>
-                    </MenuItem.Header>
-                    <MenuItem Header="File">
-                        <!--Open file-->
-                        <MenuItem Header="Open file" Click="OpenFileAction"/>
-                        <!--Save file-->
-                        <MenuItem Header="Save file" Click="SaveFileAction"/>
-                        <!--Save screenshot-->
-                        <MenuItem Header="Save Histogram Image" Click="SaveHistogramAction"/>
-                    </MenuItem>
-                    <MenuItem Header="Cleaner" >
-                        <!--Temp data cleaner-->
-                        <MenuItem Header="Temp data" Click="ClearTempDirectoryAction"/>
-                        <MenuItem Header="Data in progress (IN PROCESS)"/>
-                    </MenuItem>
-                    <MenuItem x:Name="StatisticMenuItem" Header="Statistics" Click="OpenStatisticWindowAction" />
-                </MenuItem>
-            </Menu>
-            <!--Logo-->
-            <Image Source="/img/logo.png"  DockPanel.Dock="Right"/>
-        </DockPanel>
-        <!--Entropy data-->
-        <Grid Grid.Row="1">
-            <!--Columns-->
+    <Border CornerRadius="10"
+            BorderThickness="1">
+
+        <Grid>
+
             <Grid.ColumnDefinitions>
+                <!--Navigation menu-->
+                <ColumnDefinition Width="250"/>
+                <!--Content section-->
                 <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="2*"/>
             </Grid.ColumnDefinitions>
-            <!--File info-->
-            <UniformGrid x:Name="FileInfoUniformGrid" Rows="2">
-                <!--Current file info-->
-                <Grid Grid.Row="0">
-                    <!--Rows-->
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="2*"/>
-                    </Grid.RowDefinitions>
-                    <Border Background="#2C2A37" CornerRadius="10" Grid.Row="0" Grid.Column="0" Margin="5">
-                        <Viewbox>
-                            <UniformGrid Rows="4" Margin="5">
-                                <Viewbox HorizontalAlignment="Center">
-                                    <DockPanel>
-                                        <TextBlock FontSize="20" FontFamily="Montserrat Black" Foreground="#FF3993FB">CURRENT FILE INFO</TextBlock>
-                                    </DockPanel>
-                                </Viewbox>
-                                <!--Path to file-->
-                                <Viewbox HorizontalAlignment="Left">
-                                    <DockPanel>
-                                        <TextBlock Margin="5"  FontFamily="Montserrat Medium" Foreground="White">Path to file:</TextBlock>
-                                        <TextBlock x:Name="PathToFileTextBlock" Margin="5" FontFamily="Montserrat"  Foreground="White"/>
-                                    </DockPanel>
-                                </Viewbox>
-                                <!--Size of file-->
-                                <Viewbox HorizontalAlignment="Left">
-                                    <DockPanel >
-                                        <TextBlock Margin="5" FontFamily="Montserrat Medium" Foreground="White">Size of file:</TextBlock>
-                                        <TextBlock x:Name="SizeFile" Margin="5" FontFamily="Montserrat"  Foreground="White"/>
-                                    </DockPanel>
-                                </Viewbox>
-                                <!--Total amount of instructions-->
-                                <Viewbox HorizontalAlignment="Left">
-                                    <DockPanel >
-                                        <TextBlock Margin="5" FontFamily="Montserrat Medium" Foreground="White">Total amount of commands:</TextBlock>
-                                        <TextBlock x:Name="TotalNumOfCommandsTextBlock" Margin="5" FontFamily="Montserrat" Foreground="White"/>
-                                    </DockPanel>
-                                </Viewbox>
-                            </UniformGrid>
-                        </Viewbox>
-                    </Border>
-                    <DataGrid x:Name="CurrentDisassemblerDataGrid" Grid.Row="1" Grid.Column="0" FontSize="15" Margin="5"
-                      AutoGenerateColumns="False" HorizontalGridLinesBrush="DarkGray"
-                      RowBackground="LightGray" AlternatingRowBackground="White"
-                      IsReadOnly="True" VerticalScrollBarVisibility="Auto" FontFamily="Montserrat SemiBold"
-                      Background="#FFF6F7F9" BorderBrush="#FFF6F7F9" Foreground="Black">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Binding="{Binding Path=Name}" Header="Command" Width="*" FontFamily="Montserrat"/>
-                            <DataGridTextColumn Binding="{Binding Path=Count}" Header="Quantity" Width="*" FontFamily="Montserrat"/>
-                            <DataGridTextColumn Binding="{Binding Path=Entropy}" Header="Entropy" Width="1.5*" FontFamily="Montserrat"/>
-                        </DataGrid.Columns>
-                    </DataGrid>
-                </Grid>
-                <!--Cast file info-->
-                <Grid x:Name="CastFileInfoGrid" Grid.Row="1">
-                    <!--Rows-->
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="2*"/>
-                        <RowDefinition Height="0.5*"/>
-                    </Grid.RowDefinitions>
-                    <Border Background="#2C2A37" CornerRadius="10" Grid.Row="0" Grid.Column="0" Margin="5">
-                        <Viewbox>
-                            <UniformGrid Rows="3">
-                                <Viewbox  HorizontalAlignment="Center">
-                                    <DockPanel>
-                                        <TextBlock FontSize="20" FontFamily="Montserrat Black" Foreground="#FF3993FB">CAST FILE INFO</TextBlock>
-                                    </DockPanel>
-                                </Viewbox>
-                                <!--Size of file-->
-                                <Viewbox HorizontalAlignment="Left">
-                                    <DockPanel >
-                                        <TextBlock Margin="5" FontFamily="Montserrat Medium" Foreground="White">Size of file:</TextBlock>
-                                        <TextBlock x:Name="SizeCastFile" Margin="5" FontFamily="Montserrat"  Foreground="White"/>
-                                    </DockPanel>
-                                </Viewbox>
-                                <!--Total amount of instructions-->
-                                <Viewbox HorizontalAlignment="Left">
-                                    <DockPanel >
-                                        <TextBlock Margin="5" FontFamily="Montserrat Medium" Foreground="White">Total amount of commands:</TextBlock>
-                                        <TextBlock x:Name="TotalNumOfCommandsCastTextBlock" Margin="5" FontFamily="Montserrat" Foreground="White"/>
-                                    </DockPanel>
-                                </Viewbox>
-                            </UniformGrid>
-                        </Viewbox>
-                    </Border>
-                    <DataGrid x:Name="SavedDisassemblerDataGrid" Grid.Row="1" FontSize="15" Margin="5"
-                      AutoGenerateColumns="False" HorizontalGridLinesBrush="DarkGray"
-                      RowBackground="LightGray" AlternatingRowBackground="White"
-                      IsReadOnly="True" VerticalScrollBarVisibility="Auto" FontFamily="Montserrat SemiBold"
-                      Background="#FFF6F7F9" BorderBrush="#FFF6F7F9" Foreground="Black">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Binding="{Binding Path=Name}" Header="Command" Width="*" FontFamily="Montserrat"/>
-                            <DataGridTextColumn Binding="{Binding Path=Count}" Header="Quantity" Width="*" FontFamily="Montserrat"/>
-                            <DataGridTextColumn Binding="{Binding Path=Entropy}" Header="Entropy" Width="1.5*" FontFamily="Montserrat"/>
-                        </DataGrid.Columns>
-                    </DataGrid>
-                    <Border x:Name="UpdateCastBorder" Grid.Row="2" CornerRadius="10" Background="#FF3993FB">
-                        <Button FontFamily="Montserrat" FontWeight="Bold" Click="UpdateCastAction" Background="{x:Null}" BorderBrush="#FF828282" Foreground="White">
-                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" >
-                            UPDATE CAST</TextBlock>
-                        </Button>
-                    </Border>
-                </Grid>
-            </UniformGrid>
-            <!--Histogram-->
-            <Border Grid.Column="1" Margin="5" CornerRadius="10" Background="#FF2C2A37">
-                <UniformGrid x:Name="HistogramUniformGrid" Grid.Column="1" Rows="2" Margin="5">
-                    <chart:SfChart x:Name="CurrentDisassemblerHistogram" Grid.Row="0" Header="CURRENT" FontSize="20" FontFamily="Montserrat Black"
-                       Foreground="#FF3993FB" Margin="5">
-                        <chart:SfChart.PrimaryAxis>
-                            <!--X Axis-->
-                            <chart:CategoryAxis Header="Commands" FontSize="14" FontFamily="Montserrat" Foreground="White"/>
-                        </chart:SfChart.PrimaryAxis>
-                        <chart:SfChart.SecondaryAxis>
-                            <!--Y Axis-->
-                            <chart:NumericalAxis Header="Entropy" FontSize="14" FontFamily="Montserrat" LabelBorderBrush="#FF3993FB" Foreground="White"/>
-                        </chart:SfChart.SecondaryAxis>
-                        <chart:ColumnSeries/>
-                    </chart:SfChart>
-                    <chart:SfChart x:Name="CastDisassemblerHistogram" Grid.Row="1" Header="CAST" FontSize="20" FontFamily="Montserrat Black"
-                       Foreground="#FF3993FB" Margin="5">
-                        <chart:SfChart.PrimaryAxis>
-                            <!--X Axis-->
-                            <chart:CategoryAxis Header="Commands" FontSize="14" FontFamily="Montserrat" Foreground="White"/>
-                        </chart:SfChart.PrimaryAxis>
-                        <chart:SfChart.SecondaryAxis>
-                            <!--Y Axis-->
-                            <chart:NumericalAxis Header="Entropy" FontSize="14" FontFamily="Montserrat" LabelBorderBrush="#FF3993FB" Foreground="White"/>
-                        </chart:SfChart.SecondaryAxis>
-                        <chart:ColumnSeries/>
-                    </chart:SfChart>
-                </UniformGrid>
+            
+            <!--Navigation Menu-->
+            <Border CornerRadius="10,0,0,10"
+                    Grid.Column="0">
+
+                <Border.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                        <GradientStop Color="{StaticResource secondaryBackColor1}" Offset="0"/>
+                        <GradientStop Color="{StaticResource secondaryBackColor2}" Offset="1"/>
+                    </LinearGradientBrush>
+                </Border.Background>
+
+
+                <StackPanel>
+
+                    <!--Logo-->
+                    <StackPanel Orientation="Horizontal"
+                                Height="50"
+                                Margin="15,25,0,40">
+                        <!--Test image-->
+                        <Image Source="img/appLogoJ.png" Height="50"/>
+                        <TextBlock Text="DisEn"
+                                   Foreground="{StaticResource titleColor2}"
+                                   FontSize="40"
+                                   FontFamily="Montserrat"
+                                   FontWeight="Medium"
+                                   VerticalAlignment="Center"
+                                   Margin="10,0,0,0"/>
+                    </StackPanel>
+
+                        
+                    <!--Menu Buttons-->
+                    
+                    <!--Dashboard Button-->
+                    <RadioButton Style="{StaticResource menuButton}"
+                                 Tag="{StaticResource color2}">
+                        <StackPanel Orientation="Horizontal">
+                            <fa:IconImage Icon="Home" Style="{StaticResource menuButtonIcon}"/>
+                            <TextBlock Text="Dashboard" Style="{StaticResource menuButtonText}"/>
+                        </StackPanel>
+                    </RadioButton>
+
+                    <!--Research Button-->
+                    <RadioButton Style="{StaticResource menuButton}"
+                                 Tag="{StaticResource color1}">
+                        <StackPanel Orientation="Horizontal">
+                            <fa:IconImage Icon="Flask" Style="{StaticResource menuButtonIcon}"/>
+                            <TextBlock Text="Research" Style="{StaticResource menuButtonText}"/>
+                        </StackPanel>
+                    </RadioButton>
+
+                    <!--Casts Button-->
+                    <RadioButton Style="{StaticResource menuButton}"
+                                 Tag="{StaticResource color3}">
+                        <StackPanel Orientation="Horizontal">
+                            <fa:IconImage Icon="Clone" Style="{StaticResource menuButtonIcon}"/>
+                            <TextBlock Text="Casts" Style="{StaticResource menuButtonText}"/>
+                        </StackPanel>
+                    </RadioButton>
+
+                    <!--F.A.Q. Button-->
+                    <RadioButton Style="{StaticResource menuButton}"
+                                 Tag="{StaticResource color6}">
+                        <StackPanel Orientation="Horizontal">
+                            <fa:IconImage Icon="ClipboardQuestion" Style="{StaticResource menuButtonIcon}"/>
+                            <TextBlock Text="F.A.Q." Style="{StaticResource menuButtonText}"/>
+                        </StackPanel>
+                    </RadioButton>
+
+                    <!--Settings Button-->
+                    <RadioButton Style="{StaticResource menuButton}"
+                                 Tag="{StaticResource color4}">
+                        <StackPanel Orientation="Horizontal">
+                            <fa:IconImage Icon="Gear" Style="{StaticResource menuButtonIcon}"/>
+                            <TextBlock Text="Settings" Style="{StaticResource menuButtonText}"/>
+                        </StackPanel>
+                    </RadioButton>
+
+                    <!--Report Button-->
+                    <RadioButton Style="{StaticResource menuButton}"
+                                 Tag="{StaticResource color4}">
+                        <StackPanel Orientation="Horizontal">
+                            <fa:IconImage Icon="Flag" Style="{StaticResource menuButtonIcon}"/>
+                            <TextBlock Text="Reports" Style="{StaticResource menuButtonText}"/>
+                        </StackPanel>
+                    </RadioButton>
+
+                </StackPanel>
+
+
             </Border>
+
+            
+            <!--Main Section-->
+            <Border CornerRadius="0,10,10,0"
+                    Grid.Column="1">
+
+                <Border.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,0.7">
+                        <GradientStop Color="{StaticResource primaryBackColor1}" Offset="0"/>
+                        <GradientStop Color="{StaticResource primaryBackColor2}" Offset="1"/>
+                    </LinearGradientBrush>
+                </Border.Background>
+
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <!--Control bar-->
+                        <RowDefinition Height="25"/>
+                        <!--Header/Caption -->
+                        <RowDefinition Height="35"/>
+                        <!--Content section / Child views-->
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!--Control bar-->
+                    <StackPanel x:Name="pnlControlBar"
+                                Grid.Row="0"
+                                Orientation="Horizontal"
+                                FlowDirection="RightToLeft"
+                                Background="Transparent"
+                                Margin="0,0,5,0"
+                                MouseLeftButtonDown="pnlControlBar_MouseLeftButtonDown"
+                                Mouse.MouseEnter="pnlControlBar_MouseEnter">
+
+                        <Button>
+                            
+                        </Button>
+                        
+                    </StackPanel>
+
+                </Grid>
+                
+                
+            </Border>
+
+
         </Grid>
-    </Grid>
+        
+        
+    </Border>
+    
+    
 </Window>
