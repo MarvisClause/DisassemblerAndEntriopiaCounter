@@ -1,4 +1,5 @@
 ﻿<Window x:Class="DisEn.MainWindow"
+        x:Name="mainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -6,16 +7,36 @@
         xmlns:col="clr-namespace:System.Collections;assembly=mscorlib"
         xmlns:local="clr-namespace:DisEn" 
         xmlns:chart="clr-namespace:Syncfusion.UI.Xaml.Charts;assembly=Syncfusion.SfChart.WPF"
-        xmlns:fa="http://schemas.awesome.incremented/wpf/xaml/fontawesome.sharp"
-       
+        xmlns:fa="http://schemas.awesome.incremented/wpf/xaml/fontawesome.sharp" 
+        xmlns:viewModel="clr-namespace:DisEn.ViewModels"
+        xmlns:views="clr-namespace:DisEn.Views"
         mc:Ignorable="d" 
         MinHeight="700" 
         MinWidth="1300" 
         FontFamily="Montserrat" 
         WindowStyle="None"  
         Background="Transparent"
-        AllowsTransparency="True">
+        AllowsTransparency="True"
+        >
 
+    <Window.DataContext>
+        <viewModel:MainViewModel/>
+    </Window.DataContext>
+
+    <Window.Resources>
+
+        <!--ERROR DONT SEE DashboardView AND ResearchView-->
+        
+        <DataTemplate DataType="{x:Type viewModel:DashboardViewModel}">
+            <views:DashboardView/>
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type viewModel:ResearchViewModel}">
+            <views:ResearchViews/>
+        </DataTemplate>
+
+    </Window.Resources>
+    
     <Border CornerRadius="10"
             BorderThickness="1">
 
@@ -47,9 +68,9 @@
                                 Height="50"
                                 Margin="15,25,0,40">
                         <!--Test image-->
-                        <Image Source="img/appLogoJ.png" Height="50"/>
+                        <Image Source="img/LogoIconOld.png" Height="50"/>
                         <TextBlock Text="DisEn"
-                                   Foreground="{StaticResource titleColor2}"
+                                   Foreground="{StaticResource color8}"
                                    FontSize="40"
                                    FontFamily="Montserrat"
                                    FontWeight="Medium"
@@ -62,16 +83,19 @@
                     
                     <!--Dashboard Button-->
                     <RadioButton Style="{StaticResource menuButton}"
-                                 Tag="{StaticResource color2}">
+                                 Tag="{StaticResource color2}"
+                                 IsChecked="True"
+                                 Command="{Binding ShowDashboardViewCommand}">
                         <StackPanel Orientation="Horizontal">
-                            <fa:IconImage Icon="Home" Style="{StaticResource menuButtonIcon}"/>
+                            <fa:IconImage Icon="ChartSimple" Style="{StaticResource menuButtonIcon}"/>
                             <TextBlock Text="Dashboard" Style="{StaticResource menuButtonText}"/>
                         </StackPanel>
                     </RadioButton>
 
                     <!--Research Button-->
                     <RadioButton Style="{StaticResource menuButton}"
-                                 Tag="{StaticResource color1}">
+                                 Tag="{StaticResource color1}"
+                                 Command="{Binding ShowResearchViewCommand}">
                         <StackPanel Orientation="Horizontal">
                             <fa:IconImage Icon="Flask" Style="{StaticResource menuButtonIcon}"/>
                             <TextBlock Text="Research" Style="{StaticResource menuButtonText}"/>
@@ -107,7 +131,7 @@
 
                     <!--Report Button-->
                     <RadioButton Style="{StaticResource menuButton}"
-                                 Tag="{StaticResource color4}">
+                                 Tag="{StaticResource color9}">
                         <StackPanel Orientation="Horizontal">
                             <fa:IconImage Icon="Flag" Style="{StaticResource menuButtonIcon}"/>
                             <TextBlock Text="Reports" Style="{StaticResource menuButtonText}"/>
@@ -150,13 +174,104 @@
                                 Margin="0,0,5,0"
                                 MouseLeftButtonDown="pnlControlBar_MouseLeftButtonDown"
                                 Mouse.MouseEnter="pnlControlBar_MouseEnter">
-
-                        <Button>
-                            
+                        <!--Close Button-->
+                        <Button x:Name="btnClose"
+                                Style="{DynamicResource controlButton}"
+                                Tag="{StaticResource color4}"
+                                Click="btnClose_Click">
+                            <fa:IconImage Icon="Xmark" Style="{StaticResource controlButtonIcon}"/>
                         </Button>
-                        
+                        <!--Minimize Button-->
+                        <Button x:Name="btnMaximize"
+                                Style="{DynamicResource controlButton}"
+                                Tag="{StaticResource color6}"
+                                Click="btnMaximize_Click">
+                            <fa:IconImage Icon="Square" Style="{StaticResource controlButtonIcon}"/>
+                        </Button>
+                        <!--Minimize Button-->
+                        <Button x:Name="btnMinimize"
+                                Style="{DynamicResource controlButton}"
+                                Tag="{StaticResource color8}"
+                                Click="btnMinimize_Click">
+                            <fa:IconImage Icon="WindowMinimize" Width="12" Style="{StaticResource controlButtonIcon}"/>
+                        </Button>
+
                     </StackPanel>
 
+                    <!--Header/Caption -->
+                        <Grid Grid.Row="1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            
+                            <!--Caption-->
+                            
+                            <StackPanel Grid.Column="0"
+                                        Orientation="Horizontal"
+                                        VerticalAlignment="Center">
+
+                                <fa:IconImage Icon="{Binding Icon}"
+                                              Height="20"
+                                              Width="20"
+                                              Foreground="{StaticResource titleColor2}"
+                                              Margin="35,0,10,0"/>
+                                <TextBlock Text="{Binding Caption}"
+                                           Foreground="{StaticResource titleColor2}"
+                                           FontSize="16"
+                                           FontFamily="Montserrat"
+                                           FontWeight="Medium"
+                                           VerticalAlignment="Center"/>
+                            </StackPanel>
+
+                            <!--Last Research File-->
+
+                            <StackPanel Grid.Column="1"
+                                        Orientation="Horizontal"
+                                        FlowDirection="RightToLeft"
+                                        VerticalAlignment="Center"
+                                        Margin="0,0,10,0"> 
+                                
+                                <!--Title of File-->
+                                 <Grid Margin="35,0,10,0">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                    </Grid.RowDefinitions>
+                                    
+                                    <TextBlock Text="NAME OF FILE"
+                                               Grid.Row="0"
+                                               Foreground="{StaticResource titleColor2}"
+                                               FontSize="16"
+                                               FontFamily="Montserrat"
+                                               FontWeight="Medium"
+                                               VerticalAlignment="Center"/>
+                                    <TextBlock Text="Last research"
+                                               Grid.Row="1"
+                                               Foreground="{StaticResource titleColor2}"
+                                               FontSize="12"
+                                               FontFamily="Montserrat"
+                                               FontWeight="Regular"
+                                               HorizontalAlignment="Right"
+                                               VerticalAlignment="Center"/>     
+                                </Grid>
+                             
+                                <fa:IconImage Icon="File"
+                                              IconFont="Solid"
+                                              Height="30"
+                                              Width="30"
+                                              Foreground="{StaticResource titleColor2}"
+                                              Margin="10,0,0,0"
+                                              HorizontalAlignment="Left"/>
+                                 
+                            </StackPanel>   
+
+                    </Grid>
+                    
+                    <!--Content section / Child views-->
+                    <ContentPresenter Content="{Binding CurrentChildView}"
+                                    Grid.Row="2"
+                                    Margin="25"/>
                 </Grid>
                 
                 
