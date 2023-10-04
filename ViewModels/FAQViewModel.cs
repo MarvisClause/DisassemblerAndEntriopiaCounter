@@ -6,10 +6,8 @@ using System.Threading.Tasks;
 
 namespace DisEn.ViewModels
 {
-    public class ResearchViewModel : ViewModelBase
+    public class FAQViewModel : ViewModelBase
     {
-
-
 
     }
 }

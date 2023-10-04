@@ -51,15 +51,23 @@ namespace DisEn.ViewModels
         // Commands
         public ICommand ShowDashboardViewCommand { get; }
         public ICommand ShowResearchViewCommand { get; }
+        public ICommand ShowCastViewCommand { get; }
+        public ICommand ShowFAQViewCommand { get; }
+        public ICommand ShowSettingsViewCommand { get; }
+        public ICommand ShowReportsViewCommand { get; }
 
         public MainViewModel()
         {
             // Default view
-            ExecuteShowDashboardViewCommand(null); 
+            ExecuteShowDashboardViewCommand(null);
 
             //Initialize commands
             ShowDashboardViewCommand = new ViewModelCommand(ExecuteShowDashboardViewCommand);
             ShowResearchViewCommand = new ViewModelCommand(ExecuteShowResearchViewCommand);
+            ShowCastViewCommand = new ViewModelCommand(ExecuteShowCastViewCommand);
+            ShowFAQViewCommand = new ViewModelCommand(ExecuteShowFAQViewCommand);
+            ShowSettingsViewCommand = new ViewModelCommand(ExecuteShowSettingsViewCommand);
+            ShowReportsViewCommand = new ViewModelCommand(ExecuteShowReportsViewCommand);
 
         }
 
@@ -75,6 +83,32 @@ namespace DisEn.ViewModels
             CurrentChildView = new ResearchViewModel();
             Caption = "Research";
             Icon = IconChar.Flask;
+        }
+
+        public void ExecuteShowCastViewCommand(object obj)
+        {
+            CurrentChildView = new CastsViewModel();
+            Caption = "Casts";
+            Icon = IconChar.Clone;
+        }
+
+        public void ExecuteShowFAQViewCommand(object obj)
+        {
+            CurrentChildView = new FAQViewModel();
+            Caption = "F.A.Q";
+            Icon = IconChar.ClipboardQuestion;
+        }
+        public void ExecuteShowSettingsViewCommand(object obj)
+        {
+            CurrentChildView = new SettingsViewModel();
+            Caption = "Settings";
+            Icon = IconChar.Gear;
+        }
+        public void ExecuteShowReportsViewCommand(object obj)
+        {
+            CurrentChildView = new ReportsViewModel();
+            Caption = "Reports";
+            Icon = IconChar.Flag;
         }
     }
 }

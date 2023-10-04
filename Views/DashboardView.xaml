@@ -6,7 +6,80 @@
              xmlns:local="clr-namespace:DisEn.Views"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+    
     <Grid>
-        <Image Source="/img/joker.png"/>
+        <Grid.ColumnDefinitions>
+            <!--List of comands section-->
+            <ColumnDefinition Width="*"/>
+            <!--Histogram section-->
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        
+        <!--List of comands section-->
+        <Border CornerRadius="10"
+                Grid.Column="0"
+                Margin="0,0,5,0">
+
+            <Border.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                    <GradientStop Color="{StaticResource secondaryBackColor1}" Offset="0"/>
+                    <GradientStop Color="{StaticResource secondaryBackColor2}" Offset="1"/>
+                </LinearGradientBrush>
+            </Border.Background>
+
+            <StackPanel Margin="10">
+                
+            </StackPanel>
+        </Border>
+
+        <!--Histogram section-->
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!--Pie Histogram section-->
+            <Border CornerRadius="10"
+                Grid.Row="0"
+                Margin="5,0,0,5">
+            
+                <Border.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                        <GradientStop Color="{StaticResource secondaryBackColor1}" Offset="0"/>
+                        <GradientStop Color="{StaticResource secondaryBackColor2}" Offset="1"/>
+                    </LinearGradientBrush>
+                </Border.Background>
+
+                <StackPanel>
+
+
+
+                </StackPanel>
+            </Border>
+
+            <!--Colum Histogram section-->
+            <Border CornerRadius="10"
+                    Grid.Row="1"
+                    Margin="5,5,0,0">
+
+                <Border.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                        <GradientStop Color="{StaticResource secondaryBackColor1}" Offset="0"/>
+                        <GradientStop Color="{StaticResource secondaryBackColor2}" Offset="1"/>
+                    </LinearGradientBrush>
+                </Border.Background>
+
+                <StackPanel>
+
+
+
+                </StackPanel>
+            </Border>
+
+        </Grid>
+        
+        
+
     </Grid>
 </UserControl>

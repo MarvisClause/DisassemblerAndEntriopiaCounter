@@ -25,14 +25,28 @@
 
     <Window.Resources>
 
-        <!--ERROR DONT SEE DashboardView AND ResearchView-->
-        
         <DataTemplate DataType="{x:Type viewModel:DashboardViewModel}">
             <views:DashboardView/>
         </DataTemplate>
 
         <DataTemplate DataType="{x:Type viewModel:ResearchViewModel}">
             <views:ResearchViews/>
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type viewModel:CastsViewModel}">
+            <views:CastsView/>
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type viewModel:FAQViewModel}">
+            <views:FAQView/>
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type viewModel:SettingsViewModel}">
+            <views:SettingsView/>
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type viewModel:ReportsViewModel}">
+            <views:ReportsView/>
         </DataTemplate>
 
     </Window.Resources>
@@ -104,7 +118,8 @@
 
                     <!--Casts Button-->
                     <RadioButton Style="{StaticResource menuButton}"
-                                 Tag="{StaticResource color3}">
+                                 Tag="{StaticResource color3}"
+                                 Command="{Binding ShowCastViewCommand}">
                         <StackPanel Orientation="Horizontal">
                             <fa:IconImage Icon="Clone" Style="{StaticResource menuButtonIcon}"/>
                             <TextBlock Text="Casts" Style="{StaticResource menuButtonText}"/>
@@ -113,7 +128,8 @@
 
                     <!--F.A.Q. Button-->
                     <RadioButton Style="{StaticResource menuButton}"
-                                 Tag="{StaticResource color6}">
+                                 Tag="{StaticResource color6}"
+                                 Command="{Binding ShowFAQViewCommand}">
                         <StackPanel Orientation="Horizontal">
                             <fa:IconImage Icon="ClipboardQuestion" Style="{StaticResource menuButtonIcon}"/>
                             <TextBlock Text="F.A.Q." Style="{StaticResource menuButtonText}"/>
@@ -122,7 +138,8 @@
 
                     <!--Settings Button-->
                     <RadioButton Style="{StaticResource menuButton}"
-                                 Tag="{StaticResource color4}">
+                                 Tag="{StaticResource color4}"
+                                 Command="{Binding ShowSettingsViewCommand}">
                         <StackPanel Orientation="Horizontal">
                             <fa:IconImage Icon="Gear" Style="{StaticResource menuButtonIcon}"/>
                             <TextBlock Text="Settings" Style="{StaticResource menuButtonText}"/>
@@ -131,7 +148,8 @@
 
                     <!--Report Button-->
                     <RadioButton Style="{StaticResource menuButton}"
-                                 Tag="{StaticResource color9}">
+                                 Tag="{StaticResource color9}"
+                                 Command="{Binding ShowReportsViewCommand}">
                         <StackPanel Orientation="Horizontal">
                             <fa:IconImage Icon="Flag" Style="{StaticResource menuButtonIcon}"/>
                             <TextBlock Text="Reports" Style="{StaticResource menuButtonText}"/>
@@ -224,7 +242,7 @@
                                            VerticalAlignment="Center"/>
                             </StackPanel>
 
-                            <!--Last Research File-->
+                            <!--Last Research File--><!--
 
                             <StackPanel Grid.Column="1"
                                         Orientation="Horizontal"
@@ -232,7 +250,7 @@
                                         VerticalAlignment="Center"
                                         Margin="0,0,10,0"> 
                                 
-                                <!--Title of File-->
+                                --><!--Title of File--><!--
                                  <Grid Margin="35,0,10,0">
                                     <Grid.RowDefinitions>
                                         <RowDefinition/>
@@ -264,7 +282,7 @@
                                               Margin="10,0,0,0"
                                               HorizontalAlignment="Left"/>
                                  
-                            </StackPanel>   
+                            </StackPanel>-->   
 
                     </Grid>
                     

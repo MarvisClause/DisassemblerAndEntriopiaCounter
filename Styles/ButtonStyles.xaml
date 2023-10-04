@@ -80,6 +80,7 @@
         </Style.Triggers>
     </Style>
 
+
     <!--Menu button icon-->
     <Style x:Key="controlButtonIcon" TargetType="fa:IconImage">
         <Setter Property="Foreground" Value="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType=Button}}"/>
