@@ -7,6 +7,156 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
+        <Grid.ColumnDefinitions>
+            <!--General section-->
+            <ColumnDefinition Width="*"/>
+            <!--Research section-->
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!--General section-->
+        <Border CornerRadius="10"
+                Grid.Column="0"
+                Margin="0,0,5,0">  
+
+            <Border.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                    <GradientStop Color="{StaticResource secondaryBackColor1}" Offset="0"/>
+                    <GradientStop Color="{StaticResource secondaryBackColor2}" Offset="1"/>
+                </LinearGradientBrush>
+            </Border.Background>
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <!--Tile-->
+                    <RowDefinition Height="40"/>
+                    <!--List of tools-->
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <!--Tile-->
+                <TextBlock Text="General"
+                           Grid.Row="0"
+                           Foreground="{StaticResource titleColor1}"
+                           FontSize="24"
+                           FontFamily="Montserrat"
+                           FontWeight="Medium"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Center"/>
+
+                <StackPanel Grid.Row="1">
+
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <!--Language-->
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <!--Language-->
+                        <StackPanel Grid.Row="0"
+                                    Margin="40,0,40,0">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <!--Tile-->
+                                    <ColumnDefinition Width="*"/>
+                                    <!--DROPDOWN MENU-->
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                
+                                <!--Tile-->
+                                <TextBlock Grid.Column="0"
+                                           Text="Language"
+                                           Foreground="{StaticResource titleColor2}"
+                                           FontSize="16"
+                                           FontFamily="Montserrat"
+                                           FontWeight="Regular"
+                                           VerticalAlignment="Center"
+                                           HorizontalAlignment="Center"/>
+                            
+                                <!--DROPDOWN MENU OR SOMETHING ELSE BUT NOW WE WILL USE BUTTON-->
+
+                                <Button Grid.Column="1" 
+                                        Margin="20,0,0,0"
+                                        Foreground="Transparent"
+                                        Background="Transparent"
+                                        >
+                                    <TextBlock Text="English"
+                                               Foreground="{StaticResource titleColor3}"
+                                               />
+                                </Button>
+                                
+                            </Grid>
+                            
+  
+                        </StackPanel>
+
+                        <!--Casts folder-->
+                        <StackPanel Grid.Row="1"
+                                    Orientation="Horizontal"
+                                    Margin="40,5,40,0"> 
+                            <!--Tile-->
+                            <TextBlock Text="Casts folder"
+                                       Grid.Row="0"
+                                       Foreground="{StaticResource titleColor2}"
+                                       FontSize="16"
+                                       FontFamily="Montserrat"
+                                       FontWeight="Regular"
+                                       VerticalAlignment="Center"
+                                       HorizontalAlignment="Center"/>   
+
+                            <!--Button-->
+
+                        </StackPanel>
+
+                    </Grid>
+
+                </StackPanel>
+
+            </Grid>
+
             
+
+
+        </Border>
+        <!--Research section-->
+        <Border CornerRadius="10"
+        Grid.Column="1"
+        Margin="0,0,5,0">
+
+            <Border.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                    <GradientStop Color="{StaticResource secondaryBackColor1}" Offset="0"/>
+                    <GradientStop Color="{StaticResource secondaryBackColor2}" Offset="1"/>
+                </LinearGradientBrush>
+            </Border.Background>
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <!--Tile-->
+                    <RowDefinition Height="40"/>
+                    <!--List of tools-->
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <!--Tile-->
+                <TextBlock Text="Research"
+                           Grid.Row="0"
+                           Foreground="{StaticResource titleColor2}"
+                           FontSize="24"
+                           FontFamily="Montserrat"
+                           FontWeight="Medium"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Center"/>
+
+
+                <StackPanel Grid.Row="1">
+                    
+                </StackPanel>
+
+            </Grid>
+            
+        </Border>
     </Grid>
 </UserControl>
