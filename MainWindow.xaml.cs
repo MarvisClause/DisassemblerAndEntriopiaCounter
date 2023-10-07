@@ -16,22 +16,9 @@ namespace DisEn
 {
     public partial class MainWindow : Window
     {
-        private DisassemblerManager _disassemblerManager;
-
-        private DisassemblerComparator _disassemblerComparator;
-
-
         public MainWindow()
         {
             InitializeComponent();
-            // Initialize disassembler
-            _disassemblerManager = new DisassemblerManager();
-            _disassemblerComparator = new DisassemblerComparator();
-            // Hide additional interface
-            //SetCastDataVisibility(false);
-
-
-
         }
 
         [DllImport("user32.dll")]

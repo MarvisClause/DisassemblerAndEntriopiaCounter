@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.IO;
 
 namespace DisEn
-{
+{ 
     // Disassembler manager
     // Controls file saves and their management
     public class DisassemblerManager
@@ -21,7 +21,11 @@ namespace DisEn
         private const string INSTRUCTION_FILTER_FILE_PATH = "instructions.txt";
 
         // Instruction filter
-        HashSet<string> instructionFilter;
+        private HashSet<string> _instructionFilter;
+
+        // Temporary folder for disassembler temp files
+        [NonSerialized]
+        private const string TEMP_DISASSEMBLER_FOLDER = "DISTEMP";
 
         #endregion
 
@@ -30,7 +34,7 @@ namespace DisEn
         public DisassemblerManager()
         {
             // Prepare hash set
-            instructionFilter = new HashSet<string>();
+            _instructionFilter = new HashSet<string>();
             // Get instruction filter list
             string[] instructionReadArray = File.ReadAllLines(INSTRUCTION_FILTER_FILE_PATH);
             for (int i = 0; i < instructionReadArray.Length; ++i)
@@ -40,7 +44,7 @@ namespace DisEn
                 for (int j = 0; j < splitString.Length; ++j)
                 {
 
-                    instructionFilter.Add(splitString[j]);
+                    _instructionFilter.Add(splitString[j]);
                 }
             }
         }
@@ -92,10 +96,18 @@ namespace DisEn
         public void Disassemble(string filePath)
         {
             // Set instruction filter hash set
-            _currentDisassembler.SetInstructionFilterHashSet(instructionFilter);
-            _savedDisassembler.SetInstructionFilterHashSet(instructionFilter);
-            // Disassemble files
-            _currentDisassembler.DisassembleFile(filePath);
+            _currentDisassembler.SetInstructionFilterHashSet(_instructionFilter);
+            _savedDisassembler.SetInstructionFilterHashSet(_instructionFilter);
+            // Create folder for temporary files and remove existing one
+            if (Directory.Exists(TEMP_DISASSEMBLER_FOLDER))
+            {
+                Directory.Delete(TEMP_DISASSEMBLER_FOLDER, true);
+            }
+            Directory.CreateDirectory(TEMP_DISASSEMBLER_FOLDER);
+            // Create folder for current temporary file
+            String tempDisassembledFileFolder = TEMP_DISASSEMBLER_FOLDER;
+            Directory.CreateDirectory(tempDisassembledFileFolder);
+            _currentDisassembler.DisassembleFile(filePath, tempDisassembledFileFolder);
             _savedDisassembler = _currentDisassembler;
             // Check, if file exist in the data directory
             if (IsSavedDisassemblerExistInData())

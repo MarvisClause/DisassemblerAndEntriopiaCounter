@@ -4,11 +4,17 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:DisEn.Views" 
-             xmlns:fa="http://schemas.awesome.incremented/wpf/xaml/fontawesome.sharp" 
-            
+             xmlns:fa="http://schemas.awesome.incremented/wpf/xaml/fontawesome.sharp" xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
+        <Grid.RowDefinitions>
+            <!-- Action buttons -->
+            <RowDefinition Height="50"/>
+            <!-- Information -->
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
         <Grid.ColumnDefinitions>
             <!--List of comands section-->
             <ColumnDefinition Width="*"/>
@@ -16,8 +22,98 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
+        <!-- Action buttons -->
+        <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <!--List of comands section-->
+                    <ColumnDefinition Width="*"/>
+                    <!--Histogram section-->
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                
+                <!-- Choose file to disassemble button -->
+                <Button Grid.Column="1"
+                                Margin="5"
+                                Click="btnDisassembleFile_Click"                         
+                                Content="Upload File"                            
+                                FontSize="12"
+                                FontFamily="Montserrat"
+                                Cursor="Hand"
+                                BorderThickness="0"
+                                Foreground="White"
+                                VerticalAlignment="Center">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Background" 
+                                    Value="#773DFF"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Height="30"
+                                                CornerRadius="5"
+                                                Padding="5"
+                                                Background="{TemplateBinding Background}">
+                                            <ContentPresenter VerticalAlignment="Center"
+                                                              HorizontalAlignment="Center"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" 
+                                         Value="True">
+                                    <Setter Property="Background" 
+                                            Value="#836EFB"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+                <!-- Save cast button -->
+                <Button x:Name="UpdateCastFileButton" Grid.Column="0"
+                                Margin="5"
+                                Click="btnUpdateCastFile_Click"                         
+                                Content="Update Cast File"                            
+                                FontSize="12"
+                                FontFamily="Montserrat"
+                                Cursor="Hand"
+                                BorderThickness="0"
+                                Foreground="White"
+                                VerticalAlignment="Center">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Background" 
+                                    Value="#FFA25CE8"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Height="30"
+                                                Padding="5"
+                                                CornerRadius="5"
+                                                Background="{TemplateBinding Background}">
+                                            <ContentPresenter VerticalAlignment="Center"
+                                                              HorizontalAlignment="Center"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" 
+                                         Value="True">
+                                    <Setter Property="Background" 
+                                            Value="#836EFB"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+            </Grid>
+        </StackPanel>
+
         <!--List of comands section-->
         <Border CornerRadius="10"
+             Grid.Row="1"
              Grid.Column="0"
              Margin="0,0,5,0">
 
@@ -27,220 +123,205 @@
                     <GradientStop Color="{StaticResource secondaryBackColor2}" Offset="1"/>
                 </LinearGradientBrush>
             </Border.Background>
+            
             <!--File info section-->
-            <StackPanel Margin="10">
+            <UniformGrid x:Name="FileInfoUniformGrid" Rows="2" Margin="5">
+
+                <!-- Current file -->
                 <Grid>
                     <Grid.RowDefinitions>
-                        <!--First file-->
+                        <!--Text info about file-->
                         <RowDefinition Height="*"/>
-                        <!--Second file-->
-                        <RowDefinition Height="*"/>
+                        <!--Table with file commands analysis-->
+                        <RowDefinition Height="3*"/>
                     </Grid.RowDefinitions>
-                    
-                    <!--First File-->
-                    <StackPanel Grid.Row="0"
-                                Orientation="Vertical">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <!--Simple Data Of file-->
-                                <RowDefinition Height="*"/>
-                                <!--Table Info Of file-->
-                                <RowDefinition Height="*"/>
-                            </Grid.RowDefinitions>
-                            
-                            <Grid Grid.Row="0">
 
-                                <Grid.RowDefinitions>
-                                    <!--Name of file-->
-                                    <RowDefinition Height="*"/>
-                                    <!--Total amount of commands-->
-                                    <RowDefinition Height="*"/>
-                                    <!--Size of file:-->
-                                    <RowDefinition Height="*"/>
-                                </Grid.RowDefinitions>
-                                
-                                <!--Name of file-->
-                                <StackPanel Orientation="Horizontal"
+                    <Grid Grid.Row="0">
+
+                        <Grid.RowDefinitions>
+                            <!--Name of file-->
+                            <RowDefinition Height="*"/>
+                            <!--Total amount of commands-->
+                            <RowDefinition Height="*"/>
+                            <!--Size of file:-->
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <!--Name of file-->
+                        <StackPanel Orientation="Horizontal"
+                                                Grid.Row="0">
+                            <!--Title-->
+                            <TextBlock Text="Current file : "
+                                                   Foreground="{StaticResource titleColor2}"
+                                                   FontSize="16"
+                                                   FontFamily="Montserrat"
+                                                   FontWeight="Medium"
+                                                   VerticalAlignment="Center"
+                                                   Margin="10,0,0,0"/>
+                            <!--Name-->
+                            <TextBlock x:Name="CurrentFileName"
+                                                   Foreground="{StaticResource titleColor2}"
+                                                   FontSize="16"
+                                                   FontFamily="Montserrat"
+                                                   FontWeight="Medium"
+                                                   VerticalAlignment="Center"
+                                                   Margin="10,0,0,0"/>
+                        </StackPanel>
+
+                        <!--Total amount of commands-->
+                        <StackPanel Orientation="Horizontal"
+                                                Grid.Row="1">
+                            <!--Title-->
+                            <TextBlock Text="Total Amount Of Commands : "
+                                                   Foreground="{StaticResource titleColor2}"
+                                                   FontSize="16"
+                                                   FontFamily="Montserrat"
+                                                   FontWeight="Medium"
+                                                   VerticalAlignment="Center"
+                                                   Margin="10,0,0,0"/>
+                            <!--Name-->
+                            <TextBlock x:Name="CurrentFileTotalAmountOfCommands"
+                                                   Foreground="{StaticResource titleColor2}"
+                                                   FontSize="16"
+                                                   FontFamily="Montserrat"
+                                                   FontWeight="Medium"
+                                                   VerticalAlignment="Center"
+                                                   Margin="10,0,0,0"/>
+                        </StackPanel>
+
+                        <!--Size Of File-->
+                        <StackPanel Orientation="Horizontal"
+                                                Grid.Row="2">
+                            <!--Title-->
+                            <TextBlock Text="Size of file : "
+                                                   Foreground="{StaticResource titleColor2}"
+                                                   FontSize="16"
+                                                   FontFamily="Montserrat"
+                                                   FontWeight="Medium"
+                                                   VerticalAlignment="Center"
+                                                   Margin="10,0,0,0"/>
+                            <!--Name-->
+                            <TextBlock x:Name="CurrentFileSize"
+                                                   Foreground="{StaticResource titleColor2}"
+                                                   FontSize="16"
+                                                   FontFamily="Montserrat"
+                                                   FontWeight="Medium"
+                                                   VerticalAlignment="Center"
+                                                   Margin="10,0,0,0"/>
+                        </StackPanel>
+                    </Grid>
+
+                    <DataGrid x:Name="CurrentDisassemblerDataGrid" 
+                                              Grid.Row="1"
+                                              FontSize="15" 
+                                              Margin="5"
+                                              AutoGenerateColumns="False" 
+                                              HorizontalGridLinesBrush="DarkGray"
+                                              RowBackground="LightGray" 
+                                              AlternatingRowBackground="White"
+                                              IsReadOnly="True" 
+                                              VerticalScrollBarVisibility="Auto" 
+                                              FontFamily="Montserrat SemiBold"
+                                              Background="#FFF6F7F9" 
+                                              BorderBrush="#FFF6F7F9"
+                                              FontWeight="Medium"
+                                              Foreground="Black">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Binding="{Binding Path=Name}" Header="Command" Width="*" FontFamily="Montserrat"/>
+                            <DataGridTextColumn Binding="{Binding Path=Count}" Header="Quantity" Width="*" FontFamily="Montserrat"/>
+                            <DataGridTextColumn Binding="{Binding Path=Entropy}" Header="Entropy" Width="1.5*" FontFamily="Montserrat"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+
+                <!--Cast File-->
+                <Grid x:Name="CastFileInfoGrid" Grid.Row="1">
+                    <Grid.RowDefinitions>
+                        <!--Text info about file-->
+                        <RowDefinition Height="*"/>
+                        <!--Table with file commands analysis-->
+                        <RowDefinition Height="3*"/>
+                    </Grid.RowDefinitions>
+
+                    <Grid Grid.Row="0">
+
+                        <Grid.RowDefinitions>
+                            <!--Name of file-->
+                            <RowDefinition Height="*"/>
+                            <!--Total amount of commands-->
+                            <RowDefinition Height="*"/>
+                            <!--Size of file:-->
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <!--Name of file-->
+                        <StackPanel Orientation="Horizontal"
                                             Grid.Row="0">
-                                    <!--Title-->
-                                    <TextBlock Text="Current file : "
-                                               Foreground="{StaticResource titleColor2}"
-                                               FontSize="16"
-                                               FontFamily="Montserrat"
-                                               FontWeight="Medium"
-                                               VerticalAlignment="Center"
-                                               Margin="10,0,0,0"/>      
-                                    <!--Name-->
-                                    <TextBlock x:Name="FirstFileName"
+                            <!--Title-->
+                            <TextBlock Text="Cast file : "
                                                Foreground="{StaticResource titleColor2}"
                                                FontSize="16"
                                                FontFamily="Montserrat"
                                                FontWeight="Medium"
                                                VerticalAlignment="Center"
                                                Margin="10,0,0,0"/>
-                                </StackPanel>
+                            <!--Name-->
+                            <TextBlock x:Name="CastFileName"
+                                               Foreground="{StaticResource titleColor2}"
+                                               FontSize="16"
+                                               FontFamily="Montserrat"
+                                               FontWeight="Medium"
+                                               VerticalAlignment="Center"
+                                               Margin="10,0,0,0"/>
+                        </StackPanel>
 
-                                <!--Total amount of commands-->
-                                <!--<StackPanel Orientation="Horizontal"
+                        <!--Total amount of commands-->
+                        <StackPanel Orientation="Horizontal"
                                             Grid.Row="1">
-                                    --><!--Title--><!--
-                                    <TextBlock Text="TotalAmountOfCommands : "
+                            <!--Title-->
+                            <TextBlock Text="TotalAmountOfCommands : "
                                                Foreground="{StaticResource titleColor2}"
                                                FontSize="16"
                                                FontFamily="Montserrat"
                                                FontWeight="Medium"
                                                VerticalAlignment="Center"
                                                Margin="10,0,0,0"/>
-                                    --><!--Name--><!--
-                                    <TextBlock x:Name="FirstTotalAmountOfCommands"
+                            <!--Name-->
+                            <TextBlock x:Name="CastFileTotalAmountOfCommands"
                                                Foreground="{StaticResource titleColor2}"
                                                FontSize="16"
                                                FontFamily="Montserrat"
                                                FontWeight="Medium"
                                                VerticalAlignment="Center"
                                                Margin="10,0,0,0"/>
-                                </StackPanel>-->
+                        </StackPanel>
 
-                                <!--Size Of File-->
-                                <!--<StackPanel Orientation="Horizontal"
+                        <!--Size Of File-->
+                        <StackPanel Orientation="Horizontal"
                                             Grid.Row="2">
-                                    --><!--Title--><!--
-                                    <TextBlock Text="Size of file : "
-                                               Foreground="{StaticResource titleColor2}"
-                                               FontSize="16"
-                                               FontFamily="Montserrat"
-                                               FontWeight="Medium"
-                                               VerticalAlignment="Center"
-                                               Margin="10,0,0,0"/>      
-                                    --><!--Name--><!--
-                                    <TextBlock x:Name="FirstSizeOfFile"
+                            <!--Title-->
+                            <TextBlock Text="Size of file : "
                                                Foreground="{StaticResource titleColor2}"
                                                FontSize="16"
                                                FontFamily="Montserrat"
                                                FontWeight="Medium"
                                                VerticalAlignment="Center"
                                                Margin="10,0,0,0"/>
-                                </StackPanel>-->
-                            </Grid>
+                            <!--Name-->
+                            <TextBlock x:Name="CastFileSize"
+                                               Foreground="{StaticResource titleColor2}"
+                                               FontSize="16"
+                                               FontFamily="Montserrat"
+                                               FontWeight="Medium"
+                                               VerticalAlignment="Center"
+                                               Margin="10,0,0,0"/>
+                        </StackPanel>
+                    </Grid>
 
-                            <Border Grid.Row="1"
-                                    CornerRadius="15"
-                                    Margin="10,0,0,10">
-                                <DataGrid x:Name="CurrentDisassemblerDataGrid" 
+                    <DataGrid x:Name="SavedDisassemblerDataGrid" 
+                                          Grid.Row="1"    
                                           FontSize="15" 
-                                          AutoGenerateColumns="False" 
-                                          HorizontalGridLinesBrush="DarkGray"
-                                          RowBackground="LightGray" 
-                                          AlternatingRowBackground="White"
-                                          IsReadOnly="True" 
-                                          VerticalScrollBarVisibility="Auto" 
-                                          FontFamily="Montserrat SemiBold"
-                                          Background="#FFF6F7F9" 
-                                          BorderBrush="#FFF6F7F9"
-                                          FontWeight="Medium"
-                                          Foreground="Black">
-                                    <DataGrid.Columns>
-                                        <DataGridTextColumn Binding="{Binding Path=Name}" Header="Command" Width="*" FontFamily="Montserrat"/>
-                                        <DataGridTextColumn Binding="{Binding Path=Count}" Header="Quantity" Width="*" FontFamily="Montserrat"/>
-                                        <DataGridTextColumn Binding="{Binding Path=Entropy}" Header="Entropy" Width="1.5*" FontFamily="Montserrat"/>
-                                    </DataGrid.Columns>
-                                </DataGrid>
-                            </Border>
-                            
-                        </Grid>  
-                    </StackPanel>
-
-                    <!--Second File-->
-                    <StackPanel Grid.Row="1"
-                                Orientation="Vertical">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <!--Simple Data Of file-->
-                                <RowDefinition Height="*"/>
-                                <!--Table Info Of file-->
-                                <RowDefinition Height="*"/>
-                            </Grid.RowDefinitions>
-
-                            <Grid Grid.Row="0">
-
-                                <Grid.RowDefinitions>
-                                    <!--Name of file-->
-                                    <RowDefinition Height="*"/>
-                                    <!--Total amount of commands-->
-                                    <RowDefinition Height="*"/>
-                                    <!--Size of file:-->
-                                    <RowDefinition Height="*"/>
-                                </Grid.RowDefinitions>
-
-                                <!--Name of file-->
-                                <StackPanel Orientation="Horizontal"
-                                            Grid.Row="0">
-                                    <!--Title-->
-                                    <TextBlock Text="Cast file : "
-                                               Foreground="{StaticResource titleColor2}"
-                                               FontSize="16"
-                                               FontFamily="Montserrat"
-                                               FontWeight="Medium"
-                                               VerticalAlignment="Center"
-                                               Margin="10,0,0,0"/>
-                                    <!--Name-->
-                                    <TextBlock x:Name="SecondFileName"
-                                               Foreground="{StaticResource titleColor2}"
-                                               FontSize="16"
-                                               FontFamily="Montserrat"
-                                               FontWeight="Medium"
-                                               VerticalAlignment="Center"
-                                               Margin="10,0,0,0"/>  
-                                </StackPanel>
-
-                                <!--Total amount of commands-->
-                                <!--<StackPanel Orientation="Horizontal"
-                                            Grid.Row="1">
-                                    --><!--Title--><!--
-                                    <TextBlock Text="TotalAmountOfCommands : "
-                                               Foreground="{StaticResource titleColor2}"
-                                               FontSize="16"
-                                               FontFamily="Montserrat"
-                                               FontWeight="Medium"
-                                               VerticalAlignment="Center"
-                                               Margin="10,0,0,0"/>  
-                                    --><!--Name--><!--
-                                    <TextBlock x:Name="SecondTotalAmountOfCommands"
-                                               Foreground="{StaticResource titleColor2}"
-                                               FontSize="16"
-                                               FontFamily="Montserrat"
-                                               FontWeight="Medium"
-                                               VerticalAlignment="Center"
-                                               Margin="10,0,0,0"/>
-                                </StackPanel>-->
-
-                                <!--Size Of File-->
-                                <!--<StackPanel Orientation="Horizontal"
-                                            Grid.Row="2">
-                                    --><!--Title--><!--
-                                    <TextBlock Text="Size of file : "
-                                               Foreground="{StaticResource titleColor2}"
-                                               FontSize="16"
-                                               FontFamily="Montserrat"
-                                               FontWeight="Medium"
-                                               VerticalAlignment="Center"
-                                               Margin="10,0,0,0"/>
-                                    --><!--Name--><!--
-                                    <TextBlock x:Name="SecondSizeOfFile"
-                                               Foreground="{StaticResource titleColor2}"
-                                               FontSize="16"
-                                               FontFamily="Montserrat"
-                                               FontWeight="Medium"
-                                               VerticalAlignment="Center"
-                                               Margin="10,0,0,0"/>
-                                </StackPanel>-->
-                            </Grid>
-
-                            <Border Grid.Row="1"
-                                    CornerRadius="15"
-                                    Margin="10,0,0,10">
-                                <DataGrid x:Name="SavedDisassemblerDataGrid" 
-                                          FontSize="15" 
+                                          Margin="5"
                                           AutoGenerateColumns="False" 
                                           HorizontalGridLinesBrush="DarkGray"
                                           RowBackground="LightGray" 
@@ -251,29 +332,26 @@
                                           FontWeight="Medium"
                                           Background="#FFF6F7F9" 
                                           BorderBrush="#FFF6F7F9" 
-                                          Foreground="Black"> 
-                                    <DataGrid.Columns>
-                                        <DataGridTextColumn Binding="{Binding Path=Name}" Header="Command" Width="*" FontFamily="Montserrat"/>
-                                        <DataGridTextColumn Binding="{Binding Path=Count}" Header="Quantity" Width="*" FontFamily="Montserrat"/>
-                                        <DataGridTextColumn Binding="{Binding Path=Entropy}" Header="Entropy" Width="1.5*" FontFamily="Montserrat"/>
-                                    </DataGrid.Columns>
-                                </DataGrid>
-                            </Border>
-                        </Grid>
-                    </StackPanel>
-
+                                          Foreground="Black">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Binding="{Binding Path=Name}" Header="Command" Width="*" FontFamily="Montserrat"/>
+                            <DataGridTextColumn Binding="{Binding Path=Count}" Header="Quantity" Width="*" FontFamily="Montserrat"/>
+                            <DataGridTextColumn Binding="{Binding Path=Entropy}" Header="Entropy" Width="1.5*" FontFamily="Montserrat"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
                 </Grid>
-            </StackPanel>
+            </UniformGrid>
         </Border>
         
         <!--Histogram section-->
-        <Grid Grid.Column="1">
+        <Grid Grid.Row="1"
+            Grid.Column="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <!--Pie Histogram section-->
+            <!--Pie Histogram section or current file column histogram -->
             <Border CornerRadius="10"
              Grid.Row="0"
              Margin="5,0,0,5">
@@ -290,11 +368,9 @@
                         <RowDefinition Height="25"/>
                         <!--Pie Histogram-->
                         <RowDefinition Height="*"/>
-                        <!--Title-->
-                        <RowDefinition Height="25"/>
                     </Grid.RowDefinitions>
 
-                    <!--Expend Button-->
+                    <!--Expand Button-->
                     <StackPanel Grid.Row="0">
                         <Button x:Name="btnPieExpend"
                                 Style="{DynamicResource controlButton}"
@@ -304,21 +380,30 @@
                             <fa:IconImage Icon="maximize" 
                                           Style="{StaticResource controlButtonIcon}"/>
                         </Button>
-                            
-                    </StackPanel>
-
-                    <!--Pie Histogram-->
-                    <StackPanel Grid.Row="1">
-
-                        
 
                     </StackPanel>
 
-                    <!--Title-->
-                    <StackPanel Grid.Row="2">
+                    <!--Histogram top grid-->
+                    <Grid x:Name="GridTopHistogram" Grid.Row="1">
+                    
+                        <!--Current file pie histogram-->
+                        <lvc:PieChart x:Name="CurrentFileTopPieHistogram" Foreground="{StaticResource titleColor2}" LegendLocation="Right">
+                        <lvc:PieChart.DataTooltip>
+                            <lvc:DefaultTooltip Foreground="Black"/>
+                        </lvc:PieChart.DataTooltip>
+                    </lvc:PieChart>
 
-                    </StackPanel>
+                        <!--Current file column histogram-->
+                        <lvc:CartesianChart x:Name="CurrentFileTopColumnHistogram" Foreground="{StaticResource titleColor2}" LegendLocation="Right">
+                            <lvc:CartesianChart.AxisX>
+                                <lvc:Axis LabelsRotation="13" Labels=""/>
+                            </lvc:CartesianChart.AxisX>
 
+                            <lvc:CartesianChart.DataTooltip>
+                                <lvc:DefaultTooltip Foreground="Black"/>
+                            </lvc:CartesianChart.DataTooltip>
+                        </lvc:CartesianChart>
+                    </Grid>
                 </Grid>
             </Border>
 
@@ -340,11 +425,9 @@
                         <RowDefinition Height="25"/>
                         <!--Colum Histogram-->
                         <RowDefinition Height="*"/>
-                        <!--Title-->
-                        <RowDefinition Height="25"/>
                     </Grid.RowDefinitions>
 
-                    <!--Expend Button-->
+                    <!--Expand Button-->
                     <StackPanel Grid.Row="0">
                         <Button x:Name="btnColumExpend"
                                 Style="{DynamicResource controlButton}"
@@ -356,22 +439,34 @@
                         </Button>
                     </StackPanel>
 
-                    <!--Colum Histogram-->
-                    <StackPanel Grid.Row="1">
+                    <!--Histogram bottom grid-->
+                    <Grid x:Name="GridBottomHistogram" Grid.Row="1">
 
-                    </StackPanel>
+                        <!--Current file column histogram-->
+                        <lvc:CartesianChart x:Name="CurrentFileBottomColumnHistogram" Foreground="{StaticResource titleColor2}" LegendLocation="Right">
+                            <lvc:CartesianChart.AxisX>
+                                <lvc:Axis LabelsRotation="13" Labels=""/>
+                            </lvc:CartesianChart.AxisX>
 
-                    <!--Title-->
-                    <StackPanel Grid.Row="2">
+                            <lvc:CartesianChart.DataTooltip>
+                                <lvc:DefaultTooltip Foreground="Black"/>
+                            </lvc:CartesianChart.DataTooltip>
+                        </lvc:CartesianChart>
 
-                    </StackPanel>
+                        <!--Cast file column histogram-->
+                        <lvc:CartesianChart x:Name="CastFileBottomColumnHistogram" Foreground="{StaticResource titleColor2}" LegendLocation="Right">
+                            <lvc:CartesianChart.AxisX>
+                                <lvc:Axis LabelsRotation="13" Labels=""/>
+                            </lvc:CartesianChart.AxisX>
 
+                            <lvc:CartesianChart.DataTooltip>
+                                <lvc:DefaultTooltip Foreground="Black"/>
+                            </lvc:CartesianChart.DataTooltip>
+                        </lvc:CartesianChart>
+                        
+                    </Grid>
                 </Grid>
             </Border>
-
         </Grid>
-
-
-
     </Grid>
 </UserControl>

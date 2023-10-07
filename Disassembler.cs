@@ -43,10 +43,6 @@ namespace DisEn
         // Commands info list
         private List<DisassemblerCommandInfo> _disassemblerCommandsInfo;
 
-        // Temporary folder for disassembler temp files
-        [NonSerialized]
-        private const string TEMP_DISASSEMBLER_FOLDER = "DISTEMP";
-
         #endregion
 
         #region Constructor/Finalize
@@ -54,19 +50,14 @@ namespace DisEn
         // Constructor
         public Disassembler()
         {
+            // Initialize strings
+            _fileName = _executableFilePath = _disassembledFilePath = "";
             // Initialize containers
             _instructionFilterHashSet = new HashSet<string>();
             _instructionsDict = new Dictionary<string, Int32>();
             _disassemblerCommandsInfo = new List<DisassemblerCommandInfo>();
             // Reset number to zero
             _totalInstructionCounter = 0;
-        }
-
-        // Finalizer
-        ~Disassembler()
-        {
-            // Remove temp disassembled folder
-            DeleteDisassembledTempFolder();
         }
 
         #endregion
@@ -161,25 +152,9 @@ namespace DisEn
             }
         }
 
-        private void DeleteDisassembledTempFolder()
-        {
-            if (_disassembledFilePath != null)
-            {
-                if (File.Exists(_disassembledFilePath) && Directory.Exists(Path.GetDirectoryName(_disassembledFilePath)))
-                {
-                    // Remove folder
-                    Directory.Delete(Path.GetDirectoryName(_disassembledFilePath), true);
-                    // Clear disassembled file path
-                    _disassembledFilePath = null;
-                }
-            }
-        }
-
         // Disassembles file
-        public void DisassembleFile(String filePath)
+        public void DisassembleFile(String filePath, String tempFileFolderPath)
         {
-            // Remove disassembled temp folder
-            DeleteDisassembledTempFolder();
             // Save file path and its name
             FileInfo fileInfo = new FileInfo(filePath);
             _fileName = fileInfo.Name.Split('.')[0];
@@ -189,23 +164,15 @@ namespace DisEn
             if (fileInfo.Extension.CompareTo(".exe") == 0)
             {
                 // Create folder for temporary files
-                if (!Directory.Exists(TEMP_DISASSEMBLER_FOLDER))
+                if (!Directory.Exists(tempFileFolderPath))
                 {
-                    Directory.CreateDirectory(TEMP_DISASSEMBLER_FOLDER);
+                    return;
                 }
-                // Create folder for current temporary file
-                int _tempDisassembledFolderCounter = 0;
-                String _tempDisassembledFileFolder = TEMP_DISASSEMBLER_FOLDER + "\\" + _tempDisassembledFolderCounter;
-                while(Directory.Exists(_tempDisassembledFileFolder))
-                {
-                    _tempDisassembledFileFolder = TEMP_DISASSEMBLER_FOLDER + "\\" + (++_tempDisassembledFolderCounter);
-                }
-                Directory.CreateDirectory(_tempDisassembledFileFolder);
-                String _tempDisassembledFilePath = _tempDisassembledFileFolder + "\\" + _fileName + ".txt";
+                String _tempDisassembledFilePath = tempFileFolderPath + "\\" + _fileName + ".txt";
                 // Disassemble file and parse it
                 DisassembleExeToTxtFile(filePath, _tempDisassembledFilePath);
                 ParseDisassembledTxtFile(_tempDisassembledFilePath);
-                // Save path to the create file
+                // Save path to the temp file
                 _disassembledFilePath = _tempDisassembledFilePath;
             }
             // Parse .txt file

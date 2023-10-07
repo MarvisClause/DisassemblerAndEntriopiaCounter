@@ -75,8 +75,10 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="ByteConverter.cs" />
+    <Compile Include="ControlManager.cs" />
     <Compile Include="DisassemblerAnalyzer.cs" />
     <Compile Include="DisassemblerComparator.cs" />
+    <Compile Include="SHA1.cs" />
     <Compile Include="ViewModels\CastsViewModel.cs" />
     <Compile Include="ViewModels\DashboardViewModel.cs" />
     <Compile Include="ViewModels\FAQViewModel.cs" />
