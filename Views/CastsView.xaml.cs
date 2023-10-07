@@ -20,9 +20,64 @@ namespace DisEn.Views
     /// </summary>
     public partial class CastsView : UserControl
     {
+#region Variables
+
+        public class DisassemblerInfo
+        {
+            public string FileName { get; set; }
+            public DateTime LastCastUpdate { get; set; }
+        }
+
+        #endregion
+
+        #region Constructor
+
         public CastsView()
         {
             InitializeComponent();
+            UpdateWidgets();
         }
+
+        #endregion
+
+        #region Methods
+
+        private void btnSearchCast_Click(object sender, RoutedEventArgs e)
+        {
+            UpdateWidgets();
+        }
+
+        private void UpdateWidgets()
+        {
+            // Get saved disassembler list
+            List<Disassembler> savedDisassemblersList = ControlManager.GetDisassemblerManager().GetSavedDisassemblersList();
+
+            // Retrieve the list of saved disassemblers and their info
+            List<DisassemblerInfo> disassemblersInfoList = new List<DisassemblerInfo>();
+
+            // Fill this list with data
+            foreach (Disassembler disassembler in savedDisassemblersList)
+            {
+                // Filter elements by search text
+                string searchText = SearchTextBox.Text.Trim().ToLower();
+
+                // Filter elements
+                if (disassembler.GetFileName().ToLower().Contains(searchText)
+                    || disassembler.GetDisassembleDateTime().ToString().ToLower().Contains(searchText)
+                    || searchText.Length == 0)
+                {
+                    disassemblersInfoList.Add(new DisassemblerInfo()
+                    {
+                        FileName = disassembler.GetFileName(),
+                        LastCastUpdate = disassembler.GetDisassembleDateTime()
+                    });
+                }
+            }
+
+            // Set the ItemsSource of the DataGrid
+            CastsDataGrid.ItemsSource = disassemblersInfoList;
+        }
+
+        #endregion
     }
 }

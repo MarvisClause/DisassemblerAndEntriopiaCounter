@@ -30,6 +30,8 @@ namespace DisEn
         // Path to the text file with disassembled code for the file
         [NonSerialized]
         private String _disassembledFilePath;
+        // Time, when disassemble process was initiated
+        private DateTime _disassembleDateTime;
         // Total instruction counter
         private Int32 _totalInstructionCounter;
         // Total entropy value
@@ -100,6 +102,12 @@ namespace DisEn
             return _executableFilePath;
         }
 
+        // Get time of disassemble process
+        public DateTime GetDisassembleDateTime()
+        {
+            return _disassembleDateTime;
+        }
+
         // Path to the text file with disassembled code for the file
         public String GetDisassembledFilePath()
         {
@@ -155,6 +163,8 @@ namespace DisEn
         // Disassembles file
         public void DisassembleFile(String filePath, String tempFileFolderPath)
         {
+            // Save current date of disassemble
+            _disassembleDateTime = DateTime.Now;
             // Save file path and its name
             FileInfo fileInfo = new FileInfo(filePath);
             _fileName = fileInfo.Name.Split('.')[0];

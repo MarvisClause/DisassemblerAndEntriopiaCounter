@@ -21,7 +21,7 @@
                         VerticalAlignment="Top"
                         Grid.Column="0">
                 <fa:IconImage Icon="Search" Height="20" Width="20" Foreground="{StaticResource plainTextColor3}"/>
-                <TextBox Text="Search..."   
+                <TextBox x:Name="SearchTextBox"
                     FontSize="13"
                          Height="24"
                            Width="300"
@@ -35,36 +35,38 @@
                              VerticalContentAlignment="Center"
                              Margin="5,5,0,0"></TextBox>
             </StackPanel>
-            <Button Grid.Column="1"
-                            Command="{Binding LoginCommand}"                            
-                            Content="Search"                            
-                            FontSize="12"
-                            FontFamily="Montserrat"
-                            Cursor="Hand"
-                            BorderThickness="0"
-                            Foreground="White"
-                            VerticalAlignment="Top">
+            <Button x:Name="SearchCastButton" Grid.Column="1"
+                                Margin="5"
+                                Click="btnSearchCast_Click"                         
+                                Content="Search"                            
+                                FontSize="12"
+                                FontFamily="Montserrat"
+                                Cursor="Hand"
+                                BorderThickness="0"
+                                Foreground="White"
+                                VerticalAlignment="Center">
                 <Button.Style>
                     <Style TargetType="Button">
                         <Setter Property="Background" 
-                                Value="#773DFF"/>
+                                    Value="#FFA25CE8"/>
                         <Setter Property="Template">
                             <Setter.Value>
                                 <ControlTemplate TargetType="Button">
                                     <Border Height="30"
-                                            CornerRadius="5"
-                                            Background="{TemplateBinding Background}">
+                                                Padding="5"
+                                                CornerRadius="5"
+                                                Background="{TemplateBinding Background}">
                                         <ContentPresenter VerticalAlignment="Center"
-                                                          HorizontalAlignment="Center"/>
+                                                              HorizontalAlignment="Center"/>
                                     </Border>
                                 </ControlTemplate>
                             </Setter.Value>
                         </Setter>
                         <Style.Triggers>
                             <Trigger Property="IsMouseOver" 
-                                     Value="True">
+                                         Value="True">
                                 <Setter Property="Background" 
-                                        Value="#836EFB"/>
+                                            Value="#836EFB"/>
                             </Trigger>
                         </Style.Triggers>
                     </Style>
@@ -75,9 +77,9 @@
                 Background="#200F53"
                 CornerRadius="10" 
                 Padding="10">
-            <DataGrid ColumnWidth="*"
-                  Background="#200F53"
-                  BorderThickness="0">
+            <DataGrid x:Name="CastsDataGrid" ColumnWidth="*" AutoGenerateColumns="False"
+          Background="#200F53" BorderThickness="0" CanUserAddRows="False" CanUserDeleteRows="False"
+                     IsReadOnly="True" RowHeaderWidth="0">
                 <DataGrid.ColumnHeaderStyle>
                     <Style TargetType="DataGridColumnHeader">
                         <Setter Property="Background" Value="Transparent"/>
@@ -85,17 +87,52 @@
                         <Setter Property="Padding" Value="10,0,0,10"/>
                         <Setter Property="FontFamily" Value="Montserrat"/>
                         <Setter Property="FontSize" Value="15"/>
+                        <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                        <Setter Property="VerticalContentAlignment" Value="Center"/>
+                        <Setter Property="BorderThickness" Value="0"/>
+                        <Setter Property="BorderBrush" Value="Transparent"/>
                     </Style>
                 </DataGrid.ColumnHeaderStyle>
+                <DataGrid.RowHeaderStyle>
+                    <Style TargetType="DataGridRowHeader">
+                        <Setter Property="Width" Value="0"/>
+                    </Style>
+                </DataGrid.RowHeaderStyle>
+                <DataGrid.RowStyle>
+                    <Style TargetType="DataGridRow">
+                        <Setter Property="Background" Value="Transparent"/>
+                        <Setter Property="Foreground" Value="#BCBEE0"/>
+                        <Setter Property="BorderThickness" Value="0"/>
+                        <Setter Property="Height" Value="30"/>
+                        <Setter Property="FontFamily" Value="Montserrat"/>
+                        <Setter Property="FontSize" Value="15"/>
+                        <Setter Property="VerticalContentAlignment" Value="Center"/>
+                    </Style>
+                </DataGrid.RowStyle>
                 <DataGrid.Columns>
-                    <DataGridTextColumn Binding="{x:Null}" ClipboardContentBinding="{x:Null}" Header="ID" HeaderStringFormat=""/>
-                    <DataGridTextColumn Binding="{x:Null}" ClipboardContentBinding="{x:Null}" Header="Name of file"/>
-                    <DataGridTextColumn Binding="{x:Null}" ClipboardContentBinding="{x:Null}" Header="Last cast update"/>
-                    <DataGridTextColumn Binding="{x:Null}" ClipboardContentBinding="{x:Null}" Header="Type of program"/>
-                    <DataGridTextColumn Binding="{x:Null}" ClipboardContentBinding="{x:Null}" Header="Status"/>
-                    <DataGridTextColumn Binding="{x:Null}" ClipboardContentBinding="{x:Null}" Header="Open file"/>
+                    <!-- Define your custom columns here -->
+                    <DataGridTextColumn Header="Name of file" Binding="{Binding FileName}" Width="*" IsReadOnly="True">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="HorizontalAlignment" Value="Left"/>
+                                <Setter Property="VerticalAlignment" Value="Center"/>
+                                <Setter Property="Padding" Value="10,0,0,0"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="Last cast update" Binding="{Binding LastCastUpdate}" Width="*" IsReadOnly="True">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="HorizontalAlignment" Value="Left"/>
+                                <Setter Property="VerticalAlignment" Value="Center"/>
+                                <Setter Property="Padding" Value="10,0,0,0"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
                 </DataGrid.Columns>
             </DataGrid>
+
+
         </Border>
     </Grid>
 </UserControl>

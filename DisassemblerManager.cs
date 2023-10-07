@@ -120,6 +120,43 @@ namespace DisEn
             }
         }
 
+        public List<Disassembler> GetSavedDisassemblersList()
+        {
+            List<Disassembler> savedDisassemblersList = new List<Disassembler>();
+
+            string dataFolderPath = "Data"; // Adjust the path as needed
+
+            // Check if the data folder exists
+            if (Directory.Exists(dataFolderPath))
+            {
+                // Get all directories in the data
+                string[] directories = Directory.GetDirectories(dataFolderPath);
+
+                foreach (string directoryPath in directories)
+                {
+                    // Get all files with the ".asdat" extension in the data folder
+                    string[] disassemblerFiles = Directory.GetFiles(directoryPath, "*.asdat");
+
+                    foreach (string filePath in disassemblerFiles)
+                    {
+                        try
+                        {
+                            // Deserialize each file into a Disassembler object
+                            Disassembler disassembler = Disassembler.Deserialize(filePath);
+                            savedDisassemblersList.Add(disassembler);
+                        }
+                        catch (Exception ex)
+                        {
+                            // Handle any exceptions that may occur during deserialization
+                            Console.WriteLine($"Error loading disassembler from {filePath}: {ex.Message}");
+                        }
+                    }
+                }
+            }
+
+            return savedDisassemblersList;
+        }
+
         #endregion
     }
 }
