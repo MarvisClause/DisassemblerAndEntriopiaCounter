@@ -9,5 +9,11 @@ namespace DisEn.ViewModels
     public class FAQViewModel : ViewModelBase
     {
 
+        public class FaqItem
+        {
+            public string Question { get; set; }
+            public string Answer { get; set; }
+        }
+
     }
 }

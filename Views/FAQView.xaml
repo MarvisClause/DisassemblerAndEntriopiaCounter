@@ -6,6 +6,8 @@
              xmlns:local="clr-namespace:DisEn.Views"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+
+
     <Grid>
         <Grid.ColumnDefinitions>
             <!--List of comands section-->
@@ -24,7 +26,111 @@
             </Border.Background>
 
             <StackPanel Margin="10">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <!--How start research?-->
+                        <RowDefinition Height="*"/>
+                        <!--How update cast in research mode?-->
+                        <RowDefinition Height="*"/>
+                        <!--How i can clean casts?-->
+                        <RowDefinition Height="*"/>
+                        <!--What is the purpose of this program?-->
+                        <RowDefinition Height="*"/>
+                        <!--How i can clean casts?-->
+                        <RowDefinition Height="*"/>
+                        <!--How i can clean casts?-->
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
 
+                    <!--How start research?-->
+                    <StackPanel Grid.Row="0"
+                                Orientation="Vertical"
+                                Margin="0,0,0,15">
+
+                        <Border CornerRadius="10"
+                                BorderThickness="1"
+                                BorderBrush="{StaticResource titleColor2}">
+                            <Expander TextBlock.Foreground="{StaticResource titleColor2}"
+                                      Header="How start research?"
+                                      BorderThickness="10"
+                                      FontSize="32"
+                                      >
+                                <Border >
+                                    <TextBlock Text="Select RESEARCH in the side menu after this step select UPLOAD FILE in the main program field." 
+                                               Padding="10"
+                                               FontSize="16"
+                                               TextWrapping="Wrap"
+                                               Foreground="{StaticResource plainTextColor1}"/>
+                                </Border>
+                            </Expander>
+                        </Border>
+                    </StackPanel>
+
+                    <!--How update cast in research mode?-->
+                    <StackPanel Grid.Row="1"
+                                Orientation="Vertical"
+                                Margin="0,0,0,15">
+                        <Border CornerRadius="10"
+                                BorderThickness="1"
+                                BorderBrush="{StaticResource titleColor2}">
+                            <Expander TextBlock.Foreground="{StaticResource titleColor2}"
+                                      Header="How update cast in research mode?"
+                                      BorderThickness="10"
+                                      FontSize="32"
+                                      >
+                                <Border >
+                                    <TextBlock Text="When you explore a new version of the program you will see an UPDATE CAST button. UPDATE CAST is designed for this purpose" 
+                                               Padding="10"
+                                               FontSize="16"
+                                               TextWrapping="Wrap"
+                                               Foreground="{StaticResource plainTextColor1}"/>
+                                </Border>
+                                </Expander>
+                         </Border>
+                    </StackPanel>
+                    <!--How i can clean casts?-->
+                    <StackPanel Grid.Row="2"
+                                Orientation="Vertical"
+                                Margin="0,0,0,15">
+                        <Border CornerRadius="10"
+                                BorderThickness="1"
+                                BorderBrush="{StaticResource titleColor2}">
+                            <Expander TextBlock.Foreground="{StaticResource titleColor2}" 
+                                      Header="How i can clean casts?"
+                                      BorderThickness="10"
+                                      FontSize="32">
+                                <Border >
+                                    <TextBlock Text="Not yet. This function is not available or is under development. You can try to do it by going to the root folder of the project, and there at your discretion, as there is a hell of a lot there" 
+                                               Padding="10"
+                                               FontSize="16"
+                                               TextWrapping="Wrap"
+                                               Foreground="{StaticResource plainTextColor1}"/>
+                                </Border>
+                            </Expander>
+                        </Border>
+                    </StackPanel>
+                    <!--How i can clean casts?-->
+                    <StackPanel Grid.Row="3"
+                                Orientation="Vertical"
+                                Margin="0,0,0,15">
+                        <Border CornerRadius="10"
+                                BorderThickness="1"
+                                BorderBrush="{StaticResource titleColor2}">
+                            <Expander TextBlock.Foreground="{StaticResource titleColor2}" 
+                                      Header="What is the purpose of this program?"
+                                      BorderThickness="10"
+                                      FontSize="32">
+                                <Border >
+                                    <TextBlock Text="DISEN, an innovative and sophisticated software application meticulously engineered with a multifaceted algorithmic framework, meticulously designed to meticulously analyze and meticulously discern subtle or overt alterations, modifications, or amendments methodically applied to the intricate, convoluted, and labyrinthine source code residing within an executable file, thus assiduously facilitating the arduous and exacting task of comprehensively detecting, identifying, and documenting any and all variations, deviations, or discrepancies meticulously introduced into said executable codebase by the hands of inquisitive, transformative, or even malicious agents, thereby serving as an invaluable tool for the conscientious guardians of software integrity, ensuring the unerring preservation of digital sanctity and the unwavering preservation of software stability." 
+                                               Padding="10"
+                                               FontSize="16"
+                                               TextWrapping="Wrap"
+                                               Foreground="{StaticResource plainTextColor1}"/>
+                                </Border>
+                            </Expander>
+                        </Border>
+                    </StackPanel>
+                </Grid>
             </StackPanel>
         </Border>
     </Grid>
