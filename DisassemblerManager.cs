@@ -11,6 +11,10 @@ namespace DisEn
     {
         #region Variables
 
+        // Last disassembler
+        // Holds information about last disassembled file
+        private Disassembler _lastDisassembler = new Disassembler();
+
         // Current disassembler
         private Disassembler _currentDisassembler = new Disassembler();
 
@@ -22,6 +26,14 @@ namespace DisEn
 
         // Instruction filter
         private HashSet<string> _instructionFilter;
+
+        // File with info about last disassembled file
+        [NonSerialized]
+        private const string LAST_DISASSEMBLER_FILE = "LastDisassembledFile.asdat";
+
+        // Folder for disassembler data files
+        [NonSerialized]
+        private const string DATA_DISASSEMBLER_FOLDER = "Data";
 
         // Temporary folder for disassembler temp files
         [NonSerialized]
@@ -53,6 +65,12 @@ namespace DisEn
 
         #region Methods
 
+        public Disassembler GetLastDisassembler()
+        {
+            LoadLastDisassemblerFile();
+            return _lastDisassembler;
+        }
+
         public Disassembler GetCurrentDisassembler()
         {
             return _currentDisassembler;
@@ -68,14 +86,14 @@ namespace DisEn
             return File.Exists(GetSavedDisassemblerPath());
         }
 
-        public string GetSavedDisassemblerPath()
+        private string GetSavedDisassemblerPath()
         {
-            return String.Format("Data\\{0}\\{0}.asdat", _savedDisassembler.GetFileName());
+            return String.Format("{0}\\{1}\\{1}.asdat", DATA_DISASSEMBLER_FOLDER, _savedDisassembler.GetFileName());
         }
 
         public void SaveCurrentDisassemblerFile()
         {
-            String directoryPath = String.Format("Data\\{0}", _savedDisassembler.GetFileName());
+            String directoryPath = String.Format("{0}\\{1}", DATA_DISASSEMBLER_FOLDER, _savedDisassembler.GetFileName());
             if (!Directory.Exists(directoryPath))
             {
                 Directory.CreateDirectory(directoryPath);
@@ -88,9 +106,26 @@ namespace DisEn
             Disassembler.Serialize(dataDirectoryPath, _currentDisassembler);
         }
 
-        public void LoadSavedDisassemblerFile()
+        private void SaveLastDisassemblerFile()
+        {
+            if (File.Exists(LAST_DISASSEMBLER_FILE))
+            {
+                File.Delete(LAST_DISASSEMBLER_FILE);
+            }
+            Disassembler.Serialize(LAST_DISASSEMBLER_FILE, _currentDisassembler);
+        }
+
+        private void LoadSavedDisassemblerFile()
         {
             _savedDisassembler = Disassembler.Deserialize(GetSavedDisassemblerPath());
+        }
+
+        public void LoadLastDisassemblerFile()
+        {
+            if (File.Exists(LAST_DISASSEMBLER_FILE))
+            {
+                _lastDisassembler = Disassembler.Deserialize(LAST_DISASSEMBLER_FILE);
+            }
         }
 
         public void Disassemble(string filePath)
@@ -109,6 +144,9 @@ namespace DisEn
             Directory.CreateDirectory(tempDisassembledFileFolder);
             _currentDisassembler.DisassembleFile(filePath, tempDisassembledFileFolder);
             _savedDisassembler = _currentDisassembler;
+            _lastDisassembler = _currentDisassembler;
+            // Save last disassembler file
+            SaveLastDisassemblerFile();
             // Check, if file exist in the data directory
             if (IsSavedDisassemblerExistInData())
             {
@@ -124,7 +162,7 @@ namespace DisEn
         {
             List<Disassembler> savedDisassemblersList = new List<Disassembler>();
 
-            string dataFolderPath = "Data"; // Adjust the path as needed
+            string dataFolderPath = DATA_DISASSEMBLER_FOLDER; // Adjust the path as needed
 
             // Check if the data folder exists
             if (Directory.Exists(dataFolderPath))

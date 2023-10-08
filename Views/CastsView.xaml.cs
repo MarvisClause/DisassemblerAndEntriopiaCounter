@@ -25,6 +25,7 @@ namespace DisEn.Views
         public class DisassemblerInfo
         {
             public string FileName { get; set; }
+            public string FileSize { get; set; }
             public DateTime LastCastUpdate { get; set; }
         }
 
@@ -63,12 +64,14 @@ namespace DisEn.Views
 
                 // Filter elements
                 if (disassembler.GetFileName().ToLower().Contains(searchText)
+                    || disassembler.GetFileSize().ToString().ToLower().Contains(searchText)
                     || disassembler.GetDisassembleDateTime().ToString().ToLower().Contains(searchText)
                     || searchText.Length == 0)
                 {
                     disassemblersInfoList.Add(new DisassemblerInfo()
                     {
                         FileName = disassembler.GetFileName(),
+                        FileSize = ByteConverter.ConvertByToMegaByteToString(disassembler.GetFileSize()),
                         LastCastUpdate = disassembler.GetDisassembleDateTime()
                     });
                 }

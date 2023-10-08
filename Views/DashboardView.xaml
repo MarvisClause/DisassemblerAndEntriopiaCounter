@@ -3,22 +3,28 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:DisEn.Views"
+             xmlns:local="clr-namespace:DisEn.Views" xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf" xmlns:fa="http://schemas.awesome.incremented/wpf/xaml/fontawesome.sharp"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    
+
     <Grid>
+        <Grid.RowDefinitions>
+            <!-- Information -->
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
         <Grid.ColumnDefinitions>
             <!--List of comands section-->
             <ColumnDefinition Width="*"/>
             <!--Histogram section-->
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        
+
         <!--List of comands section-->
         <Border CornerRadius="10"
-                Grid.Column="0"
-                Margin="0,0,5,0">
+             Grid.Row="1"
+             Grid.Column="0"
+             Margin="0,0,5,0">
 
             <Border.Background>
                 <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
@@ -27,41 +33,171 @@
                 </LinearGradientBrush>
             </Border.Background>
 
-            <StackPanel Margin="10">
-                
-            </StackPanel>
+                <!-- Current file -->
+            <Grid>
+                <Grid.RowDefinitions>
+                    <!--Text info about file-->
+                    <RowDefinition Height="*"/>
+                    <!--Table with file commands analysis-->
+                    <RowDefinition Height="3*"/>
+                </Grid.RowDefinitions>
+
+                <Grid Grid.Row="0">
+
+                    <Grid.RowDefinitions>
+                        <!--Name of file-->
+                        <RowDefinition Height="*"/>
+                        <!--Total amount of commands-->
+                        <RowDefinition Height="*"/>
+                        <!--Size of file:-->
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!--Name of file-->
+                    <StackPanel Orientation="Horizontal"
+                                                Grid.Row="0">
+                        <!--Title-->
+                        <TextBlock Text="Current file : "
+                                                   Foreground="{StaticResource titleColor2}"
+                                                   FontSize="16"
+                                                   FontFamily="Montserrat"
+                                                   FontWeight="Medium"
+                                                   VerticalAlignment="Center"
+                                                   Margin="10,0,0,0"/>
+                        <!--Name-->
+                        <TextBlock x:Name="CurrentFileName"
+                                                   Foreground="{StaticResource titleColor2}"
+                                                   FontSize="16"
+                                                   FontFamily="Montserrat"
+                                                   FontWeight="Medium"
+                                                   VerticalAlignment="Center"
+                                                   Margin="10,0,0,0"/>
+                    </StackPanel>
+
+                    <!--Total amount of commands-->
+                    <StackPanel Orientation="Horizontal"
+                                                Grid.Row="1">
+                        <!--Title-->
+                        <TextBlock Text="Total Amount Of Commands : "
+                                                   Foreground="{StaticResource titleColor2}"
+                                                   FontSize="16"
+                                                   FontFamily="Montserrat"
+                                                   FontWeight="Medium"
+                                                   VerticalAlignment="Center"
+                                                   Margin="10,0,0,0"/>
+                        <!--Name-->
+                        <TextBlock x:Name="CurrentFileTotalAmountOfCommands"
+                                                   Foreground="{StaticResource titleColor2}"
+                                                   FontSize="16"
+                                                   FontFamily="Montserrat"
+                                                   FontWeight="Medium"
+                                                   VerticalAlignment="Center"
+                                                   Margin="10,0,0,0"/>
+                    </StackPanel>
+
+                    <!--Size Of File-->
+                    <StackPanel Orientation="Horizontal"
+                                                Grid.Row="2">
+                        <!--Title-->
+                        <TextBlock Text="Size of file : "
+                                                   Foreground="{StaticResource titleColor2}"
+                                                   FontSize="16"
+                                                   FontFamily="Montserrat"
+                                                   FontWeight="Medium"
+                                                   VerticalAlignment="Center"
+                                                   Margin="10,0,0,0"/>
+                        <!--Name-->
+                        <TextBlock x:Name="CurrentFileSize"
+                                                   Foreground="{StaticResource titleColor2}"
+                                                   FontSize="16"
+                                                   FontFamily="Montserrat"
+                                                   FontWeight="Medium"
+                                                   VerticalAlignment="Center"
+                                                   Margin="10,0,0,0"/>
+                    </StackPanel>
+                </Grid>
+
+                <DataGrid x:Name="CurrentDisassemblerDataGrid" 
+                                              Grid.Row="1"
+                                              FontSize="15" 
+                                              Margin="5"
+                                              AutoGenerateColumns="False" 
+                                              HorizontalGridLinesBrush="DarkGray"
+                                              RowBackground="LightGray" 
+                                              AlternatingRowBackground="White"
+                                              IsReadOnly="True" 
+                                              VerticalScrollBarVisibility="Auto" 
+                                              FontFamily="Montserrat SemiBold"
+                                              Background="#FFF6F7F9" 
+                                              BorderBrush="#FFF6F7F9"
+                                              FontWeight="Medium"
+                                              Foreground="Black">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Binding="{Binding Path=Name}" Header="Command" Width="*" FontFamily="Montserrat"/>
+                        <DataGridTextColumn Binding="{Binding Path=Count}" Header="Quantity" Width="*" FontFamily="Montserrat"/>
+                        <DataGridTextColumn Binding="{Binding Path=Entropy}" Header="Entropy" Width="1.5*" FontFamily="Montserrat"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
         </Border>
 
         <!--Histogram section-->
-        <Grid Grid.Column="1">
+        <Grid Grid.Row="1"
+            Grid.Column="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <!--Pie Histogram section-->
+            <!--Pie Histogram section or current file column histogram -->
             <Border CornerRadius="10"
-                Grid.Row="0"
-                Margin="5,0,0,5">
-            
+             Grid.Row="0"
+             Margin="5,0,0,5">
+
                 <Border.Background>
                     <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
                         <GradientStop Color="{StaticResource secondaryBackColor1}" Offset="0"/>
                         <GradientStop Color="{StaticResource secondaryBackColor2}" Offset="1"/>
                     </LinearGradientBrush>
                 </Border.Background>
+                <Grid Margin="10">
+                    <Grid.RowDefinitions>
+                        <!--Expend Button-->
+                        <RowDefinition Height="25"/>
+                        <!--Pie Histogram-->
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
 
-                <StackPanel>
+                    <!--Expand Button-->
+                    <StackPanel Grid.Row="0">
+                        <Button x:Name="btnPieExpend"
+                                Style="{DynamicResource controlButton}"
+                                Tag="{StaticResource color2}"
+                                Click="btnPieExpend_Click"
+                                HorizontalAlignment="Right">
+                            <fa:IconImage Icon="maximize" 
+                                          Style="{StaticResource controlButtonIcon}"/>
+                        </Button>
 
+                    </StackPanel>
 
+                    <!--Histogram top grid-->
+                    <Grid x:Name="GridTopHistogram" Grid.Row="1">
 
-                </StackPanel>
+                        <!--Current file pie histogram-->
+                        <lvc:PieChart x:Name="CurrentFileTopPieHistogram" Foreground="{StaticResource titleColor2}" LegendLocation="Right">
+                            <lvc:PieChart.DataTooltip>
+                                <lvc:DefaultTooltip Foreground="Black"/>
+                            </lvc:PieChart.DataTooltip>
+                        </lvc:PieChart>
+                    </Grid>
+                </Grid>
             </Border>
 
             <!--Colum Histogram section-->
             <Border CornerRadius="10"
-                    Grid.Row="1"
-                    Margin="5,5,0,0">
+                 Grid.Row="1"
+                 Margin="5,5,0,0">
 
                 <Border.Background>
                     <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
@@ -70,16 +206,43 @@
                     </LinearGradientBrush>
                 </Border.Background>
 
-                <StackPanel>
+                <Grid Margin="10">
+                    <Grid.RowDefinitions>
+                        <!--Expend Button-->
+                        <RowDefinition Height="25"/>
+                        <!--Colum Histogram-->
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
 
+                    <!--Expand Button-->
+                    <StackPanel Grid.Row="0">
+                        <Button x:Name="btnColumExpend"
+                                Style="{DynamicResource controlButton}"
+                                Tag="{StaticResource color2}"
+                                Click="btnColumExpend_Click"
+                                HorizontalAlignment="Right">
+                            <fa:IconImage Icon="maximize" 
+                  Style="{StaticResource controlButtonIcon}"/>
+                        </Button>
+                    </StackPanel>
 
+                    <!--Histogram bottom grid-->
+                    <Grid x:Name="GridBottomHistogram" Grid.Row="1">
 
-                </StackPanel>
+                        <!--Current file column histogram-->
+                        <lvc:CartesianChart x:Name="CurrentFileBottomColumnHistogram" Foreground="{StaticResource titleColor2}" LegendLocation="Right">
+                            <lvc:CartesianChart.AxisX>
+                                <lvc:Axis LabelsRotation="13" Labels=""/>
+                            </lvc:CartesianChart.AxisX>
+
+                            <lvc:CartesianChart.DataTooltip>
+                                <lvc:DefaultTooltip Foreground="Black"/>
+                            </lvc:CartesianChart.DataTooltip>
+                        </lvc:CartesianChart>
+
+                    </Grid>
+                </Grid>
             </Border>
-
         </Grid>
-        
-        
-
     </Grid>
 </UserControl>
