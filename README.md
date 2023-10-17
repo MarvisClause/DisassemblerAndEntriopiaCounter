@@ -4,7 +4,7 @@
 
 DisEn is a powerful software tool developed by Makarova L.M., Kaminsky S.S, and Bryzgalov M.V. at Nikolaev, Admiral Makarov National University of Shipbuilding. This tool is designed to identify modifications made to executable file code. It provides a user-friendly interface for analyzing executable files, disassembling them, calculating entropy values, and comparing files to determine authorship and changes.
 
-![DisEn Screenshot](path/to/screenshot.png)
+![DisEn Screenshot](https://github.com/MarvisClause/DisassemblerAndEntriopiaCounter/blob/main/ShowCase/ResearchPage.jpg)
 
 ## Features
 
