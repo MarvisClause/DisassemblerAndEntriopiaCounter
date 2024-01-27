@@ -78,7 +78,10 @@
     <Compile Include="ControlManager.cs" />
     <Compile Include="DisassemblerAnalyzer.cs" />
     <Compile Include="DisassemblerComparator.cs" />
+    <Compile Include="Matrix.cs" />
+    <Compile Include="NeuralNetwork.cs" />
     <Compile Include="SHA1.cs" />
+    <Compile Include="Utility.cs" />
     <Compile Include="ViewModels\CastsViewModel.cs" />
     <Compile Include="ViewModels\DashboardViewModel.cs" />
     <Compile Include="ViewModels\FAQViewModel.cs" />
@@ -201,24 +204,28 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="img\joker.png" />
+    <Resource Include="Images\joker.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="img\appLogoJ.png" />
+    <Resource Include="Images\appLogoJ.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="img\logo.png" />
+    <Resource Include="Images\logo.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="img\menu.png" />
+    <Resource Include="Images\menu.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Fonts\Montserrat\OFL.txt" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="img\LogoIconOld.png" />
-    <Content Include="img\LogoIconOld.svg" />
+    <Resource Include="Images\LogoIconOld.png" />
+    <Content Include="Images\LogoIconOld.svg" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>xcopy "$(ProjectDir)instructions.txt" "$(TargetDir)" /Y
+</PostBuildEvent>
+  </PropertyGroup>
 </Project>
