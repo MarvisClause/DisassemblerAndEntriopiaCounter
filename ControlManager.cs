@@ -12,6 +12,7 @@ namespace DisEn
     {
         static private DisassemblerManager _disassemblerManager;
         static private DisassemblerComparator _disassemblerComparator;
+        static private DisassemblerAnalyzer _disassemblerAnalyzer;
 
         static public DisassemblerManager GetDisassemblerManager()
         {
@@ -31,6 +32,16 @@ namespace DisEn
             }
 
             return _disassemblerComparator;
+        }
+
+        static public DisassemblerAnalyzer GetDisassemblerAnalyzer()
+        {
+            if (_disassemblerAnalyzer == null)
+            {
+                _disassemblerAnalyzer = new DisassemblerAnalyzer();
+            }
+
+            return _disassemblerAnalyzer;
         }
     }
 }

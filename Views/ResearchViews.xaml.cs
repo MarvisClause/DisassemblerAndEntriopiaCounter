@@ -102,7 +102,26 @@ namespace DisEn.Views
                     if (!ControlManager.GetDisassemblerComparator().CompareData(ControlManager.GetDisassemblerManager().GetCurrentDisassembler(),
                         ControlManager.GetDisassemblerManager().GetSavedDisassembler()))
                     {
-                        // Open window with additional statistic
+                        int discrepancyCriterion = ControlManager.GetDisassemblerAnalyzer().CalculateDiscrepancyCriterionByThresholdFilter(ControlManager.GetDisassemblerComparator());
+
+                        // Show information about result
+                        string messageBoxText;
+                        string caption;
+                        MessageBoxImage icon;
+                        if (discrepancyCriterion > ControlManager.GetDisassemblerComparator().GetDisassemblerCommandInfoDelta().Count / 2)
+                        {
+                            messageBoxText = "There is a possibility of virus code injection";
+                            caption = "Discrepancy value is high";
+                            icon = MessageBoxImage.Warning;
+                        }
+                        else
+                        {
+                            messageBoxText = "Discrepancy value is in normal range";
+                            caption = "Code was changed by user";
+                            icon = MessageBoxImage.Information;
+                        }
+                        MessageBoxButton button = MessageBoxButton.OK;
+                        MessageBox.Show(messageBoxText, caption, button, icon, MessageBoxResult.OK);
                     }
                 }
                 // If current disassembler is the same as the saved one, when there is no difference or this is the first time this file is processed by this program.

@@ -226,6 +226,6 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>xcopy "$(ProjectDir)instructions.txt" "$(TargetDir)" /Y
-</PostBuildEvent>
+xcopy "$(ProjectDir)Dumpbin" "$(TargetDir)Dumpbin" /e /y /i /r</PostBuildEvent>
   </PropertyGroup>
 </Project>

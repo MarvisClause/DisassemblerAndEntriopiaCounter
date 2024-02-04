@@ -55,7 +55,6 @@ namespace DisEn
                 string[] splitString = instructionReadArray[i].Split(' ');
                 for (int j = 0; j < splitString.Length; ++j)
                 {
-
                     _instructionFilter.Add(splitString[j]);
                 }
             }
