@@ -153,21 +153,70 @@ namespace DisEn
         public ChangeOwnership CalculateDiscrepancyCriterionByNeuralNetwork(DisassemblerComparator disassemblerComparator)
         {
             List<float> inputDeltaList = new List<float>();
-            for (int i = 0; i < disassemblerComparator.GetDisassemblerCommandInfoDelta().Count; ++i)
+            // We iterate through disassembler command info delta and try to form array, which will preserve the same order of commands
+            // thus neural network will always have same types of input nodes, which corresponds with given command
+            for (int i = 0; i < _commandNamesList.Count; ++i)
             {
                 inputDeltaList.Add(0.0f);
-                for (int j = 0; j < _commandEntropyThresholdFilter.Count(); ++j)
+                for (int j = 0; j < disassemblerComparator.GetDisassemblerCommandInfoDelta().Count(); ++j)
                 {
-                    if (disassemblerComparator.GetDisassemblerCommandInfoDelta()[i].Name == _commandNamesList[i])
+                    if (disassemblerComparator.GetDisassemblerCommandInfoDelta()[j].Name.Equals(_commandNamesList[i]))
                     {
-                        inputDeltaList[i] = (float)disassemblerComparator.GetDisassemblerCommandInfoDelta()[i].Entropy;
+                        inputDeltaList[i] = (float)disassemblerComparator.GetDisassemblerCommandInfoDelta()[j].Entropy;
+                        break;
                     }
                 }
             }
 
+            // Analyze input through neural network
             List<float> authorshipAnalyze = _commandThresholdNeuralNetwork.Predict(inputDeltaList);
 
+            // 0 - Author
+            // 1 - Virus
             return authorshipAnalyze[0] > authorshipAnalyze[1] ? ChangeOwnership.Author : ChangeOwnership.Virus;
+        }
+
+        // Analyzes disassembler data for authorship via neural network
+        // Returns change ownership
+        public void TrainNeuralNetworkByDiscrepancyCriterion(DisassemblerComparator disassemblerComparator)
+        {
+            // We assume, that if half of discrepancy criterion is reached, changes are made by virus
+            List<float> targetValuesList = new List<float>();
+            // 0 - Author
+            // 1 - Virus
+            if (CalculateDiscrepancyCriterionByThresholdFilter(disassemblerComparator) > disassemblerComparator.GetDisassemblerCommandInfoDelta().Count / 2)
+            {
+                // Author
+                targetValuesList.Add(0.0f);
+                // Virus
+                targetValuesList.Add(1.0f);
+            }
+            else
+            {
+                // Author
+                targetValuesList.Add(1.0f);
+                // Virus
+                targetValuesList.Add(0.0f);
+            }
+
+
+            List<float> inputDeltaList = new List<float>();
+            // We iterate through disassembler command info delta and try to form array, which will preserve the same order of commands
+            // thus neural network will always have same types of input nodes, which corresponds with given command
+            for (int i = 0; i < _commandNamesList.Count; ++i)
+            {
+                inputDeltaList.Add(0.0f);
+                for (int j = 0; j < disassemblerComparator.GetDisassemblerCommandInfoDelta().Count(); ++j)
+                {
+                    if (disassemblerComparator.GetDisassemblerCommandInfoDelta()[j].Name.Equals(_commandNamesList[i]))
+                    {
+                        inputDeltaList[i] = (float)disassemblerComparator.GetDisassemblerCommandInfoDelta()[j].Entropy;
+                        break;
+                    }
+                }
+            }
+
+            _commandThresholdNeuralNetwork.Train(inputDeltaList, targetValuesList);
         }
 
         #endregion

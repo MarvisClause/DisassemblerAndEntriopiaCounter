@@ -91,6 +91,7 @@ namespace DisEn
             }
 
             Matrix resultMatrix = new Matrix(matrixA.rows, matrixA.columns);
+            resultMatrix.matrixArray = new List<float>(matrixA.matrixArray);
 
             for (int r = 0; r < resultMatrix.GetRows(); ++r)
             {
@@ -132,7 +133,7 @@ namespace DisEn
             {
                 for (int c = 0; c < resultMatrix.GetColumns(); ++c)
                 {
-                    resultMatrix.SetElement(r, c, resultMatrix.GetElement(r, c) - matrixB.GetElement(r, c));
+                    resultMatrix.SetElement(r, c, matrixA.GetElement(r, c) - matrixB.GetElement(r, c));
                 }
             }
 
@@ -191,7 +192,7 @@ namespace DisEn
             {
                 for (int c = 0; c < resultMatrix.GetColumns(); ++c)
                 {
-                    resultMatrix.SetElement(r, c, resultMatrix.GetElement(r, c) * matrixB.GetElement(r, c));
+                    resultMatrix.SetElement(r, c, matrixA.GetElement(r, c) * matrixB.GetElement(r, c));
                 }
             }
 
