@@ -103,57 +103,35 @@ namespace DisEn.Views
                     if (!ControlManager.GetDisassemblerComparator().CompareData(ControlManager.GetDisassemblerManager().GetCurrentDisassembler(),
                         ControlManager.GetDisassemblerManager().GetSavedDisassembler()))
                     {
-                        // TODO: REMOVE EXPERIMENTAL IF BRANCH FOR TESTING NEURAL NETWORK OR DISCREPANCY FACTOR, THIS SHOULD BE CONTROLLED BY UI OR SOMETHING MORE APPROPRIATE
-                        bool useDiscrepancy = false;
-                        if (useDiscrepancy)
-                        {
-                            int discrepancyCriterion = ControlManager.GetDisassemblerAnalyzer().CalculateDiscrepancyCriterionByThresholdFilter(ControlManager.GetDisassemblerComparator());
+                        // Train
+                        ControlManager.GetDisassemblerAnalyzer().TrainNeuralNetworkByDiscrepancyCriterion(ControlManager.GetDisassemblerComparator());
+                        // Predict
+                        OwnershipAnalyze ownershipAnalyze = ControlManager.GetDisassemblerAnalyzer().CalculateDiscrepancyCriterionByNeuralNetwork(ControlManager.GetDisassemblerComparator());
 
-                            // Show information about result
-                            string messageBoxText;
-                            string caption;
-                            MessageBoxImage icon;
-                            if (discrepancyCriterion > ControlManager.GetDisassemblerComparator().GetDisassemblerCommandInfoDelta().Count / 2)
-                            {
-                                messageBoxText = "There is a possibility of virus code injection";
-                                caption = "Discrepancy value is high";
-                                icon = MessageBoxImage.Warning;
-                            }
-                            else
-                            {
-                                messageBoxText = "Discrepancy value is in normal range";
-                                caption = "Code was changed by user";
-                                icon = MessageBoxImage.Information;
-                            }
-                            MessageBoxButton button = MessageBoxButton.OK;
-                            MessageBox.Show(messageBoxText, caption, button, icon, MessageBoxResult.OK);
-                        }
-                        else 
+                        // Show information about result
+                        string messageBoxText;
+                        string caption;
+                        MessageBoxImage icon;
+                        if (ownershipAnalyze.virusOwnerChance > ownershipAnalyze.authorOwnerChance)
                         {
-                            // Train
-                            ControlManager.GetDisassemblerAnalyzer().TrainNeuralNetworkByDiscrepancyCriterion(ControlManager.GetDisassemblerComparator());
-                            // Predict
-                            ChangeOwnership changeOwnership = ControlManager.GetDisassemblerAnalyzer().CalculateDiscrepancyCriterionByNeuralNetwork(ControlManager.GetDisassemblerComparator());
-
-                            // Show information about result
-                            string messageBoxText;
-                            string caption;
-                            MessageBoxImage icon;
-                            if (changeOwnership == ChangeOwnership.Virus)
-                            {
-                                messageBoxText = "There is a possibility of virus code injection";
-                                caption = "Discrepancy value is high";
-                                icon = MessageBoxImage.Warning;
-                            }
-                            else
-                            {
-                                messageBoxText = "Discrepancy value is in normal range";
-                                caption = "Code was changed by user";
-                                icon = MessageBoxImage.Information;
-                            }
-                            MessageBoxButton button = MessageBoxButton.OK;
-                            MessageBox.Show(messageBoxText, caption, button, icon, MessageBoxResult.OK);
+                            messageBoxText = "There is a possibility of virus code injection" +
+                                "\nDiscrepancy criterion = " + ownershipAnalyze.discrepancyCriterionCount +
+                                "\nAuthor owner chance = " + ownershipAnalyze.authorOwnerChance +
+                                "\nVirus owner chance = " + ownershipAnalyze.virusOwnerChance;
+                            caption = "Discrepancy value is high";
+                            icon = MessageBoxImage.Warning;
                         }
+                        else
+                        {
+                            messageBoxText = "Discrepancy value is in normal range" +
+                            "\nCode was changed by user. Discrepancy criterion = " + ownershipAnalyze.discrepancyCriterionCount +
+                            "\nAuthor owner chance = " + ownershipAnalyze.authorOwnerChance +
+                            "\nVirus owner chance = " + ownershipAnalyze.virusOwnerChance;
+                            caption = "Code was changed by user";
+                            icon = MessageBoxImage.Information;
+                        }
+                        MessageBoxButton button = MessageBoxButton.OK;
+                        MessageBox.Show(messageBoxText, caption, button, icon, MessageBoxResult.OK);
                     }
                 }
                 // If current disassembler is the same as the saved one, when there is no difference or this is the first time this file is processed by this program.

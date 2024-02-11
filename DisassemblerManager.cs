@@ -21,9 +21,6 @@ namespace DisEn
         // Saved disassembler
         private Disassembler _savedDisassembler = new Disassembler();
 
-        // Path to the instruction file
-        private const string INSTRUCTION_FILTER_FILE_PATH = "instructions.txt";
-
         // Instruction filter
         private HashSet<string> _instructionFilter;
 
@@ -48,15 +45,10 @@ namespace DisEn
             // Prepare hash set
             _instructionFilter = new HashSet<string>();
             // Get instruction filter list
-            string[] instructionReadArray = File.ReadAllLines(INSTRUCTION_FILTER_FILE_PATH);
-            for (int i = 0; i < instructionReadArray.Length; ++i)
+            List<Tuple<string, double>> commandFilterList = ControlManager.GetDisassemblerAnalyzer().GetCommandNamesList();
+            for (int i = 0; i < commandFilterList.Count; ++i)
             {
-                // Split string
-                string[] splitString = instructionReadArray[i].Split(' ');
-                for (int j = 0; j < splitString.Length; ++j)
-                {
-                    _instructionFilter.Add(splitString[j]);
-                }
+                _instructionFilter.Add(commandFilterList[i].Item1);
             }
         }
 

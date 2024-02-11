@@ -47,7 +47,7 @@ namespace DisEn
 
         #endregion
 
-        #region Constructor/Finalize
+        #region Constructor
 
         // Constructor
         public Disassembler()

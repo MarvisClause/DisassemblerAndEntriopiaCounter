@@ -3,9 +3,10 @@ using System.Collections.Generic;
 
 namespace DisEn
 {
+    [Serializable]
     public class Matrix
     {
-        private List<float> matrixArray;
+        private List<double> matrixArray;
         private int rows;
         private int columns;
 
@@ -24,11 +25,11 @@ namespace DisEn
         {
         }
 
-        public Matrix(int rows, int columns, float initialValue)
+        public Matrix(int rows, int columns, double initialValue)
         {
             this.rows = rows;
             this.columns = columns;
-            matrixArray = new List<float>(rows * columns);
+            matrixArray = new List<double>(rows * columns);
             for (int i = 0; i < rows * columns; i++)
             {
                 matrixArray.Add(initialValue);
@@ -45,32 +46,32 @@ namespace DisEn
             return columns;
         }
 
-        public List<float> ToArray()
+        public List<double> ToArray()
         {
             return matrixArray;
         }
 
-        public void SetElement(int row, int column, float value)
+        public void SetElement(int row, int column, double value)
         {
             matrixArray[ConvertRowAndColumnToIndex(row, column, columns)] = value;
         }
 
-        public float GetElement(int row, int column)
+        public double GetElement(int row, int column)
         {
             return matrixArray[ConvertRowAndColumnToIndex(row, column, columns)];
         }
 
-        public static Matrix FromArray(List<float> array)
+        public static Matrix FromArray(List<double> array)
         {
             Matrix resultMatrix = new Matrix(array.Count, 1);
             resultMatrix.matrixArray = array;
             return resultMatrix;
         }
 
-        public static Matrix Add(Matrix matrixA, float value)
+        public static Matrix Add(Matrix matrixA, double value)
         {
             Matrix resultMatrix = new Matrix(matrixA.GetRows(), matrixA.GetColumns());
-            resultMatrix.matrixArray = new List<float>(matrixA.matrixArray);
+            resultMatrix.matrixArray = new List<double>(matrixA.matrixArray);
 
             for (int r = 0; r < resultMatrix.GetRows(); ++r)
             {
@@ -91,23 +92,22 @@ namespace DisEn
             }
 
             Matrix resultMatrix = new Matrix(matrixA.rows, matrixA.columns);
-            resultMatrix.matrixArray = new List<float>(matrixA.matrixArray);
 
             for (int r = 0; r < resultMatrix.GetRows(); ++r)
             {
                 for (int c = 0; c < resultMatrix.GetColumns(); ++c)
                 {
-                    resultMatrix.SetElement(r, c, resultMatrix.GetElement(r, c) + matrixB.GetElement(r, c));
+                    resultMatrix.SetElement(r, c, matrixA.GetElement(r, c) + matrixB.GetElement(r, c));
                 }
             }
 
             return resultMatrix;
         }
 
-        public static Matrix Subtract(Matrix matrixA, float value)
+        public static Matrix Subtract(Matrix matrixA, double value)
         {
             Matrix resultMatrix = new Matrix(matrixA.GetRows(), matrixA.GetColumns());
-            resultMatrix.matrixArray = new List<float>(matrixA.matrixArray);
+            resultMatrix.matrixArray = new List<double>(matrixA.matrixArray);
 
             for (int r = 0; r < resultMatrix.GetRows(); ++r)
             {
@@ -140,10 +140,10 @@ namespace DisEn
             return resultMatrix;
         }
 
-        public static Matrix Multiply(Matrix matrixA, float scale)
+        public static Matrix Multiply(Matrix matrixA, double scale)
         {
             Matrix resultMatrix = new Matrix(matrixA.GetRows(), matrixA.GetColumns());
-            resultMatrix.matrixArray = new List<float>(matrixA.matrixArray);
+            resultMatrix.matrixArray = new List<double>(matrixA.matrixArray);
 
             for (int r = 0; r < resultMatrix.GetRows(); ++r)
             {
@@ -213,7 +213,7 @@ namespace DisEn
 
             rows = resultMatrix.GetRows();
             columns = resultMatrix.GetColumns();
-            matrixArray = new List<float>(resultMatrix.matrixArray);
+            matrixArray = new List<double>(resultMatrix.matrixArray);
         }
 
         public static Matrix Transpose(Matrix matrixA)
@@ -231,11 +231,11 @@ namespace DisEn
             return resultMatrix;
         }
 
-        public void Randomize(float startRange, float endRange)
+        public void Randomize(double startRange, double endRange)
         {
             if (startRange > endRange)
             {
-                float temp = startRange;
+                double temp = startRange;
                 startRange = endRange;
                 endRange = temp;
             }
@@ -244,12 +244,12 @@ namespace DisEn
             {
                 for (int c = 0; c < columns; ++c)
                 {
-                    SetElement(r, c, (float)(random.NextDouble() * (endRange - startRange) + startRange));
+                    SetElement(r, c, (double)(random.NextDouble() * (endRange - startRange) + startRange));
                 }
             }
         }
 
-        public void Map(Func<float, float> func)
+        public void Map(Func<double, double> func)
         {
             for (int r = 0; r < GetRows(); ++r)
             {
@@ -260,10 +260,10 @@ namespace DisEn
             }
         }
 
-        public static Matrix Map(Matrix matrixA, Func<float, float> func)
+        public static Matrix Map(Matrix matrixA, Func<double, double> func)
         {
             Matrix resultMatrix = new Matrix(matrixA.rows, matrixA.columns);
-            resultMatrix.matrixArray = new List<float>(matrixA.matrixArray);
+            resultMatrix.matrixArray = new List<double>(matrixA.matrixArray);
 
             for (int r = 0; r < resultMatrix.GetRows(); ++r)
             {

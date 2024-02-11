@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace DisEn
 {
+    [Serializable]
     public class NeuralNetwork
     {
         private Matrix weightsIH;
@@ -16,9 +17,9 @@ namespace DisEn
         private int inputNodesNumber;
         private int hiddenNodesNumber;
         private int outputNodesNumber;
-        private float learningRate;
+        private double learningRate;
 
-        public NeuralNetwork(int inputNodesNumber, int hiddenNodesNumber, int outputNodesNumber, float learningRate, float startWeightFromRange, float startWeightToRange)
+        public NeuralNetwork(int inputNodesNumber, int hiddenNodesNumber, int outputNodesNumber, double learningRate, double startWeightFromRange, double startWeightToRange)
         {
             this.inputNodesNumber = inputNodesNumber;
             this.hiddenNodesNumber = hiddenNodesNumber;
@@ -43,7 +44,7 @@ namespace DisEn
             biasHO.Randomize(startWeightFromRange, startWeightToRange);
         }
 
-        public void Train(List<float> inputArray, List<float> targetArray)
+        public void Train(List<double> inputArray, List<double> targetArray)
         {
             // Guess the value
 
@@ -154,7 +155,7 @@ namespace DisEn
             biasIH = Matrix.Add(biasIH, hiddenGradients);
         }
 
-        public List<float> Predict(List<float> inputArray)
+        public List<double> Predict(List<double> inputArray)
         {
             // Generating hidden's outputs
 
@@ -179,18 +180,18 @@ namespace DisEn
             return output.ToArray();
         }
 
-        public void SetLearningRate(float newLearningRate)
+        public void SetLearningRate(double newLearningRate)
         {
             learningRate = newLearningRate;
         }
 
-        private float Sigmoid(float x)
+        private double Sigmoid(double x)
         {
-            return 1f / (1f + (float)Math.Exp(-x));
+            return 1f / (1f + (double)Math.Exp(-x));
         }
 
         // We assume, that derivative has already calculated y of Sigmoid(x)
-        private float DSigmoid(float y)
+        private double DSigmoid(double y)
         {
             return y * (1f - y);
         }
