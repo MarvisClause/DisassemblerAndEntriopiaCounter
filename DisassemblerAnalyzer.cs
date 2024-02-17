@@ -88,12 +88,18 @@ namespace DisEn
             _commandEntropyThresholdFilterList.Add(new Tuple<string, double>("xchg", 0.0023355));
             _commandEntropyThresholdFilterList.Add(new Tuple<string, double>("lea", 0.0132795));
 
+            // Form network size
+            List<int> nodesPerLayerList = new List<int>();
+            // Number of entry nodes is the same as number of threshold commands
+            nodesPerLayerList.Add(_commandEntropyThresholdFilterList.Count);
+            // Number of hidden nodes
+            nodesPerLayerList.Add(_commandEntropyThresholdFilterList.Count / 2);
+            nodesPerLayerList.Add(_commandEntropyThresholdFilterList.Count / 2);
+            // Number of outputs is two. It is a author change or virus one.
+            nodesPerLayerList.Add(2);
 
             // Initialize neural network
-            // Number of entry nodes is the same as number of threshold commands
-            // Number of hidden nodes is half of the number of threshold commands
-            // Number of outputs is two. It is a author change or virus one.
-            _commandThresholdNeuralNetwork = new NeuralNetwork(_commandEntropyThresholdFilterList.Count, _commandEntropyThresholdFilterList.Count / 2, 2, 0.1f, -0.3f, 0.3f);
+            _commandThresholdNeuralNetwork = new NeuralNetwork(nodesPerLayerList, 0.1f, -0.3f, 0.3f);
             if (File.Exists(NEURAL_NETWORK_DATA))
             {
                 BinaryFormatter binFormat = new BinaryFormatter();
@@ -172,6 +178,7 @@ namespace DisEn
                 }
             }
 
+
             // Analyze input through neural network
             List<double> authorshipAnalyze = _commandThresholdNeuralNetwork.Predict(inputDeltaList);
 
@@ -192,7 +199,7 @@ namespace DisEn
             List<double> targetValuesList = new List<double>();
             // 0 - Author
             // 1 - Virus
-            if (CalculateDiscrepancyCriterionByThresholdFilter(disassemblerComparator) > DISCREPANCY_CRITERION_COUNT)
+            if (CalculateDiscrepancyCriterionByThresholdFilter(disassemblerComparator) >= DISCREPANCY_CRITERION_COUNT)
             {
                 // Author
                 targetValuesList.Add(0.0f);

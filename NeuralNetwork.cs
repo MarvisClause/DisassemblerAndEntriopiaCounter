@@ -1,183 +1,88 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DisEn
 {
     [Serializable]
     public class NeuralNetwork
     {
-        private Matrix weightsIH;
-        private Matrix weightsHO;
-        private Matrix biasIH;
-        private Matrix biasHO;
-
-        private int inputNodesNumber;
-        private int hiddenNodesNumber;
-        private int outputNodesNumber;
+        private List<Matrix> weightsLayers;
+        private List<Matrix> biasLayers;
+        private List<int> nodesPerLayer;
         private double learningRate;
 
-        public NeuralNetwork(int inputNodesNumber, int hiddenNodesNumber, int outputNodesNumber, double learningRate, double startWeightFromRange, double startWeightToRange)
+        public NeuralNetwork(List<int> nodesPerLayer, double learningRate, double startWeightFromRange, double startWeightToRange)
         {
-            this.inputNodesNumber = inputNodesNumber;
-            this.hiddenNodesNumber = hiddenNodesNumber;
-            this.outputNodesNumber = outputNodesNumber;
+            this.nodesPerLayer = nodesPerLayer;
             this.learningRate = learningRate;
 
-            // Create matrix of weights between input and hidden layer
-            weightsIH = new Matrix(hiddenNodesNumber, inputNodesNumber);
-            // Create matrix of weights between hidden and output layer
-            weightsHO = new Matrix(outputNodesNumber, hiddenNodesNumber);
-            // Randomize weights
-            weightsIH.Randomize(startWeightFromRange, startWeightToRange);
-            weightsHO.Randomize(startWeightFromRange, startWeightToRange);
+            InitializeWeightsAndBiases(startWeightFromRange, startWeightToRange);
+        }
 
-            // Create matrix of bias weights between input and hidden layer
-            biasIH = new Matrix(hiddenNodesNumber, 1);
-            // Create matrix of bias weights between hidden and output layer
-            biasHO = new Matrix(outputNodesNumber, 1);
+        private void InitializeWeightsAndBiases(double startWeightFromRange, double startWeightToRange)
+        {
+            weightsLayers = new List<Matrix>();
+            biasLayers = new List<Matrix>();
 
-            // Randomize biases
-            biasIH.Randomize(startWeightFromRange, startWeightToRange);
-            biasHO.Randomize(startWeightFromRange, startWeightToRange);
+            for (int i = 1; i < nodesPerLayer.Count; i++)
+            {
+                Matrix weights = new Matrix(nodesPerLayer[i], nodesPerLayer[i - 1]);
+                weights.Randomize(startWeightFromRange, startWeightToRange);
+                weightsLayers.Add(weights);
+
+                Matrix bias = new Matrix(nodesPerLayer[i], 1);
+                bias.Randomize(startWeightFromRange, startWeightToRange);
+                biasLayers.Add(bias);
+            }
         }
 
         public void Train(List<double> inputArray, List<double> targetArray)
         {
-            // Guess the value
-
-            // Get the outputs
-
-            // Fill input matrix
+            List<Matrix> layerOutputs = new List<Matrix>();
             Matrix inputs = Matrix.FromArray(inputArray);
-            // Multiplying matrices of weights and layer = W * I
-            Matrix hiddens = Matrix.Multiply(weightsIH, inputs);
-            // Adding biases = W * I + B
-            hiddens = Matrix.Add(hiddens, biasIH);
-            // Apply activation function = Sigmoid(W * I + B)
-            hiddens.Map(Sigmoid);
+            layerOutputs.Add(inputs);
 
-            // Generating output's output
+            // Forward propagation
+            for (int i = 0; i < weightsLayers.Count; i++)
+            {
+                Matrix hidden = Matrix.Multiply(weightsLayers[i], layerOutputs[i]);
+                hidden = Matrix.Add(hidden, biasLayers[i]);
+                hidden.Map(Sigmoid); // Activation
+                layerOutputs.Add(hidden);
+            }
 
-            // Multiplying matrices of weights and layer = W * I
-            Matrix outputs = Matrix.Multiply(weightsHO, hiddens);
-            // Adding biases = W * I + B
-            outputs = Matrix.Add(outputs, biasHO);
-            // Apply activation function = Sigmoid(W * I + B)
-            outputs.Map(Sigmoid);
+            // Backpropagation
+            Matrix errors = Matrix.Subtract(Matrix.FromArray(targetArray), layerOutputs[layerOutputs.Count - 1]);
+            for (int i = weightsLayers.Count - 1; i >= 0; i--)
+            {
+                Matrix gradients = Matrix.Map(layerOutputs[i + 1], DSigmoid); // Activation derivative
+                gradients = Matrix.ElementWiseMultiplication(errors, gradients);
+                gradients = Matrix.Multiply(gradients, learningRate);
 
-            // Analyze result and train neural network
+                Matrix inputs_T = Matrix.Transpose(layerOutputs[i]);
+                Matrix weights_deltas = Matrix.Multiply(gradients, inputs_T);
 
-            // Prepare matrix representations of arrays
-            Matrix matrixTargets = Matrix.FromArray(targetArray);
+                weightsLayers[i] = Matrix.Add(weightsLayers[i], weights_deltas);
+                biasLayers[i] = Matrix.Add(biasLayers[i], gradients);
 
-            // Calculate the error, adjust weights and biases
-
-            // Example of formula is given below
-            // Weight formula = learningRate * Error o (Sigmoid(LayerResultElement) * (1 - Sigmoid(LayerResultElement)) * PreviousLayerInput 
-            // Bias formula = learningRate * Error o PreviousLayerInput
-
-            // o - hadamard multiplication (element wise)
-            // * - matrix multiplication
-
-            // Those formulas are based on gradient descent
-            // y = m * x + b
-            // delta m = lr * error * x  => Weight formula
-            // delta b = lr * error      => Bias formula
-            // , where
-            // error = Error * (Sigmoid(LayerResult) * (1 - Sigmoid(LayerResult))
-            // x = PreviousLayerInput
-            // lr = our given value
-
-            // Calculate hidden - output layer
-
-            // OutputErrors = TargetArray - Outputs
-            Matrix outputErrors = Matrix.Subtract(matrixTargets, outputs);
-
-            // Calculate gradient
-
-            // Outputs - (1 - Outputs)
-            Matrix outputGradients = Matrix.Map(outputs, DSigmoid);
-
-            // OutputErrors o Outputs
-            outputGradients = Matrix.ElementWiseMultiplication(outputErrors, outputGradients);
-
-            // LearningRate * Outputs
-            outputGradients = Matrix.Multiply(outputGradients, learningRate);
-
-            // Calculate deltas
-
-            // Get transposed hidden layer results
-            Matrix hiddens_T = Matrix.Transpose(hiddens);
-
-            // Calculate new values for delta by multiplying gradient with hidden
-            Matrix weights_HO_Deltas = Matrix.Multiply(outputGradients, hiddens_T);
-
-            // Adjust output weights
-            weightsHO = Matrix.Add(weightsHO, weights_HO_Deltas);
-
-            // Adjust biases
-            biasHO = Matrix.Add(biasHO, outputGradients);
-
-            // Calculate input - hidden layer
-
-            // In order to get hidden layer error, we need to get transposed matrix of weights
-            Matrix weightsHO_T = Matrix.Transpose(weightsHO);
-
-            // HiddenErrors = WeightsHO_T * OutputErrors
-            Matrix hiddenErrors = Matrix.Multiply(weightsHO_T, outputErrors);
-
-            // Calculate gradient
-
-            // Outputs - (1 - Outputs)
-            Matrix hiddenGradients = Matrix.Map(hiddens, DSigmoid);
-
-            // OutputErrors * Outputs
-            hiddenGradients = Matrix.ElementWiseMultiplication(hiddenErrors, hiddenGradients);
-
-            // LearningRate * Outputs
-            hiddenGradients = Matrix.Multiply(hiddenGradients, learningRate);
-
-            // Calculate deltas
-
-            // Get transposed hidden layer results
-            Matrix inputs_T = Matrix.Transpose(inputs);
-
-            // Calculate new values for delta by multiplying gradient with hidden
-            Matrix weights_IH_Deltas = Matrix.Multiply(hiddenGradients, inputs_T);
-
-            // Adjust output weights
-            weightsIH = Matrix.Add(weightsIH, weights_IH_Deltas);
-
-            // Adjust biases
-            biasIH = Matrix.Add(biasIH, hiddenGradients);
+                Matrix weights_T = Matrix.Transpose(weightsLayers[i]);
+                errors = Matrix.Multiply(weights_T, errors);
+            }
         }
 
         public List<double> Predict(List<double> inputArray)
         {
-            // Generating hidden's outputs
+            Matrix inputs = Matrix.FromArray(inputArray);
+            Matrix layerOutput = inputs;
 
-            // Fill input matrix
-            Matrix input = Matrix.FromArray(inputArray);
-            // Multiplying matrices of weights and layer = W * I
-            Matrix hidden = Matrix.Multiply(weightsIH, input);
-            // Adding biases = W * I + B
-            hidden = Matrix.Add(hidden, biasIH);
-            // Apply activation function = Sigmoid(W * I + B)
-            hidden.Map(Sigmoid);
+            for (int i = 0; i < weightsLayers.Count; i++)
+            {
+                layerOutput = Matrix.Multiply(weightsLayers[i], layerOutput);
+                layerOutput = Matrix.Add(layerOutput, biasLayers[i]);
+                layerOutput.Map(Sigmoid); // Activation
+            }
 
-            // Generating output's output
-
-            // Multiplying matrices of weights and layer = W * I
-            Matrix output = Matrix.Multiply(weightsHO, hidden);
-            // Adding biases = W * I + B
-            output = Matrix.Add(output, biasHO);
-            // Apply activation function = Sigmoid(W * I + B)
-            output.Map(Sigmoid);
-
-            return output.ToArray();
+            return layerOutput.ToArray();
         }
 
         public void SetLearningRate(double newLearningRate)
@@ -187,13 +92,12 @@ namespace DisEn
 
         private double Sigmoid(double x)
         {
-            return 1f / (1f + (double)Math.Exp(-x));
+            return 1.0 / (1.0 + Math.Exp(-x));
         }
 
-        // We assume, that derivative has already calculated y of Sigmoid(x)
         private double DSigmoid(double y)
         {
-            return y * (1f - y);
+            return y * (1.0 - y);
         }
     }
 }
