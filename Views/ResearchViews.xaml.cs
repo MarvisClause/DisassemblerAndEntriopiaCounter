@@ -103,10 +103,8 @@ namespace DisEn.Views
                     if (!ControlManager.GetDisassemblerComparator().CompareData(ControlManager.GetDisassemblerManager().GetCurrentDisassembler(),
                         ControlManager.GetDisassemblerManager().GetSavedDisassembler()))
                     {
-                        // Train
-                        ControlManager.GetDisassemblerAnalyzer().TrainNeuralNetworkByDiscrepancyCriterion(ControlManager.GetDisassemblerComparator());
-                        // Predict
-                        OwnershipAnalyze ownershipAnalyze = ControlManager.GetDisassemblerAnalyzer().CalculateDiscrepancyCriterionByNeuralNetwork(ControlManager.GetDisassemblerComparator());
+                        // Analyze
+                        OwnershipAnalyze ownershipAnalyze = ControlManager.GetDisassemblerAnalyzer().CalculateOwnershipDiscrepancyCriterionByThresholdFilter(ControlManager.GetDisassemblerComparator());
 
                         // Show information about result
                         string messageBoxText;
