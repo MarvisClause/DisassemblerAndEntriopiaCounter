@@ -39,7 +39,7 @@ namespace DisEn
         [NonSerialized]
         private const string NEURAL_NETWORK_DATA = "NeuralData.nnd";
 
-        // Discrepancy criterion count was derived experimentally from the experiments.
+        // Discrepancy criterion count was derived experimentally.
         // If number of discrepancy criterions will be more than given number, than there is big possibility 
         // of non-author changes due to the drastic change of the program nature.
         [NonSerialized]
@@ -133,7 +133,7 @@ namespace DisEn
 
         // Analyzes disassembler data for authorship
         // Returns value of discrepancy criterion. Number of thresholds, which were reached and overshoot
-        public int CalculateDiscrepancyCriterionByThresholdFilter(DisassemblerComparator disassemblerComparator)
+        private int CalculateDiscrepancyCriterionByThresholdFilter(DisassemblerComparator disassemblerComparator)
         {
             int discrepancyCriterion = 0;
 
@@ -158,9 +158,23 @@ namespace DisEn
             return discrepancyCriterion;
         }
 
+        // Analyzes disassembler data for authorship
+        // Returns true if res
+        public OwnershipAnalyze CalculateOwnershipDiscrepancyCriterionByThresholdFilter(DisassemblerComparator disassemblerComparator)
+        {
+            int discrepancyCriterion = CalculateDiscrepancyCriterionByThresholdFilter(disassemblerComparator);
+
+            OwnershipAnalyze ownershipAnalyze = new OwnershipAnalyze();
+            ownershipAnalyze.authorOwnerChance = discrepancyCriterion >= DISCREPANCY_CRITERION_COUNT ? 0.0 : 1.0;
+            ownershipAnalyze.virusOwnerChance = discrepancyCriterion >= DISCREPANCY_CRITERION_COUNT ? 1.0 : 0.0;
+            ownershipAnalyze.discrepancyCriterionCount = discrepancyCriterion;
+            
+            return ownershipAnalyze;
+        }
+
         // Analyzes disassembler data for authorship via neural network
         // Returns change ownership
-        public OwnershipAnalyze CalculateDiscrepancyCriterionByNeuralNetwork(DisassemblerComparator disassemblerComparator)
+        public OwnershipAnalyze CalculateOwnershipDiscrepancyCriterionByNeuralNetwork(DisassemblerComparator disassemblerComparator)
         {
             List<double> inputDeltaList = new List<double>();
             // We iterate through disassembler command info delta and try to form array, which will preserve the same order of commands

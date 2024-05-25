@@ -70,10 +70,10 @@ namespace DisEn
         {
             if (obj is Disassembler objectType)
             {
-                return this._fileName.CompareTo(objectType._fileName) == 0
+                return this._fileName.Equals(objectType._fileName)
                     && this._fileSize == objectType._fileSize
-                    && this._totalInstructionCounter == objectType._totalInstructionCounter
-                    && this._totalEntropyValue == objectType._totalEntropyValue
+                    && Utility.NearlyEqual(this._totalInstructionCounter, objectType._totalInstructionCounter)
+                    && Utility.NearlyEqual(this._totalEntropyValue, objectType._totalEntropyValue)
                     && CompareDisInfo(objectType.GetDisassemblerCommandsInfo());
             }
             return false;
@@ -332,7 +332,7 @@ namespace DisEn
                     if (_disassemblerCommandsInfo[j].Name.Equals(disComInfo[i]))
                     {
                         if (_disassemblerCommandsInfo[j].Count != disComInfo[i].Count
-                            || _disassemblerCommandsInfo[j].Entropy != disComInfo[i].Entropy)
+                            || Utility.NearlyEqual(_disassemblerCommandsInfo[j].Entropy, disComInfo[i].Entropy))
                         {
                             return false;
                         }
