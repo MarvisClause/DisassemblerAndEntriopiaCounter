@@ -83,7 +83,7 @@
                                 Margin="15,25,0,40">
                         <!--Test image-->
                         <Image Source="img/LogoIconOld.png" Height="50"/>
-                        <TextBlock Text="DisEn"
+                        <TextBlock Text="VerCheck"
                                    Foreground="{StaticResource color8}"
                                    FontSize="40"
                                    FontFamily="Montserrat"
@@ -145,17 +145,7 @@
                             <TextBlock Text="Settings" Style="{StaticResource menuButtonText}"/>
                         </StackPanel>
                     </RadioButton>
-
-                    <!--Report Button-->
-                    <RadioButton Style="{StaticResource menuButton}"
-                                 Tag="{StaticResource color9}"
-                                 Command="{Binding ShowReportsViewCommand}">
-                        <StackPanel Orientation="Horizontal">
-                            <fa:IconImage Icon="Flag" Style="{StaticResource menuButtonIcon}"/>
-                            <TextBlock Text="Reports" Style="{StaticResource menuButtonText}"/>
-                        </StackPanel>
-                    </RadioButton>
-
+                    
                 </StackPanel>
 
 

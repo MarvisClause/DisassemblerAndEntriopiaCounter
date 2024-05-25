@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Windows.Media;
 
 namespace DisEn
 {
@@ -41,6 +39,58 @@ namespace DisEn
             { // use relative error
                 return diff / (absA + absB) < epsilon;
             }
+        }
+
+        // Generate distinct colors using HSL
+        public static List<Color> GenerateColors(int count)
+        {
+            List<Color> colors = new List<Color>();
+
+            for (int i = 0; i < count; i++)
+            {
+                double hue = (i * 360.0 / count) % 360; // spread hue across 360 degrees
+                colors.Add(HSLToRGB(hue, 0.7, 0.7)); // use a fixed saturation and lightness
+            }
+
+            return colors;
+        }
+
+        // Convert HSL to RGB color
+        public static Color HSLToRGB(double h, double s, double l)
+        {
+            double c = (1 - Math.Abs(2 * l - 1)) * s;
+            double x = c * (1 - Math.Abs((h / 60) % 2 - 1));
+            double m = l - c / 2;
+            double r = 0, g = 0, b = 0;
+
+            if (0 <= h && h < 60)
+            {
+                r = c; g = x; b = 0;
+            }
+            else if (60 <= h && h < 120)
+            {
+                r = x; g = c; b = 0;
+            }
+            else if (120 <= h && h < 180)
+            {
+                r = 0; g = c; b = x;
+            }
+            else if (180 <= h && h < 240)
+            {
+                r = 0; g = x; b = c;
+            }
+            else if (240 <= h && h < 300)
+            {
+                r = x; g = 0; b = c;
+            }
+            else if (300 <= h && h < 360)
+            {
+                r = c; g = 0; b = x;
+            }
+
+            r += m; g += m; b += m;
+
+            return Color.FromRgb((byte)(r * 255), (byte)(g * 255), (byte)(b * 255));
         }
     }
 }

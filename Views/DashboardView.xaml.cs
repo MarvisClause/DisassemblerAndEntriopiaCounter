@@ -1,4 +1,5 @@
 ﻿using LiveCharts;
+using LiveCharts.Definitions.Charts;
 using LiveCharts.Wpf;
 using System;
 using System.Collections.Generic;
@@ -73,24 +74,29 @@ namespace DisEn.Views
         {
             // Fill series collection with data
             SeriesCollection seriesCollection = new SeriesCollection();
+            List<Color> Colors = Utility.GenerateColors(ControlManager.GetDisassemblerManager().GetLastDisassembler().GetDisassemblerCommandsInfo().Count);
             // Fill series collection with data from disassembler
             for (int i = 0; i < ControlManager.GetDisassemblerManager().GetLastDisassembler().GetDisassemblerCommandsInfo().Count; ++i)
             {
                 PieSeries pieSeries = new PieSeries
                 {
                     Title = ControlManager.GetDisassemblerManager().GetLastDisassembler().GetDisassemblerCommandsInfo()[i].Name,
-                    Values = new ChartValues<double> { ControlManager.GetDisassemblerManager().GetLastDisassembler().GetDisassemblerCommandsInfo()[i].Entropy }
+                    Values = new ChartValues<double> { ControlManager.GetDisassemblerManager().GetLastDisassembler().GetDisassemblerCommandsInfo()[i].Entropy },
+                    Fill = new SolidColorBrush(Colors[i])
                 };
                 seriesCollection.Add(pieSeries);
             }
             // Set series collection to the histogram
             CurrentFileTopPieHistogram.Series = seriesCollection;
+            var Tooltip = (DefaultTooltip)CurrentFileTopPieHistogram.DataTooltip;
+            Tooltip.SelectionMode = LiveCharts.TooltipSelectionMode.OnlySender;
         }
 
         private void AddLastFileDataToTheColumnHistorgram()
         {
             // Fill series collection with data
             SeriesCollection seriesCollectionTop = new SeriesCollection();
+            List<Color> Colors = Utility.GenerateColors(ControlManager.GetDisassemblerManager().GetLastDisassembler().GetDisassemblerCommandsInfo().Count);
             // Fill series collection with data from disassembler
             for (int i = 0; i < ControlManager.GetDisassemblerManager().GetLastDisassembler().GetDisassemblerCommandsInfo().Count; ++i)
             {
@@ -98,11 +104,14 @@ namespace DisEn.Views
                 seriesCollectionTop.Add(new ColumnSeries
                 {
                     Title = ControlManager.GetDisassemblerManager().GetLastDisassembler().GetDisassemblerCommandsInfo()[i].Name,
-                    Values = new ChartValues<double> { ControlManager.GetDisassemblerManager().GetLastDisassembler().GetDisassemblerCommandsInfo()[i].Entropy }
+                    Values = new ChartValues<double> { ControlManager.GetDisassemblerManager().GetLastDisassembler().GetDisassemblerCommandsInfo()[i].Entropy },
+                    Fill = new SolidColorBrush(Colors[i])
                 });
             }
             // Set series collection to the histogram
             CurrentFileBottomColumnHistogram.Series = seriesCollectionTop;
+            var Tooltip = (DefaultTooltip)CurrentFileBottomColumnHistogram.DataTooltip;
+            Tooltip.SelectionMode = LiveCharts.TooltipSelectionMode.OnlySender;
         }
 
         #endregion
