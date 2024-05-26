@@ -57,6 +57,12 @@ namespace VerCheck.Views
             UpdateCastFileButton.Visibility = Visibility.Collapsed;
         }
 
+        private void btnShowDelta_Click(object sender, RoutedEventArgs e)
+        {
+            DisassemblerComparisonWindow disassemblerComparisonWindow = new DisassemblerComparisonWindow();
+            disassemblerComparisonWindow.ShowDialog();
+        }
+
         private void btnPieExpend_Click(object sender, RoutedEventArgs e)
         {
 
@@ -224,6 +230,7 @@ namespace VerCheck.Views
                 // Change cast file info grid visibility
                 CastFileInfoGrid.Visibility = 
                 UpdateCastFileButton.Visibility = Visibility.Visible;
+                ShowDeltaButton.Visibility = Visibility.Visible;
                 // Change histograms visibility
                 CurrentFileTopColumnHistogram.Visibility = Visibility.Visible;
                 CurrentFileTopPieHistogram.Visibility = Visibility.Collapsed;
@@ -239,6 +246,7 @@ namespace VerCheck.Views
                 // Change cast file info grid visibility
                 CastFileInfoGrid.Visibility =
                 UpdateCastFileButton.Visibility = Visibility.Collapsed;
+                ShowDeltaButton.Visibility = Visibility.Collapsed;
                 // Change histograms visibility
                 CurrentFileTopColumnHistogram.Visibility = Visibility.Collapsed;
                 CurrentFileTopPieHistogram.Visibility = Visibility.Visible;

@@ -78,6 +78,9 @@
     <Compile Include="ControlManager.cs" />
     <Compile Include="DisassemblerAnalyzer.cs" />
     <Compile Include="DisassemblerComparator.cs" />
+    <Compile Include="DisassemblerComparisonWindow.xaml.cs">
+      <DependentUpon>DisassemblerComparisonWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Matrix.cs" />
     <Compile Include="NeuralNetwork.cs" />
     <Compile Include="SHA1.cs" />
@@ -109,6 +112,10 @@
     <Compile Include="Views\SettingsView.xaml.cs">
       <DependentUpon>SettingsView.xaml</DependentUpon>
     </Compile>
+    <Page Include="DisassemblerComparisonWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

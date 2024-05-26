@@ -181,7 +181,7 @@ namespace VerCheck
             _disassembleDateTime = DateTime.Now;
             // Save file path and its name
             FileInfo fileInfo = new FileInfo(filePath);
-            _fileName = fileInfo.Name.Split('.')[0];
+            _fileName = Path.GetFileNameWithoutExtension(fileInfo.Name);
             _executableFilePath = filePath;
             _fileSize = fileInfo.Length;
             // Disassemble and parse txt file

@@ -1,0 +1,253 @@
+﻿<Window x:Class="VerCheck.DisassemblerComparisonWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:col="clr-namespace:System.Collections;assembly=mscorlib"
+        xmlns:local="clr-namespace:VerCheck" 
+        xmlns:chart="clr-namespace:Syncfusion.UI.Xaml.Charts;assembly=Syncfusion.SfChart.WPF"
+        xmlns:fa="http://schemas.awesome.incremented/wpf/xaml/fontawesome.sharp" 
+        xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
+        xmlns:viewModel="clr-namespace:VerCheck.ViewModels"
+        xmlns:views="clr-namespace:VerCheck.Views"
+        mc:Ignorable="d" 
+        MinHeight="700" 
+        MinWidth="1300" 
+        FontFamily="Montserrat" 
+        WindowStyle="None"  
+        Background="Transparent"
+        AllowsTransparency="True"
+        Title="DisassemblerComparisonWindow">
+
+    <Window.DataContext>
+        <viewModel:MainViewModel/>
+    </Window.DataContext>
+
+    <!--Main Section-->
+    <Border CornerRadius="0,10,10,0" Grid.Column="1">
+        <Border.Background>
+            <LinearGradientBrush StartPoint="0,0" EndPoint="1,0.7">
+                <GradientStop Color="{StaticResource primaryBackColor1}" Offset="0"/>
+                <GradientStop Color="{StaticResource primaryBackColor2}" Offset="1"/>
+            </LinearGradientBrush>
+        </Border.Background>
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <!--Control bar-->
+                <RowDefinition Height="25"/>
+                <!--Content section-->
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!--Control bar-->
+            <StackPanel x:Name="pnlControlBar"
+                        Grid.Row="0"
+                        Orientation="Horizontal"
+                        FlowDirection="RightToLeft"
+                        Background="Transparent"
+                        Margin="0,0,5,0"
+                        MouseLeftButtonDown="pnlControlBar_MouseLeftButtonDown"
+                        Mouse.MouseEnter="pnlControlBar_MouseEnter">
+                <!--Close Button-->
+                <Button x:Name="btnClose"
+                        Style="{DynamicResource controlButton}"
+                        Tag="{StaticResource color4}"
+                        Click="btnClose_Click">
+                    <fa:IconImage Icon="Xmark" Style="{StaticResource controlButtonIcon}"/>
+                </Button>
+                <!--Maximize Button-->
+                <Button x:Name="btnMaximize"
+                        Style="{DynamicResource controlButton}"
+                        Tag="{StaticResource color6}"
+                        Click="btnMaximize_Click">
+                    <fa:IconImage Icon="Square" Style="{StaticResource controlButtonIcon}"/>
+                </Button>
+                <!--Minimize Button-->
+                <Button x:Name="btnMinimize"
+                        Style="{DynamicResource controlButton}"
+                        Tag="{StaticResource color8}"
+                        Click="btnMinimize_Click">
+                    <fa:IconImage Icon="WindowMinimize" Width="12" Style="{StaticResource controlButtonIcon}"/>
+                </Button>
+            </StackPanel>
+
+            <Grid Grid.Row="1">
+                <Grid.RowDefinitions>
+                    <!-- Information -->
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <!--List of commands section-->
+                    <ColumnDefinition Width="*"/>
+                    <!--Histogram section-->
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!--List of commands section-->
+                <Border CornerRadius="10" Grid.Row="0" Grid.Column="0" Margin="0,0,5,0">
+                    <Border.Background>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                            <GradientStop Color="{StaticResource secondaryBackColor1}" Offset="0"/>
+                            <GradientStop Color="{StaticResource secondaryBackColor2}" Offset="1"/>
+                        </LinearGradientBrush>
+                    </Border.Background>
+
+                    <!-- Current file -->
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <!--Text info about file-->
+                            <RowDefinition Height="*"/>
+                            <!--Table with file commands analysis-->
+                            <RowDefinition Height="3*"/>
+                        </Grid.RowDefinitions>
+
+                        <Grid Grid.Row="0">
+                            <Grid.RowDefinitions>
+                                <!--Name of file-->
+                                <RowDefinition Height="*"/>
+                                <!--Total amount of commands-->
+                                <RowDefinition Height="*"/>
+                                <!--Size of file-->
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+
+                            <!--Name of file-->
+                            <StackPanel Orientation="Horizontal" Grid.Row="0">
+                                <!--Title-->
+                                <TextBlock Text="Comparison file : "
+                                           Foreground="{StaticResource titleColor2}"
+                                           FontSize="16"
+                                           FontFamily="Montserrat"
+                                           FontWeight="Medium"
+                                           VerticalAlignment="Center"
+                                           Margin="10,0,0,0"/>
+                                <!--Name-->
+                                <TextBlock x:Name="ComparisonFileName"
+                                           Foreground="{StaticResource titleColor2}"
+                                           FontSize="16"
+                                           FontFamily="Montserrat"
+                                           FontWeight="Medium"
+                                           VerticalAlignment="Center"
+                                           Margin="10,0,0,0"/>
+                            </StackPanel>
+
+                            <!--Total amount of commands-->
+                            <StackPanel Orientation="Horizontal" Grid.Row="1">
+                                <!--Title-->
+                                <TextBlock Text="Delta Total Amount Of Commands : "
+                                           Foreground="{StaticResource titleColor2}"
+                                           FontSize="16"
+                                           FontFamily="Montserrat"
+                                           FontWeight="Medium"
+                                           VerticalAlignment="Center"
+                                           Margin="10,0,0,0"/>
+                                <!--Name-->
+                                <TextBlock x:Name="ComparisonFileTotalAmountOfCommands"
+                                           Foreground="{StaticResource titleColor2}"
+                                           FontSize="16"
+                                           FontFamily="Montserrat"
+                                           FontWeight="Medium"
+                                           VerticalAlignment="Center"
+                                           Margin="10,0,0,0"/>
+                            </StackPanel>
+
+                            <!--Size Of File-->
+                            <StackPanel Orientation="Horizontal" Grid.Row="2">
+                                <!--Title-->
+                                <TextBlock Text="Delta Size of file : "
+                                           Foreground="{StaticResource titleColor2}"
+                                           FontSize="16"
+                                           FontFamily="Montserrat"
+                                           FontWeight="Medium"
+                                           VerticalAlignment="Center"
+                                           Margin="10,0,0,0"/>
+                                <!--Name-->
+                                <TextBlock x:Name="ComparisonFileSize"
+                                           Foreground="{StaticResource titleColor2}"
+                                           FontSize="16"
+                                           FontFamily="Montserrat"
+                                           FontWeight="Medium"
+                                           VerticalAlignment="Center"
+                                           Margin="10,0,0,0"/>
+                            </StackPanel>
+                        </Grid>
+
+                        <DataGrid x:Name="ComparisonDisassemblerDataGrid" 
+                                  Grid.Row="1"
+                                  FontSize="15" 
+                                  Margin="5"
+                                  AutoGenerateColumns="False" 
+                                  HorizontalGridLinesBrush="DarkGray"
+                                  RowBackground="LightGray" 
+                                  AlternatingRowBackground="White"
+                                  IsReadOnly="True" 
+                                  VerticalScrollBarVisibility="Auto" 
+                                  FontFamily="Montserrat SemiBold"
+                                  Background="#FFF6F7F9" 
+                                  BorderBrush="#FFF6F7F9"
+                                  FontWeight="Medium"
+                                  Foreground="Black">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Binding="{Binding Path=Name}" Header="Command" Width="*" FontFamily="Montserrat"/>
+                                <DataGridTextColumn Binding="{Binding Path=Count}" Header="Quantity" Width="*" FontFamily="Montserrat"/>
+                                <DataGridTextColumn Binding="{Binding Path=Entropy}" Header="Entropy" Width="1.5*" FontFamily="Montserrat"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
+                </Border>
+
+                <!--Histogram section-->
+                <Grid Grid.Row="0" Grid.Column="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!--Pie Histogram section or current file column histogram -->
+                    <Border CornerRadius="10" Grid.Row="0" Margin="5,0,0,5">
+                        <Border.Background>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                <GradientStop Color="{StaticResource secondaryBackColor1}" Offset="0"/>
+                                <GradientStop Color="{StaticResource secondaryBackColor2}" Offset="1"/>
+                            </LinearGradientBrush>
+                        </Border.Background>
+                        <!--Histogram top grid-->
+                        <Grid x:Name="GridTopHistogram">
+                            <!--Current file pie histogram-->
+                            <lvc:PieChart x:Name="ComparisonTopPieHistogram" Foreground="{StaticResource titleColor2}" LegendLocation="Right">
+                                <lvc:PieChart.DataTooltip>
+                                    <lvc:DefaultTooltip Foreground="Black"/>
+                                </lvc:PieChart.DataTooltip>
+                            </lvc:PieChart>
+                        </Grid>
+                    </Border>
+
+                    <!--Column Histogram section-->
+                    <Border CornerRadius="10" Grid.Row="1" Margin="5,5,0,0">
+                        <Border.Background>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                <GradientStop Color="{StaticResource secondaryBackColor1}" Offset="0"/>
+                                <GradientStop Color="{StaticResource secondaryBackColor2}" Offset="1"/>
+                            </LinearGradientBrush>
+                        </Border.Background>
+
+                        <!--Histogram bottom grid-->
+                        <Grid x:Name="GridBottomHistogram">
+                            <!--Current file column histogram-->
+                            <lvc:CartesianChart x:Name="ComparisonBottomColumnHistogram" Foreground="{StaticResource titleColor2}" LegendLocation="Right">
+                                <lvc:CartesianChart.AxisX>
+                                    <lvc:Axis LabelsRotation="13" Labels=""/>
+                                </lvc:CartesianChart.AxisX>
+
+                                <lvc:CartesianChart.DataTooltip>
+                                    <lvc:DefaultTooltip Foreground="Black"/>
+                                </lvc:CartesianChart.DataTooltip>
+                            </lvc:CartesianChart>
+                        </Grid>
+                    </Border>
+                </Grid>
+            </Grid>
+        </Grid>
+    </Border>
+</Window>
