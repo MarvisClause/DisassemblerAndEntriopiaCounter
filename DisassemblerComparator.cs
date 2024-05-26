@@ -83,7 +83,7 @@ namespace VerCheck
                         (secondDisassembler.GetDisassemblerCommandsInfo()[secondDisIndex].Name))
                     {
                         if (firstDisassembler.GetDisassemblerCommandsInfo()[firstDisIndex].Count != secondDisassembler.GetDisassemblerCommandsInfo()[secondDisIndex].Count
-                            || firstDisassembler.GetDisassemblerCommandsInfo()[firstDisIndex].Entropy != secondDisassembler.GetDisassemblerCommandsInfo()[secondDisIndex].Entropy)
+                            || Utility.NearlyEqual(firstDisassembler.GetDisassemblerCommandsInfo()[firstDisIndex].Entropy, secondDisassembler.GetDisassemblerCommandsInfo()[secondDisIndex].Entropy))
                         {
                             DisassemblerCommandInfo disassemblerCommandInfo = new DisassemblerCommandInfo();
                             disassemblerCommandInfo.Name = firstDisassembler.GetDisassemblerCommandsInfo()[firstDisIndex].Name;

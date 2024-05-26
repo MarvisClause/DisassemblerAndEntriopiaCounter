@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 
@@ -44,6 +45,8 @@ namespace VerCheck
         private Dictionary<string, Int32> _instructionsDict;
         // Commands info list
         private List<DisassemblerCommandInfo> _disassemblerCommandsInfo;
+        // Code SHA code 
+        private string _sha1;
 
         #endregion
 
@@ -53,7 +56,7 @@ namespace VerCheck
         public Disassembler()
         {
             // Initialize strings
-            _fileName = _executableFilePath = _disassembledFilePath = "";
+            _fileName = _executableFilePath = _disassembledFilePath = _sha1 = "";
             // Initialize containers
             _instructionFilterHashSet = new HashSet<string>();
             _instructionsDict = new Dictionary<string, Int32>();
@@ -74,7 +77,8 @@ namespace VerCheck
                     && this._fileSize == objectType._fileSize
                     && Utility.NearlyEqual(this._totalInstructionCounter, objectType._totalInstructionCounter)
                     && Utility.NearlyEqual(this._totalEntropyValue, objectType._totalEntropyValue)
-                    && CompareDisInfo(objectType.GetDisassemblerCommandsInfo());
+                    && CompareDisInfo(objectType.GetDisassemblerCommandsInfo())
+                    && _sha1.Equals(objectType._sha1);
             }
             return false;
         }
@@ -289,14 +293,22 @@ namespace VerCheck
         {
             _totalInstructionCounter = 0;
             _instructionsDict.Clear();
+            _sha1 = "";
 
             try
             {
+                _sha1 = SHA1.ComputeSHA1(File.ReadAllText(filePath));
+
                 using (StreamReader reader = new StreamReader(filePath))
                 {
                     string line;
                     while ((line = reader.ReadLine()) != null)
                     {
+                        if (line.Length <= 0)
+                        {
+                            continue;
+                        }
+
                         foreach (string word in line.Split(' '))
                         {
                             if (_instructionFilterHashSet.Contains(word))

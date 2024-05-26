@@ -18,7 +18,7 @@ namespace VerCheck
             return targetMinRange + (targetMaxRange - targetMinRange) * ((numberToMap - currentMinRange) / (currentMaxRange - currentMinRange));
         }
 
-        public static bool NearlyEqual(double a, double b, double epsilon = 0.00001)
+        public static bool NearlyEqual(double a, double b, double epsilon = 0.000001)
         {
             const double MinNormal = 2.2250738585072014E-308d;
             double absA = Math.Abs(a);
