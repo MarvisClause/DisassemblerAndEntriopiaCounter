@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DisEn
+namespace VerCheck
 {
     // Gives control over main features of the disassembler.
     // Main point of this class is to hold static variable, which be used across all view models.

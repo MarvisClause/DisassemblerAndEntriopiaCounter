@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DisEn.ViewModels
+namespace VerCheck.ViewModels
 {
     public abstract class ViewModelBase : INotifyPropertyChanged
     {

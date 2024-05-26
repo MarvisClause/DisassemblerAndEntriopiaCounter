@@ -1,7 +1,7 @@
 ﻿using FontAwesome.Sharp;
 using System.Windows.Input;
 
-namespace DisEn.ViewModels
+namespace VerCheck.ViewModels
 {
     public class MainViewModel : ViewModelBase
     {

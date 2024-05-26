@@ -1,13 +1,16 @@
 ﻿using LiveCharts;
 using LiveCharts.Wpf;
 using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using static DisEn.DisassemblerAnalyzer;
+using System.Windows.Shapes;
+using static VerCheck.DisassemblerAnalyzer;
 
-namespace DisEn.Views
+namespace VerCheck.Views
 {
     /// <summary>
     /// Interaction logic for ResearchViews.xaml
@@ -98,7 +101,7 @@ namespace DisEn.Views
                     CastFileSize.Text = ByteConverter.ConvertByToMegaByteToString(ControlManager.GetDisassemblerManager().GetSavedDisassembler().GetFileSize());
 
                     // Change cast data visibility
-                    SetCastDataVisibility(true);
+                    SetComparisonDataVisibility(true);
 
                     // If data is not equal, inform user about this
                     if (!ControlManager.GetDisassemblerComparator().CompareData(ControlManager.GetDisassemblerManager().GetCurrentDisassembler(),
@@ -107,30 +110,16 @@ namespace DisEn.Views
                         // Analyze
                         OwnershipAnalyze ownershipAnalyze = ControlManager.GetDisassemblerAnalyzer().CalculateOwnershipDiscrepancyCriterionByThresholdFilter(ControlManager.GetDisassemblerComparator());
 
-                        // Show information about result
-                        string messageBoxText;
-                        string caption;
-                        MessageBoxImage icon;
                         if (ownershipAnalyze.virusOwnerChance > ownershipAnalyze.authorOwnerChance)
                         {
-                            messageBoxText = "There is a possibility of virus code injection" +
-                                "\nDiscrepancy criterion = " + ownershipAnalyze.discrepancyCriterionCount +
-                                "\nAuthor owner chance = " + ownershipAnalyze.authorOwnerChance +
-                                "\nVirus owner chance = " + ownershipAnalyze.virusOwnerChance;
-                            caption = "Discrepancy value is high";
-                            icon = MessageBoxImage.Warning;
+                            ChangesOwnership.Text = "VIRUS";
+                            ChangesOwnership.Foreground = new SolidColorBrush(Colors.Red);
                         }
                         else
                         {
-                            messageBoxText = "Discrepancy value is in normal range" +
-                            "\nCode was changed by user. Discrepancy criterion = " + ownershipAnalyze.discrepancyCriterionCount +
-                            "\nAuthor owner chance = " + ownershipAnalyze.authorOwnerChance +
-                            "\nVirus owner chance = " + ownershipAnalyze.virusOwnerChance;
-                            caption = "Code was changed by user";
-                            icon = MessageBoxImage.Information;
+                            ChangesOwnership.Text = "USER";
+                            ChangesOwnership.Foreground = new SolidColorBrush(Colors.Green);
                         }
-                        MessageBoxButton button = MessageBoxButton.OK;
-                        MessageBox.Show(messageBoxText, caption, button, icon, MessageBoxResult.OK);
                     }
                 }
                 // If current disassembler is the same as the saved one, when there is no difference or this is the first time this file is processed by this program.
@@ -138,7 +127,7 @@ namespace DisEn.Views
                 else
                 {
                     // Change cast data visibility
-                    SetCastDataVisibility(false);
+                    SetComparisonDataVisibility(false);
                 }
             }
         }
@@ -152,7 +141,7 @@ namespace DisEn.Views
         {
             // Fill series collection with data
             SeriesCollection seriesCollection = new SeriesCollection();
-            List<Color> Colors = Utility.GenerateColors(ControlManager.GetDisassemblerManager().GetLastDisassembler().GetDisassemblerCommandsInfo().Count);
+            List<Color> Colors = Utility.GenerateColors(ControlManager.GetDisassemblerManager().GetCurrentDisassembler().GetDisassemblerCommandsInfo().Count);
             // Fill series collection with data from disassembler
             for (int i = 0; i < ControlManager.GetDisassemblerManager().GetCurrentDisassembler().GetDisassemblerCommandsInfo().Count; ++i)
             {
@@ -175,7 +164,7 @@ namespace DisEn.Views
             // Fill series collection with data
             SeriesCollection seriesCollectionTop = new SeriesCollection();
             SeriesCollection seriesCollectionBottom = new SeriesCollection();
-            List<Color> Colors = Utility.GenerateColors(ControlManager.GetDisassemblerManager().GetLastDisassembler().GetDisassemblerCommandsInfo().Count);
+            List<Color> Colors = Utility.GenerateColors(ControlManager.GetDisassemblerManager().GetCurrentDisassembler().GetDisassemblerCommandsInfo().Count);
             // Fill series collection with data from disassembler
             for (int i = 0; i < ControlManager.GetDisassemblerManager().GetCurrentDisassembler().GetDisassemblerCommandsInfo().Count; ++i)
             {
@@ -207,7 +196,7 @@ namespace DisEn.Views
         {
             // Fill series collection with data
             SeriesCollection seriesCollection = new SeriesCollection();
-            List<Color> Colors = Utility.GenerateColors(ControlManager.GetDisassemblerManager().GetLastDisassembler().GetDisassemblerCommandsInfo().Count);
+            List<Color> Colors = Utility.GenerateColors(ControlManager.GetDisassemblerManager().GetSavedDisassembler().GetDisassemblerCommandsInfo().Count);
             // Fill series collection with data from disassembler
             for (int i = 0; i < ControlManager.GetDisassemblerManager().GetSavedDisassembler().GetDisassemblerCommandsInfo().Count; ++i)
             {
@@ -226,7 +215,7 @@ namespace DisEn.Views
             Tooltip.SelectionMode = LiveCharts.TooltipSelectionMode.OnlySender;
         }
 
-        private void SetCastDataVisibility(bool IsVisibile)
+        private void SetComparisonDataVisibility(bool IsVisibile)
         {
             if (IsVisibile)
             {
@@ -240,6 +229,8 @@ namespace DisEn.Views
                 CurrentFileTopPieHistogram.Visibility = Visibility.Collapsed;
                 CurrentFileBottomColumnHistogram.Visibility = Visibility.Collapsed;
                 CastFileBottomColumnHistogram.Visibility = Visibility.Visible;
+                // Change authorship information visibility
+                AuthorshipInformationGrid.Visibility = Visibility.Visible;
             }
             else
             {
@@ -253,6 +244,8 @@ namespace DisEn.Views
                 CurrentFileTopPieHistogram.Visibility = Visibility.Visible;
                 CurrentFileBottomColumnHistogram.Visibility = Visibility.Visible;
                 CastFileBottomColumnHistogram.Visibility = Visibility.Collapsed;
+                // Change authorship information visibility
+                AuthorshipInformationGrid.Visibility = Visibility.Collapsed;
             }
         }
 

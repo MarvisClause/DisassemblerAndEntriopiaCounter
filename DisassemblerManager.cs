@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 
-namespace DisEn
+namespace VerCheck
 { 
     // Disassembler manager
     // Controls file saves and their management

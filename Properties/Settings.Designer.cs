@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace DisEn.Properties
+namespace VerCheck.Properties
 {
 
 

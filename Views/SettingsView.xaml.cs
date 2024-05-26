@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace DisEn.Views
+namespace VerCheck.Views
 {
     /// <summary>
     /// Interaction logic for SettingsView.xaml

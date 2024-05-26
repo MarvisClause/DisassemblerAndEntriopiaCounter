@@ -10,9 +10,9 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Runtime.InteropServices;
 using System.Windows.Interop;
-using DisEn.ViewModels;
+using VerCheck.ViewModels;
 
-namespace DisEn
+namespace VerCheck
 {
     public partial class MainWindow : Window
     {

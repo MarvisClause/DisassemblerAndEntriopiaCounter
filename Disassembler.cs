@@ -5,7 +5,7 @@ using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 
-namespace DisEn
+namespace VerCheck
 {
     // Command info struct
     [Serializable]
@@ -154,10 +154,20 @@ namespace DisEn
         public static Disassembler Deserialize(String path)
         {
             BinaryFormatter binFormat = new BinaryFormatter();
-            using (Stream fStream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.None))
+            try
             {
-                return (Disassembler)binFormat.Deserialize(fStream);
+                using (Stream fStream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.None))
+                {
+                    return (Disassembler)binFormat.Deserialize(fStream);
+                }
             }
+            catch (Exception Excep)
+            {
+                // If this happens, the cause must lie in the change of class signature or variables.
+                // Current implementation is very sensible to that, so files become irrelevant after code change. Rework in the future.
+                File.Delete(path);
+            }
+            return new Disassembler();
         }
 
         // Disassembles file

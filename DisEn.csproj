@@ -225,7 +225,6 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>xcopy "$(ProjectDir)Dumpbin" "$(TargetDir)Dumpbin" /e /y /i /r
-xcopy "$(ProjectDir)NeuralData.nnd" "$(TargetDir)" /Y</PostBuildEvent>
+    <PostBuildEvent>xcopy "$(ProjectDir)Dumpbin" "$(TargetDir)Dumpbin" /e /y /i /r</PostBuildEvent>
   </PropertyGroup>
 </Project>

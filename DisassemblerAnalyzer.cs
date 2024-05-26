@@ -1,14 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices.ComTypes;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Security.AccessControl;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Shapes;
 
-namespace DisEn
+namespace VerCheck
 {
     // Analyzes disassembler results 
     // Used to define ownership of the changes (Author or virus)
@@ -102,13 +104,22 @@ namespace DisEn
             _commandThresholdNeuralNetwork = new NeuralNetwork(nodesPerLayerList, 0.1f, -0.3f, 0.3f);
             if (File.Exists(NEURAL_NETWORK_DATA))
             {
-                BinaryFormatter binFormat = new BinaryFormatter();
-                using (Stream fStream = new FileStream(NEURAL_NETWORK_DATA, FileMode.Open, FileAccess.Read, FileShare.None))
+                try
                 {
-                    if (fStream.Length > 0)
+                    BinaryFormatter binFormat = new BinaryFormatter();
+                    using (Stream fStream = new FileStream(NEURAL_NETWORK_DATA, FileMode.Open, FileAccess.Read, FileShare.None))
                     {
-                        _commandThresholdNeuralNetwork = (NeuralNetwork)binFormat.Deserialize(fStream);
+                        if (fStream.Length > 0)
+                        {
+                            _commandThresholdNeuralNetwork = (NeuralNetwork)binFormat.Deserialize(fStream);
+                        }
                     }
+                }
+                catch (Exception Excep)
+                {
+                    // If this happens, the cause must lie in the change of class signature or variables.
+                    // Current implementation is very sensible to that, so files become irrelevant after code change. Rework in the future.
+                    File.Delete(NEURAL_NETWORK_DATA);
                 }
             }
         }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Windows.Media;
 
-namespace DisEn
+namespace VerCheck
 {
     // Utility class is used to provide useful functions across the system
     public static class Utility

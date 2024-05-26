@@ -12,9 +12,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using static DisEn.ViewModels.FAQViewModel;
+using static VerCheck.ViewModels.FAQViewModel;
 
-namespace DisEn.Views
+namespace VerCheck.Views
 {
     /// <summary>
     /// Interaction logic for FAQView.xaml

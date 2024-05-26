@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace DisEn.ViewModels
+namespace VerCheck.ViewModels
 {
     public class ViewModelCommand : ICommand
     {

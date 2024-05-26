@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace DisEn
+namespace VerCheck
 {
     [Serializable]
     public class NeuralNetwork
