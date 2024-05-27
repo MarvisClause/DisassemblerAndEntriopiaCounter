@@ -16,7 +16,7 @@ using System.Windows.Shapes;
 using System.Runtime.InteropServices;
 using System.Windows.Interop;
 
-namespace VerCheck
+namespace VerCheck.Windows
 {
     /// <summary>
     /// Interaction logic for DisassemblerComparisonWindow.xaml
@@ -84,14 +84,14 @@ namespace VerCheck
                 // Add data to the table
                 AddDataToTable(ComparisonDisassemblerDataGrid, ControlManager.GetDisassemblerComparator().GetDisassemblerCommandInfoDelta());
                 // Add data to the histogram
-                AddLastFileDataToThePieHistogram();
-                AddLastFileDataToTheColumnHistorgram();
+                AddComparisonToThePieHistogram();
+                AddComparisonTheColumnHistorgram();
 
-                // Show name of the current file
+                // Show name of the file
                 ComparisonFileName.Text = ControlManager.GetDisassemblerComparator().GetFirstDisassembler().GetFileName();
-                // Show total amount of instructions of the current file
+                // Show total amount of instructions of the file
                 ComparisonFileTotalAmountOfCommands.Text = ControlManager.GetDisassemblerComparator().GetTotalInstructionCounterDelta().ToString();
-                // Show size of the current file
+                // Show size of the file
                 ComparisonFileSize.Text = ByteConverter.ConvertByToMegaByteToString(ControlManager.GetDisassemblerComparator().GetFileSizeDelta());
             }
         }
@@ -101,7 +101,7 @@ namespace VerCheck
             dataGrid.ItemsSource = commandsInfo;
         }
 
-        private void AddLastFileDataToThePieHistogram()
+        private void AddComparisonToThePieHistogram()
         {
             // Fill series collection with data
             SeriesCollection seriesCollection = new SeriesCollection();
@@ -123,7 +123,7 @@ namespace VerCheck
             Tooltip.SelectionMode = LiveCharts.TooltipSelectionMode.OnlySender;
         }
 
-        private void AddLastFileDataToTheColumnHistorgram()
+        private void AddComparisonTheColumnHistorgram()
         {
             // Fill series collection with data
             SeriesCollection seriesCollectionTop = new SeriesCollection();

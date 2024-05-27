@@ -169,7 +169,7 @@ namespace VerCheck
             {
                 // If this happens, the cause must lie in the change of class signature or variables.
                 // Current implementation is very sensible to that, so files become irrelevant after code change. Rework in the future.
-                File.Delete(path);
+                Debug.Assert(false);
             }
             return new Disassembler();
         }

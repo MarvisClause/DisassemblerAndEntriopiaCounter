@@ -50,7 +50,7 @@
         </DataTemplate>
 
     </Window.Resources>
-    
+
     <Border CornerRadius="10"
             BorderThickness="1">
 
@@ -62,7 +62,7 @@
                 <!--Content section-->
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            
+
             <!--Navigation Menu-->
             <Border CornerRadius="10,0,0,10"
                     Grid.Column="0">
@@ -92,9 +92,9 @@
                                    Margin="10,0,0,0"/>
                     </StackPanel>
 
-                        
+
                     <!--Menu Buttons-->
-                    
+
                     <!--Dashboard Button-->
                     <RadioButton Style="{StaticResource menuButton}"
                                  Tag="{StaticResource color2}"
@@ -145,13 +145,13 @@
                             <TextBlock Text="Settings" Style="{StaticResource menuButtonText}"/>
                         </StackPanel>
                     </RadioButton>
-                    
+
                 </StackPanel>
 
 
             </Border>
 
-            
+
             <!--Main Section-->
             <Border CornerRadius="0,10,10,0"
                     Grid.Column="1">
@@ -170,7 +170,8 @@
                         <!--Header/Caption -->
                         <RowDefinition Height="35"/>
                         <!--Content section / Child views-->
-                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="177*"/>
+                        <RowDefinition Height="296*"/>
                     </Grid.RowDefinitions>
 
                     <!--Control bar-->
@@ -207,32 +208,33 @@
                     </StackPanel>
 
                     <!--Header/Caption -->
-                        <Grid Grid.Row="1">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition />
-                                <ColumnDefinition />
-                            </Grid.ColumnDefinitions>
-                            
-                            <!--Caption-->
-                            
-                            <StackPanel Grid.Column="0"
+                    <Grid Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+
+                        <!--Caption-->
+
+                        <StackPanel Grid.Column="0"
                                         Orientation="Horizontal"
                                         VerticalAlignment="Center">
 
-                                <fa:IconImage Icon="{Binding Icon}"
+                            <fa:IconImage Icon="{Binding Icon}"
                                               Height="20"
                                               Width="20"
                                               Foreground="{StaticResource titleColor2}"
                                               Margin="35,0,10,0"/>
-                                <TextBlock Text="{Binding Caption}"
+                            <TextBlock Text="{Binding Caption}"
                                            Foreground="{StaticResource titleColor2}"
                                            FontSize="16"
                                            FontFamily="Montserrat"
                                            FontWeight="Medium"
                                            VerticalAlignment="Center"/>
-                            </StackPanel>
+                        </StackPanel>
 
-                            <!--Last Research File--><!--
+                        <!--Last Research File-->
+                        <!--
 
                             <StackPanel Grid.Column="1"
                                         Orientation="Horizontal"
@@ -240,7 +242,9 @@
                                         VerticalAlignment="Center"
                                         Margin="0,0,10,0"> 
                                 
-                                --><!--Title of File--><!--
+                                -->
+                        <!--Title of File-->
+                        <!--
                                  <Grid Margin="35,0,10,0">
                                     <Grid.RowDefinitions>
                                         <RowDefinition/>
@@ -272,24 +276,24 @@
                                               Margin="10,0,0,0"
                                               HorizontalAlignment="Left"/>
                                  
-                            </StackPanel>-->   
+                            </StackPanel>-->
 
                     </Grid>
-                    
+
                     <!--Content section / Child views-->
                     <ContentPresenter Content="{Binding CurrentChildView}"
                                     Grid.Row="2"
-                                    Margin="25"/>
+                                    Margin="25" Grid.RowSpan="2"/>
                 </Grid>
-                
-                
+
+
             </Border>
 
 
         </Grid>
-        
-        
+
+
     </Border>
-    
-    
+
+
 </Window>

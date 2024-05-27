@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.IO;
 
 namespace VerCheck
-{ 
+{
     // Disassembler manager
     // Controls file saves and their management
     public class DisassemblerManager
@@ -72,29 +72,114 @@ namespace VerCheck
             return _savedDisassembler;
         }
 
-        public bool IsSavedDisassemblerExistInData()
+        public static bool IsDisassemblerInfoFileExistInData(Disassembler disassembler)
         {
-            return File.Exists(GetSavedDisassemblerPath());
+            return File.Exists(GetDisassemblerInfoFilePath(disassembler));
         }
 
-        private string GetSavedDisassemblerPath()
+        public static bool IsDisassemblerInfoFileExistInData(string name)
         {
-            return String.Format("{0}\\{1}\\{1}.asdat", DATA_DISASSEMBLER_FOLDER, _savedDisassembler.GetFileName());
+            return File.Exists(GetDisassemblerInfoFilePath(name));
+        }
+
+        public static string GetDisassemblerInfoFilePath(Disassembler disassembler)
+        {
+            return String.Format("{0}\\{1}\\Info.txt", DATA_DISASSEMBLER_FOLDER, disassembler.GetFileName());
+        }
+
+        public static string GetDisassemblerInfoFilePath(string name)
+        {
+            return String.Format("{0}\\{1}\\Info.txt", DATA_DISASSEMBLER_FOLDER, name);
+        }
+
+        public static string GetDisassemblerDataPath(Disassembler disassembler, int versionNumber)
+        {
+            return String.Format("{0}\\{1}\\{2}\\{1}.asdat", DATA_DISASSEMBLER_FOLDER, disassembler.GetFileName(), versionNumber);
+        }
+
+        public static Disassembler GetLatestDeserializedDisassembler(string name)
+        {
+            int versionNumber = 1;
+            Debug.Assert(ReadDisassemblerLatestVersionNumberFromInfoFile(name, out versionNumber));
+            return Disassembler.Deserialize(String.Format("{0}\\{1}\\{2}\\{1}.asdat", DATA_DISASSEMBLER_FOLDER, name, versionNumber));
+        }
+
+        public static Disassembler GetDeserializedDisassemblerByVersion(string name, int versionNumber)
+        {
+            return Disassembler.Deserialize(String.Format("{0}\\{1}\\{2}\\{1}.asdat", DATA_DISASSEMBLER_FOLDER, name, versionNumber));
+        }
+
+        private static void WriteDisassemblerVersionToInfoFile(Disassembler disassembler, int versionNumber)
+        {
+            if (Directory.Exists(String.Format("{0}\\{1}", DATA_DISASSEMBLER_FOLDER, disassembler.GetFileName())))
+            {
+                File.WriteAllText(GetDisassemblerInfoFilePath(disassembler), versionNumber.ToString());
+            }
+        }
+
+        public static bool ReadDisassemblerLatestVersionNumberFromInfoFile(Disassembler disassembler, out int outVersionNumber)
+        {
+            if (IsDisassemblerInfoFileExistInData(disassembler))
+            {
+                // Read all text from the file
+                string fileContent = File.ReadAllText(GetDisassemblerInfoFilePath(disassembler));
+
+                // Attempt to convert the content to an integer
+                if (int.TryParse(fileContent, out int versionNumber))
+                {
+                    outVersionNumber = versionNumber;
+                    return true;
+                }
+            }
+            outVersionNumber = -1;
+            return false;
+        }
+
+        public static bool ReadDisassemblerLatestVersionNumberFromInfoFile(string name, out int outVersionNumber)
+        {
+            if (IsDisassemblerInfoFileExistInData(name))
+            {
+                // Read all text from the file
+                string fileContent = File.ReadAllText(GetDisassemblerInfoFilePath(name));
+
+                // Attempt to convert the content to an integer
+                if (int.TryParse(fileContent, out int versionNumber))
+                {
+                    outVersionNumber = versionNumber;
+                    return true;
+                }
+            }
+            outVersionNumber = -1;
+            return false;
         }
 
         public void SaveCurrentDisassemblerFile()
         {
+            // Check, if directory exists
             String directoryPath = String.Format("{0}\\{1}", DATA_DISASSEMBLER_FOLDER, _savedDisassembler.GetFileName());
             if (!Directory.Exists(directoryPath))
             {
                 Directory.CreateDirectory(directoryPath);
             }
-            string dataDirectoryPath = String.Format("{0}\\{1}.asdat", directoryPath, _savedDisassembler.GetFileName());
-            if (File.Exists(dataDirectoryPath))
+            // Check, if saved disassembler info exists
+            int versionNumber = 1;
+            if (IsDisassemblerInfoFileExistInData(_savedDisassembler))
             {
-                File.Delete(dataDirectoryPath);
+                Debug.Assert(ReadDisassemblerLatestVersionNumberFromInfoFile(_savedDisassembler, out versionNumber));
+                versionNumber++;
+                WriteDisassemblerVersionToInfoFile(_savedDisassembler, versionNumber);
             }
-            Disassembler.Serialize(dataDirectoryPath, _currentDisassembler);
+            else
+            {
+                WriteDisassemblerVersionToInfoFile(_savedDisassembler, versionNumber);
+            }
+            // Create directory with according version number and save asdata there
+            String dataDirectoryPath = String.Format("{0}\\{1}", directoryPath, versionNumber);
+            Directory.CreateDirectory(dataDirectoryPath);
+            String assemblerDataPath = String.Format("{0}\\{1}.asdat", dataDirectoryPath, _savedDisassembler.GetFileName());
+            Disassembler.Serialize(assemblerDataPath, _currentDisassembler);
+            // Set saved disassembler as the current one
+            _savedDisassembler = _currentDisassembler;
         }
 
         private void SaveLastDisassemblerFile()
@@ -104,11 +189,6 @@ namespace VerCheck
                 File.Delete(LAST_DISASSEMBLER_FILE);
             }
             Disassembler.Serialize(LAST_DISASSEMBLER_FILE, _currentDisassembler);
-        }
-
-        private void LoadSavedDisassemblerFile()
-        {
-            _savedDisassembler = Disassembler.Deserialize(GetSavedDisassemblerPath());
         }
 
         public void LoadLastDisassemblerFile()
@@ -139,9 +219,9 @@ namespace VerCheck
             // Save last disassembler file
             SaveLastDisassemblerFile();
             // Check, if file exist in the data directory
-            if (IsSavedDisassemblerExistInData())
+            if (IsDisassemblerInfoFileExistInData(_savedDisassembler))
             {
-                LoadSavedDisassemblerFile();
+                _savedDisassembler = GetLatestDeserializedDisassembler(_savedDisassembler.GetFileName());
             }
             else
             {
@@ -163,23 +243,10 @@ namespace VerCheck
 
                 foreach (string directoryPath in directories)
                 {
-                    // Get all files with the ".asdat" extension in the data folder
-                    string[] disassemblerFiles = Directory.GetFiles(directoryPath, "*.asdat");
+                    // Get the directory name, it is the same as disassembler, which we need to retrieve
+                    string directoryName = Path.GetFileName(directoryPath);
 
-                    foreach (string filePath in disassemblerFiles)
-                    {
-                        try
-                        {
-                            // Deserialize each file into a Disassembler object
-                            Disassembler disassembler = Disassembler.Deserialize(filePath);
-                            savedDisassemblersList.Add(disassembler);
-                        }
-                        catch (Exception ex)
-                        {
-                            // Handle any exceptions that may occur during deserialization
-                            Console.WriteLine($"Error loading disassembler from {filePath}: {ex.Message}");
-                        }
-                    }
+                    savedDisassemblersList.Add(GetLatestDeserializedDisassembler(directoryName));
                 }
             }
 

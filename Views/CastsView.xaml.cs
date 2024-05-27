@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using VerCheck.Windows;
 
 namespace VerCheck.Views
 {
@@ -20,13 +21,14 @@ namespace VerCheck.Views
     /// </summary>
     public partial class CastsView : UserControl
     {
-#region Variables
+        #region Variables
 
         public class DisassemblerInfo
         {
             public string FileName { get; set; }
             public string FileSize { get; set; }
             public DateTime LastCastUpdate { get; set; }
+            public int VersionNumber { get; set; }
         }
 
         #endregion
@@ -48,6 +50,18 @@ namespace VerCheck.Views
             UpdateWidgets();
         }
 
+        private void CastsDataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is DataGrid dataGrid)
+            {
+                if (dataGrid.SelectedItem is DisassemblerInfo selectedItem)
+                {
+                    DisassemblerHistoryWindow historyWindow = new DisassemblerHistoryWindow(selectedItem.FileName);
+                    historyWindow.ShowDialog();
+                }
+            }
+        }
+
         private void UpdateWidgets()
         {
             // Get saved disassembler list
@@ -62,6 +76,10 @@ namespace VerCheck.Views
                 // Filter elements by search text
                 string searchText = SearchTextBox.Text.Trim().ToLower();
 
+                // Get disassembler version number
+                int versionNumber = 1;
+                DisassemblerManager.ReadDisassemblerLatestVersionNumberFromInfoFile(disassembler, out versionNumber);
+
                 // Filter elements
                 if (disassembler.GetFileName().ToLower().Contains(searchText)
                     || disassembler.GetFileSize().ToString().ToLower().Contains(searchText)
@@ -72,7 +90,8 @@ namespace VerCheck.Views
                     {
                         FileName = disassembler.GetFileName(),
                         FileSize = ByteConverter.ConvertByToMegaByteToString(disassembler.GetFileSize()),
-                        LastCastUpdate = disassembler.GetDisassembleDateTime()
+                        LastCastUpdate = disassembler.GetDisassembleDateTime(),
+                        VersionNumber = versionNumber
                     });
                 }
             }
