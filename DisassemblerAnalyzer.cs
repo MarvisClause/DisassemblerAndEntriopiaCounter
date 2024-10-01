@@ -180,14 +180,13 @@ namespace VerCheck
                 }
             }
 
-
             // Analyze input through neural network
             List<double> authorshipAnalyze = _commandThresholdNeuralNetwork.Predict(inputDeltaList);
 
             // 0 - Author
             // 1 - Virus
             OwnershipAnalyze ownershipAnalyze = new OwnershipAnalyze();
-            ownershipAnalyze.authorOwnerChance = authorshipAnalyze[0];
+            ownershipAnalyze.authorOwnerChance = authorshipAnalyze[0] + 0.05;
             ownershipAnalyze.virusOwnerChance = authorshipAnalyze[1];
             ownershipAnalyze.discrepancyCriterionCount = CalculateDiscrepancyCriterionByThresholdFilter(disassemblerComparator);
             return ownershipAnalyze;
@@ -267,6 +266,27 @@ namespace VerCheck
                 disassemblerComparator.CompareData(disassembler_i_1, disassembler_i_2);
 
                 TrainNeuralNetworkBySpecifiedOwnership(disassemblerComparator, true);
+            }
+
+            List<String> disassemblerNames = DisassemblerManager.GetDisassemblerNames();
+            foreach (String otherDisassemblerName in DisassemblerManager.GetDisassemblerNames())
+            {
+                versionCount = DisassemblerManager.GetDisassemblerLatestVersionFolder(otherDisassemblerName);
+
+                if (!otherDisassemblerName.Equals(disassemblerName))
+                {
+                    // Iterate over version and compare them to our current disassembler latest one
+                    for (int i = 1; i <= versionCount; ++i)
+                    {
+                        // Initialize disassemblers
+                        Disassembler disassembler_i_current = DisassemblerManager.GetLatestDeserializedDisassembler(disassemblerName);
+                        Disassembler disassembler_i_other = DisassemblerManager.GetDeserializedDisassemblerByVersion(otherDisassemblerName, i);
+
+                        disassemblerComparator.CompareData(disassembler_i_current, disassembler_i_other);
+
+                        TrainNeuralNetworkBySpecifiedOwnership(disassemblerComparator, false);
+                    }
+                }
             }
 
             SaveNeuralData(disassemblerName);

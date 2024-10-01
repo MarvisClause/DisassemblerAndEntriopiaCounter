@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Windows;
 
 namespace VerCheck
 {
@@ -118,6 +119,7 @@ namespace VerCheck
         {
             return String.Format("{0}\\{1}", DATA_DISASSEMBLER_FOLDER, disassemblerName);
         }
+        
         public static int GetDisassemblerLatestVersionFolder(string disassemblerName)
         {
             // Read all text from the file
@@ -130,6 +132,32 @@ namespace VerCheck
             }
 
             return -1;
+        }
+
+        public static List<String> GetDisassemblerNames()
+        {
+            // Specify the directory you want to target
+            string targetDirectory = DATA_DISASSEMBLER_FOLDER;
+
+            List<String> disassemblerNames = new List<String>();
+
+            try
+            {
+                // Get all subdirectories
+                string[] directories = Directory.GetDirectories(targetDirectory);
+
+                // Output the names of the subdirectories
+                foreach (string directory in directories)
+                {
+                    // Get only the folder name from the full directory path
+                    string folderName = new DirectoryInfo(directory).Name;
+                    
+                    disassemblerNames.Add(folderName);
+                }
+            }
+            catch (Exception e){}
+
+            return disassemblerNames;
         }
 
         private static void WriteDisassemblerVersionToInfoFile(Disassembler disassembler, int versionNumber)
