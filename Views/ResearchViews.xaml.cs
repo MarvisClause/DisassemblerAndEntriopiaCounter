@@ -115,17 +115,28 @@ namespace VerCheck.Views
                         ControlManager.GetDisassemblerManager().GetSavedDisassembler()))
                     {
                         // Analyze
-                        OwnershipAnalyze ownershipAnalyze = ControlManager.GetDisassemblerAnalyzer().CalculateOwnershipDiscrepancyCriterionByThresholdFilter(ControlManager.GetDisassemblerComparator());
+                        OwnershipAnalyze ownershipAnalyze = ControlManager.GetDisassemblerAnalyzer().CalculateOwnershipDiscrepancyCriterionByNeuralNetwork(ControlManager.GetDisassemblerComparator());
 
                         if (ownershipAnalyze.virusOwnerChance > ownershipAnalyze.authorOwnerChance)
                         {
-                            ChangesOwnership.Text = "VIRUS";
+                            ChangesOwnership.Text = "NEURO - VIRUS";
                             ChangesOwnership.Foreground = new SolidColorBrush(Colors.Red);
                         }
                         else
                         {
-                            ChangesOwnership.Text = "USER";
+                            ChangesOwnership.Text = "NEURO - USER";
                             ChangesOwnership.Foreground = new SolidColorBrush(Colors.Green);
+                        }
+
+                        ownershipAnalyze = ControlManager.GetDisassemblerAnalyzer().CalculateOwnershipDiscrepancyCriterionByThresholdFilter(ControlManager.GetDisassemblerComparator());
+
+                        if (ownershipAnalyze.virusOwnerChance > ownershipAnalyze.authorOwnerChance)
+                        {
+                            ChangesOwnership.Text += " (THRESHOLD: VIRUS)";
+                        }
+                        else
+                        {
+                            ChangesOwnership.Text += " (THRESHOLD: USER)";
                         }
                     }
                 }

@@ -102,35 +102,6 @@ namespace VerCheck
 
             // Initialize neural network
             _commandThresholdNeuralNetwork = new NeuralNetwork(nodesPerLayerList, 0.1f, -0.3f, 0.3f);
-            if (File.Exists(NEURAL_NETWORK_DATA))
-            {
-                try
-                {
-                    BinaryFormatter binFormat = new BinaryFormatter();
-                    using (Stream fStream = new FileStream(NEURAL_NETWORK_DATA, FileMode.Open, FileAccess.Read, FileShare.None))
-                    {
-                        if (fStream.Length > 0)
-                        {
-                            _commandThresholdNeuralNetwork = (NeuralNetwork)binFormat.Deserialize(fStream);
-                        }
-                    }
-                }
-                catch (Exception Excep)
-                {
-                    // If this happens, the cause must lie in the change of class signature or variables.
-                    // Current implementation is very sensible to that, so files become irrelevant after code change. Rework in the future.
-                    File.Delete(NEURAL_NETWORK_DATA);
-                }
-            }
-        }
-
-        ~DisassemblerAnalyzer()
-        {
-            BinaryFormatter binFormat = new BinaryFormatter();
-            using (Stream fStream = new FileStream(NEURAL_NETWORK_DATA, FileMode.Create, FileAccess.Write, FileShare.None))
-            {
-                binFormat.Serialize(fStream, _commandThresholdNeuralNetwork);
-            }
         }
 
         #endregion
@@ -187,6 +158,12 @@ namespace VerCheck
         // Returns change ownership
         public OwnershipAnalyze CalculateOwnershipDiscrepancyCriterionByNeuralNetwork(DisassemblerComparator disassemblerComparator)
         {
+            // Train network on current versions again
+            TrainDataOnAllVersionOfDisassembler(disassemblerComparator.GetFirstDisassembler().GetFileName());
+
+            // Load latest neural data
+            LoadNeuralData(disassemblerComparator.GetFirstDisassembler().GetFileName());
+
             List<double> inputDeltaList = new List<double>();
             // We iterate through disassembler command info delta and try to form array, which will preserve the same order of commands
             // thus neural network will always have same types of input nodes, which corresponds with given command
@@ -220,23 +197,36 @@ namespace VerCheck
         // Returns change ownership
         public void TrainNeuralNetworkByDiscrepancyCriterion(DisassemblerComparator disassemblerComparator)
         {
+            if (CalculateDiscrepancyCriterionByThresholdFilter(disassemblerComparator) >= DISCREPANCY_CRITERION_COUNT)
+            {
+                TrainNeuralNetworkBySpecifiedOwnership(disassemblerComparator, false);
+            }
+            else
+            {
+                TrainNeuralNetworkBySpecifiedOwnership(disassemblerComparator, true);
+            }
+        }
+
+        // Trains network by specified result
+        public void TrainNeuralNetworkBySpecifiedOwnership(DisassemblerComparator disassemblerComparator, bool isAuthor)
+        {
             // We assume, that if half of discrepancy criterion is reached, changes are made by virus
             List<double> targetValuesList = new List<double>();
             // 0 - Author
             // 1 - Virus
-            if (CalculateDiscrepancyCriterionByThresholdFilter(disassemblerComparator) >= DISCREPANCY_CRITERION_COUNT)
+            if (isAuthor)
             {
                 // Author
-                targetValuesList.Add(0.0f);
-                // Virus
                 targetValuesList.Add(1.0f);
+                // Virus
+                targetValuesList.Add(0.0f);
             }
             else
             {
                 // Author
-                targetValuesList.Add(1.0f);
-                // Virus
                 targetValuesList.Add(0.0f);
+                // Virus
+                targetValuesList.Add(1.0f);
             }
 
             List<double> inputDeltaList = new List<double>();
@@ -256,6 +246,69 @@ namespace VerCheck
             }
 
             _commandThresholdNeuralNetwork.Train(inputDeltaList, targetValuesList);
+        }
+
+        // Iterates over all versions of given disassembler and trains itself
+        public void TrainDataOnAllVersionOfDisassembler(String disassemblerName)
+        {
+            LoadNeuralData(disassemblerName);
+
+            int versionCount = DisassemblerManager.GetDisassemblerLatestVersionFolder(disassemblerName);
+
+            DisassemblerComparator disassemblerComparator = new DisassemblerComparator();
+
+            // Iterate over version and compare difference between adjacent ones
+            for (int i = 1; i < versionCount; ++i)
+            {
+                // Initialize disassemblers
+                Disassembler disassembler_i_1 = DisassemblerManager.GetDeserializedDisassemblerByVersion(disassemblerName, i);
+                Disassembler disassembler_i_2 = DisassemblerManager.GetDeserializedDisassemblerByVersion(disassemblerName, i + 1);
+
+                disassemblerComparator.CompareData(disassembler_i_1, disassembler_i_2);
+
+                TrainNeuralNetworkBySpecifiedOwnership(disassemblerComparator, true);
+            }
+
+            SaveNeuralData(disassemblerName);
+        }
+
+        // Loads neural data for according filename
+        public void LoadNeuralData(String disassemblerName)
+        {
+            String filePath = DisassemblerManager.GetDisassemblerFolder(disassemblerName) + "\\" + NEURAL_NETWORK_DATA;
+
+            if (File.Exists(filePath))
+            {
+                try
+                {
+                    BinaryFormatter binFormat = new BinaryFormatter();
+                    using (Stream fStream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.None))
+                    {
+                        if (fStream.Length > 0)
+                        {
+                            _commandThresholdNeuralNetwork = (NeuralNetwork)binFormat.Deserialize(fStream);
+                        }
+                    }
+                }
+                catch (Exception Excep)
+                {
+                    // If this happens, the cause must lie in the change of class signature or variables.
+                    // Current implementation is very sensible to that, so files become irrelevant after code change. Rework in the future.
+                    File.Delete(filePath);
+                }
+            }
+        }
+
+        // Saves neural data for according filename
+        public void SaveNeuralData(String disassemblerName)
+        {
+            String filePath = DisassemblerManager.GetDisassemblerFolder(disassemblerName) + "\\" + NEURAL_NETWORK_DATA;
+
+            BinaryFormatter binFormat = new BinaryFormatter();
+            using (Stream fStream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None))
+            {
+                binFormat.Serialize(fStream, _commandThresholdNeuralNetwork);
+            }
         }
 
         #endregion

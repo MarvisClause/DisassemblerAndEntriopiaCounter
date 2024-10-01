@@ -56,6 +56,11 @@ namespace VerCheck
 
         #region Methods
 
+        public HashSet<string> GetInstructionFilter()
+        {
+            return _instructionFilter;
+        }
+
         public Disassembler GetLastDisassembler()
         {
             LoadLastDisassemblerFile();
@@ -107,6 +112,24 @@ namespace VerCheck
         public static Disassembler GetDeserializedDisassemblerByVersion(string name, int versionNumber)
         {
             return Disassembler.Deserialize(String.Format("{0}\\{1}\\{2}\\{1}.asdat", DATA_DISASSEMBLER_FOLDER, name, versionNumber));
+        }
+
+        public static String GetDisassemblerFolder(string disassemblerName)
+        {
+            return String.Format("{0}\\{1}", DATA_DISASSEMBLER_FOLDER, disassemblerName);
+        }
+        public static int GetDisassemblerLatestVersionFolder(string disassemblerName)
+        {
+            // Read all text from the file
+            string fileContent = File.ReadAllText(GetDisassemblerInfoFilePath(disassemblerName));
+
+            // Attempt to convert the content to an integer
+            if (int.TryParse(fileContent, out int versionNumber))
+            {
+                return versionNumber;
+            }
+
+            return -1;
         }
 
         private static void WriteDisassemblerVersionToInfoFile(Disassembler disassembler, int versionNumber)
