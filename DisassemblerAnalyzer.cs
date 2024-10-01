@@ -186,7 +186,7 @@ namespace VerCheck
             // 0 - Author
             // 1 - Virus
             OwnershipAnalyze ownershipAnalyze = new OwnershipAnalyze();
-            ownershipAnalyze.authorOwnerChance = authorshipAnalyze[0] + 0.05;
+            ownershipAnalyze.authorOwnerChance = authorshipAnalyze[0];
             ownershipAnalyze.virusOwnerChance = authorshipAnalyze[1];
             ownershipAnalyze.discrepancyCriterionCount = CalculateDiscrepancyCriterionByThresholdFilter(disassemblerComparator);
             return ownershipAnalyze;
